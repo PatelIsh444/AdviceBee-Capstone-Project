@@ -35,3 +35,35 @@ module.exports.teardown = async () => {
     // in the test run once the tests are finished.
     Promise.all(firebase.app().map(app => app.delete()));
 };
+
+expect.extend({
+    async toAllow(expectation) {
+        let pass = false;
+        try {
+            await firebase.assertSucceeds(expectation);
+            pass = true;
+        }
+        catch (error) {}
+
+        return {
+            pass,
+            message: () => 'Expected Firebase operation to be allowed, but it was denied'
+        };
+    }
+});
+
+expect.extend({
+    async toDeny(expectation) {
+        let pass = false;
+        try {
+            await firebase.assertFails(expectation);
+            pass = true;
+        }
+        catch (error) {}
+
+        return {
+            pass,
+            message: () => 'Expected Firebase operation to be denied, but it was allowed'
+        };
+    }
+});
