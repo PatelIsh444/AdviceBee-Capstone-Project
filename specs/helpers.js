@@ -1,5 +1,3 @@
-const firestoreRulesPath = 'firestore.rules';
-
 const firebase = require("@firebase/testing");
 const fs = require("fs");
 
@@ -24,7 +22,7 @@ module.exports.setup = async (auth, data) => {
 
     await firebase.loadFirestoreRules({
         projectId,
-        rules: fs.readFileSync(firestoreRulesPath)
+        rules: fs.readFileSync('../firestore.rules', 'utf8')
     });
 
     return database;
