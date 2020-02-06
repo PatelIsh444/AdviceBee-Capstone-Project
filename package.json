@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/moosenahmad/AdviceBee/issues"
   },
-  "homepage": "https://github.com/moosenahmad/AdviceBee#readme"
+  "homepage": "https://github.com/moosenahmad/AdviceBee#readme",
+  "dependencies": {
+    "@firebase/testing": "^0.16.7"
+  }
 }
