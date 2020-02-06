@@ -23,5 +23,8 @@
   "homepage": "https://github.com/moosenahmad/AdviceBee#readme",
   "dependencies": {
     "@firebase/testing": "^0.16.7"
+  },
+  "devDependencies": {
+    "jest": "^25.1.0"
   }
 }
