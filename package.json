@@ -1,0 +1,24 @@
+{
+  "name": "AdviceBee",
+  "version": "1.0.0",
+  "description": "An app for sharing advice and a platform to monetize it.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moosenahmad/AdviceBee.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/moosenahmad/AdviceBee/issues"
+  },
+  "homepage": "https://github.com/moosenahmad/AdviceBee#readme"
+}
