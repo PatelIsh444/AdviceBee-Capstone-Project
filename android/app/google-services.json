@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "853359482568",
+    "firebase_url": "https://advicebee-9f277.firebaseio.com",
+    "project_id": "advicebee-9f277",
+    "storage_bucket": "advicebee-9f277.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:853359482568:android:3503d5d46363677238f7fd",
+        "android_client_info": {
+          "package_name": "mojab.app.advicebee.v0"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "853359482568-ggpjffe1d5voksst8qhrfun2h562k5eu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mojab.app.advicebee.v0",
+            "certificate_hash": "5da2ce9c72d4f960c7a1be8290f556ae7b780959"
+          }
+        },
+        {
+          "client_id": "853359482568-2po8otg6fugqnjeuc9vt7qn69950da5h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJUGSY6ix0FMEX2DwdO8ZZOdRXeJPCQx0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "853359482568-2po8otg6fugqnjeuc9vt7qn69950da5h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "853359482568-uitm8o26npvgnv74f0q67110931jdd2q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "mojab.app.advicebee.v0"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
