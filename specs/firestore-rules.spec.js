@@ -156,39 +156,3 @@ describe('topics collection rules', () => {
         await expect(collection.add({})).toAllow();
     });
 });
-
-describe('users collection rules', () => {
-    var database;
-    var collection;
-
-    afterAll(async () => {
-        await teardown();
-    });
-    test('allow reading to unauthenticated users', async () => {
-        database = await setup();
-        collection = database.collection('users');
-
-        await expect(collection.get()).toAllow();
-    });
-
-    test('allow reading to authenticated users', async () => {
-        database = await setup({ uid: 'userAuthToken' }, mockData);
-        collection = database.collection('users');
-
-        await expect(collection.get()).toAllow();
-    });
-
-    test('deny writing to unauthenticated users', async () => {
-        database = await setup();
-        collection = database.collection('users');
-
-        await expect(collection.add({})).toDeny();
-    })
-
-    test('allow writing to authenticated users ', async () => {     
-        database = await setup({ uid: 'userAuthToken' }, mockData);
-        collection = database.collection('users');
-
-        await expect(collection.add({})).toAllow();
-    });
-});
