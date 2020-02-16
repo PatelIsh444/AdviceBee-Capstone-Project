@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "853359482568-n3v1ksg4j0meldnbvb1glri07j2cp1mp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mojab.app.advicebee.v0",
+            "certificate_hash": "92b87be8c89105f97fa1d071452e0fef4d3b8b39"
+          }
+        },
+        {
           "client_id": "853359482568-ggpjffe1d5voksst8qhrfun2h562k5eu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
