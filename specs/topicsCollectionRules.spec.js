@@ -1,14 +1,6 @@
 const { setup, teardown } = require('./helpers');
 
 const mockData = {
-    'topics/General/topicQuestions/questionId1': {
-        createdBy: 'userId1',
-        numOfResponses: 0
-    },
-    'topics/General/topicQuestions/questionId2': {
-        createdBy: 'userId1',
-        numOfResponses: 1
-    },
     'users/userId1': {
         rank: 'Worker Bee',
         myTopics: ['General']
@@ -20,6 +12,14 @@ const mockData = {
     'users/userId3': {
         rank: 'Worker Bee',
         myTopics: ['General']
+    },
+    'topics/General/topicQuestions/questionId1': {
+        createdBy: 'userId1',
+        numOfResponses: 0
+    },
+    'topics/General/topicQuestions/questionId2': {
+        createdBy: 'userId1',
+        numOfResponses: 1
     }
 };  
 
