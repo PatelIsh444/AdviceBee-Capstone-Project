@@ -1,5 +1,4 @@
 const { setup, teardown } = require('./helpers');
-const { assertFails, assertSucceeds } = require('@firebase/testing');
 
 const mockData = {
     'topics/General/topicQuestions/questionId1': {
