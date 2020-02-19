@@ -41,6 +41,8 @@ describe('topics collection rules', () => {
         await expect(collection.doc('General').get()).toAllow();
         await expect(collection.doc('General').collection('topicQuestions').get()).toAllow();
         await expect(collection.doc('General').collection('topicQuestions').doc('questionId1').get()).toAllow();
+        
+        await expect(database.collectionGroup('topicQuestions').get()).toAllow();
     });
 
     test('allow reading to authenticated users', async () => {
@@ -51,6 +53,8 @@ describe('topics collection rules', () => {
         await expect(collection.doc('General').get()).toAllow();
         await expect(collection.doc('General').collection('topicQuestions').get()).toAllow();
         await expect(collection.doc('General').collection('topicQuestions').doc('questionId1').get()).toAllow();
+
+        await expect(database.collectionGroup('topicQuestions').get()).toAllow();
     });
 
     // MARK: - Create

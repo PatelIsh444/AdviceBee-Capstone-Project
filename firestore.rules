@@ -22,6 +22,10 @@ service cloud.firestore {
       allow write: if userIsAdmin();
     }
 
+    match /{path=**}/topicQuestions/{topic} {
+      allow read;
+    }
+
     match /topics/{topic}/topicQuestions/{question} {
     	allow read;
       allow create: if userSubscribesToTopic(topic) || userIsAdmin();
