@@ -166,6 +166,21 @@ class _editPost extends State<editPost> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0, bottom: 2.0),
+                  child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 6, horizontal: 17),
+                      child: InkWell(
+                        child: AutoSizeText(
+                          "New description ",
+                          textAlign: TextAlign.left,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                      )
+                  ),
                 )
               ],
             ),
@@ -223,13 +238,14 @@ class _editPost extends State<editPost> {
   Future<void> updatePost() async {
     String questionCollection;
     String firstCollection;
-    if (widget.groups_or_topics == "topics") {
+    if (groups_or_topics == "topics") {
       questionCollection = "topicQuestions";
       firstCollection = "topics";
     } else {
       questionCollection = "groupQuestions";
       firstCollection = "groups";
     }
+
     Firestore.instance
         .collection(firstCollection)
         .document(groupID)
@@ -244,7 +260,7 @@ class _editPost extends State<editPost> {
                 MaterialPageRoute(builder: (context) {
                   return  MyPostPage();
                 }));
-            //dispay success message
+            //display success message
             Flushbar(
               title: "Success",
               message: "Post edit successful",
