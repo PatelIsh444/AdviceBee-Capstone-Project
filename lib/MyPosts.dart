@@ -454,77 +454,37 @@ class MyPostPageState extends State<MyPostPage> {
   }
 
   Future<void> _deletePost(var questionObj,int index) async {
+    print(topicOrGroup[index]);
 
-    ///delete reference to this post in other user's profile
-    //List<String> respondersIDs= List<String>();
-    /*final QuerySnapshot querySnapshotTopics =
-    await Firestore.instance.collection('topics')
+    String questionCollection;
+    String firstCollection;
+    if (topicOrGroup[index] == "topics") {
+      questionCollection = "topicQuestions";
+      firstCollection = "topics";
+    } else {
+      questionCollection = "groupQuestions";
+      firstCollection = "groups";
+    }
+    print(questionCollection);
+    print(firstCollection);
+    DocumentReference postRef= Firestore.instance.collection(firstCollection)
         .document(groupIDs.elementAt(index))
-        .collection("topicQuestions")
-        .document(questionObj.postID)
-        .collection("responses")
-        .getDocuments();
-    List<DocumentSnapshot> topicsDocuments = querySnapshotTopics.documents;
-    topicsDocuments.forEach((doc) async {
-      String responderId=doc.data['createdBy'];
-      String responseId= doc.documentID;
-      String questionPath = "/"+CurrentUser.myPosts[index].path.toString()+"/responses/"+responseId;
-      print("resonder: "+ responderId);
-      print("question Path: "+doc.toString());
-      print(doc.reference);
-      print(doc.reference.toString());
-      print(doc.reference.documentID);
-      await Firestore.instance
-          .collection('users')
-          .document(responderId)
-          .updateData({
-        'myPosts': FieldValue.arrayRemove([doc.reference])
-      });
-      */
-
-      /*Firestore.instance
-          .collection('users')
-          .document(responderId)
-          .updateData({
-      'myPosts': FieldValue.arrayRemove([questionPath])
-      }).catchError((err){
-        print(err);
-      });*/
-
-      //print("/"+CurrentUser.myPosts[index].path.toString()+"/responses/"+responseId);
-    DocumentReference postRef=await Firestore.instance.collection('topics')
-        .document(groupIDs.elementAt(index))
-        .collection("topicQuestions")
+        .collection(questionCollection)
         .document(questionObj.postID);
     ///delete post from user
-   await Firestore.instance.collection("users")
+    await Firestore.instance.collection("users")
         .document(CurrentUser.userID)
         .updateData({'myPosts': FieldValue.arrayRemove([postRef])});
     print("user: "+CurrentUser.userID);
 
-   print("topic"+groupIDs.elementAt(index));
+    print("topic"+groupIDs.elementAt(index));
     ///delete question from topics
-    await Firestore.instance.collection("topics")
+    await Firestore.instance.collection(firstCollection)
         .document(groupIDs.elementAt(index))
-        .collection("topicQuestions")
+        .collection(questionCollection)
         .document(questionObj.postID).delete();
     print("post ID"+questionObj.postID);
 
-
-    /*final QuerySnapshot querySnapshotUsers = await Firestore.instance.collection('users').getDocuments();
-    final List<DocumentSnapshot> usersDocuments = querySnapshotUsers.documents;
-    usersDocuments.forEach((doc){
-      if(respondersIDs.contains(doc.documentID)){
-        print(doc.data['displayName']);
-        Firestore.instance.collection("users").document(doc.documentID)
-            .updateData({
-              'myResponses': FieldValue.arrayRemove([CurrentUser.myPosts[index].path.toString()])
-            }
-          );
-        print(CurrentUser.myPosts[index].path.toString());
-      }
-    });
-*/
     Navigator.pop(context);
     Flushbar(
       title: "Success",
