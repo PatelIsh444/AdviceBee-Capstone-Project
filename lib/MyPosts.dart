@@ -1,7 +1,4 @@
-/**
- *  This class displays user's own posts
- *  User should be able to edit and delete a post on this page
- */
+import 'package:v0/utils/editPost.dart';
 import 'Dashboard.dart';
 import 'package:flutter/material.dart';
 import 'QuestionPage.dart';
@@ -12,6 +9,10 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flushbar/flushbar.dart';
 
+/*
+ *  This class displays user's own posts
+ *  User should be able to edit and delete a post on this page
+ */
 
 class MyPostPage extends StatefulWidget {
   @override
@@ -43,7 +44,6 @@ class MyPostPageState extends State<MyPostPage> {
   Future<List<questions>> getPosts() async {
     //Create local list
     List<questions> postInfo = new List();
-
     await userDataDocumentRef
         .get()
         .then((DocumentSnapshot ds) {
@@ -53,7 +53,9 @@ class MyPostPageState extends State<MyPostPage> {
         }
       });
     });
-
+    /**
+     *  Refactor Questions classes
+     */
     for (DocumentReference post in CurrentUser.myPosts) {
       referencePathSplit = post.path.split("/");
       topicOrGroup.add(referencePathSplit[0]);
@@ -155,7 +157,7 @@ class MyPostPageState extends State<MyPostPage> {
                               questionObj.postID, topicOrGroup[index]);
                         }));
                   },
-                  child:displayMyPost(questionObj.question,questionObj.questionDescription,"general",index),
+                  child:displayMyPost(questionObj,index,"general"),
                 ),
               );
             }
@@ -167,11 +169,11 @@ class MyPostPageState extends State<MyPostPage> {
                   onTap: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                          return new PostPage(questionObj, groupIDs[index],
+                          return PostPage(questionObj, groupIDs[index],
                               questionObj.postID, topicOrGroup[index]);
                         }));
                   },
-                  child: displayMyPost(questionObj.question,questionObj.questionDescription,"mchoice",index),
+                  child: displayMyPost(questionObj,index,"mchoice"),
                 ),
               );
             } else if (questionObj is NumberValueQuestion) {
@@ -182,11 +184,11 @@ class MyPostPageState extends State<MyPostPage> {
                   onTap: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                          return new PostPage(questionObj, groupIDs[index],
+                          return  PostPage(questionObj, groupIDs[index],
                               questionObj.postID, topicOrGroup[index]);
                         }));
                   },
-                  child: displayMyPost(questionObj.question,questionObj.questionDescription,"number",index),
+                  child: displayMyPost(questionObj,index, "number"),
                 ),
               );
             } else {
@@ -335,9 +337,6 @@ class MyPostPageState extends State<MyPostPage> {
         });
   }
 
-
-
-
   Widget _getImageByType(String type){
     switch(type) {
       case "general":{return Image(image: AssetImage('images/basic.png') , fit: BoxFit.cover,width: 65.0,height: 65.0,);}
@@ -377,15 +376,15 @@ class MyPostPageState extends State<MyPostPage> {
   }
 
 
-  Widget displayMyPost(String title,String description,String type,int index) {
+  Widget displayMyPost(var questionObj, int index, String questionType) {
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          _getImageByType(type),
-          _getColumnText(title,description),
+          _getImageByType(questionType),
+          _getColumnText(questionObj.question,questionObj.questionDescription),
         ],
       ),
       //actions: <Widget>[],
@@ -394,26 +393,73 @@ class MyPostPageState extends State<MyPostPage> {
           caption: 'Edit',
           color: Colors.black45,
           icon: Icons.edit,
-          onTap: (){},
+          onTap: (){_edit(questionObj, index);},
         ),
         IconSlideAction(
             caption: 'Delete',
             color: Colors.red,
             icon: Icons.delete,
-            onTap: (){ _delete("All",index);}
+            onTap: (){ _confirmDelete(questionObj,index);}
         ),
       ],
     );
   }
-  _delete(String post, int index) {
-    setState(() {
-      postInfoList.removeAt(index);
-    });
+  _confirmDelete(var questionObj,int index) {
+    showDialog(
+        context: context,
+        builder: (context)=> AlertDialog(
+          title: Text("Are you sure you want to delete this post?"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Yes"),
+              onPressed:()=> _deletePost(questionObj, index),
+            ),
+            FlatButton(
+              child: Text("No"),
+              onPressed: ()=>Navigator.pop(context),
+            )
+          ],
+        ),
+    );
+  }
+
+  _edit(var questionObj, int index) {
+    if (questionObj.numOfResponses!=0) {
+      Flushbar(
+        title: "Editing Failed",
+        message: "You can't edit a post that has been responded",
+        duration: Duration(seconds: 5),
+        backgroundColor: Colors.teal,
+      ).show(context);
+    }else {
+      Flushbar(
+        title: "Success",
+        message: "Edited successful",
+        duration: Duration(seconds: 5),
+        backgroundColor: Colors.teal,
+      ).show(context);
+      setState(() {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) {
+              return editPost(
+                questionObj, topicOrGroup.elementAt(index),groupIDs.elementAt(index),
+              );
+            })
+        );
+      });
+    }
+  }
+  _deletePost(var questionObj,int index){
+    print("deleted");
+    Navigator.pop(context);
     Flushbar(
       title: "Success",
-      message: "$post edited successful $index",
+      message: "Post deleted successful",
       duration: Duration(seconds: 8),
       backgroundColor: Colors.teal,
     ).show(context);
+    setState(() {
+      postInfoList.removeAt(index);
+    });
   }
 }
