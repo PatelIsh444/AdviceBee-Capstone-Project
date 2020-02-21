@@ -475,7 +475,6 @@ class MyPostPageState extends State<MyPostPage> {
     await Firestore.instance.collection("users")
         .document(CurrentUser.userID)
         .updateData({'myPosts': FieldValue.arrayRemove([postRef])});
-    print("user: "+CurrentUser.userID);
 
     print("topic"+groupIDs.elementAt(index));
     ///delete question from topics

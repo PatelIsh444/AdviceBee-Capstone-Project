@@ -29,7 +29,7 @@ List<SearchList> getSearchBarData()  {
         null,
         null,
       ))));
-
+  print(databaseSearchQuery);
   //Get Group information
   Firestore.instance
       .collection('groups')
@@ -69,7 +69,7 @@ List<SearchList> getSearchBarData()  {
         doc.documentID,
         null,
       ))));
-
+  print(databaseSearchQuery);
   return databaseSearchQuery;
 }
 

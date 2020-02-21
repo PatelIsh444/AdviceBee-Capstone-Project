@@ -114,15 +114,22 @@ class TestSearch extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     /*Results from clicking search after typing in your search parameters*/
-    final suggestionList = databaseSearchQuery
-        .where((object) => object.name.toLowerCase().contains(query.toLowerCase()))
-        .toList();
+
+    var suggestionList= List();
+    try {
+      suggestionList = databaseSearchQuery
+          .where((object) =>
+          object.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    }catch(e) {
+      print("error1: "+e);
+    }
 
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
         onTap: () {
           //Calls the "buildResults" Function
-          //showResults(context);
+          showResults(context);
           if (suggestionList[index].type == "group") {
             Navigator.push(
                 context,
@@ -160,16 +167,21 @@ class TestSearch extends SearchDelegate<String> {
   @override
   Widget buildSuggestions(BuildContext context) {
     //List of items that is shown before user clicks the search button
-
-    final suggestionList = databaseSearchQuery
-        .where((object) => object.name.toLowerCase().contains(query.toLowerCase()))
-        .toList();
-
+var suggestionList = List();
+    try {
+      suggestionList = databaseSearchQuery
+      .where((object) =>
+      object.name.toLowerCase()
+          .contains(query.toLowerCase())).toList();
+}catch(e) {
+  print("error2: ");
+  print(e);
+  }
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
         onTap: () {
           //Calls the "buildResults" Function
-          //showResults(context);
+          showResults(context);
           if (suggestionList[index].type == "group") {
             Navigator.push(
                 context,
