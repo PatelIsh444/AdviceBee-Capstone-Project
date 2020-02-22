@@ -10,11 +10,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import './HeroPhotoViewWrapper.dart';
 import 'package:flushbar/flushbar.dart';
 
-/**
- *  This class edits a post
- *  Users should  be allowed to edit only their own posts
- *
- */
+///  This class edits a post
+///  Users should  be allowed to edit only their own posts
+///
+
 
 class editPost extends StatefulWidget {
 
