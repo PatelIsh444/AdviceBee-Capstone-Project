@@ -187,12 +187,12 @@ class TestSearch extends SearchDelegate<String> {
           } else if (suggestionList[index].type == "dashboard") {
             questions selectedPost=getQuestion(suggestionList[index].firstDocumentID, suggestionList[index].secondDocumentID);
             Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    PostPage(selectedPost, suggestionList[index].firstDocumentID,
-                    suggestionList[index].secondDocumentID, "topics"),
-              ));
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      PostPage(selectedPost, suggestionList[index].firstDocumentID,
+                          suggestionList[index].secondDocumentID, "topics"),
+                ));
           }
         },
         leading: returnIcon(suggestionList[index].type),

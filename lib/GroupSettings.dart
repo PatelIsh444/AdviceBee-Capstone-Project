@@ -299,7 +299,7 @@ class _groupSettingsPageState extends State<groupSettingsPage> {
           .collection("groupQuestions")
           .document(removedQuestion.postID)
           .delete();
-
+      print(questionPath);
       await Firestore.instance
           .collection('users')
           .document(removedQuestion.createdBy)
