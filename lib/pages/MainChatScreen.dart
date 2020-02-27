@@ -34,24 +34,20 @@ class MainScreenState extends State<MainScreen> {
   final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
   final GoogleSignIn googleSignIn = GoogleSignIn();
-  String userid = '';
   String nickname = '';
-  String useraboutMe = '';
-  String userphotoUrl = '';
+  String myBio = '';
+  String myPic = '';
   GlobalKey key = GlobalKey();
   SharedPreferences prefs;
 
   bool isLoading = false;
 
-  void readLocal() async {
-    prefs = await SharedPreferences.getInstance();
-    userid = prefs.getString('id') ?? '';
-    nickname = prefs.getString('nickname') ?? '';
-    useraboutMe = prefs.getString('aboutMe') ?? '';
-    userphotoUrl = prefs.getString('photoUrl') ?? '';
-
-    // Force refresh input
-    setState(() {});
+  getCurrentUserInfo()async{
+    await Firestore.instance.collection("users").document(currentUserId).get().then((doc){
+      nickname=doc['displayName'];
+      myBio=doc['bio'];
+      myPic=doc['profilePicURL'];
+    });
   }
 
   @override
@@ -59,7 +55,7 @@ class MainScreenState extends State<MainScreen> {
     super.initState();
     registerNotification();
     configLocalNotification();
-    readLocal();
+    getCurrentUserInfo();
     if (Platform.isIOS){
       iOS_Permission();
     }
@@ -297,8 +293,8 @@ class MainScreenState extends State<MainScreen> {
                 .setData({
               'id': currentUserId,
               'displayName': nickname,
-              'profilePicURL': userphotoUrl,
-              'bio': useraboutMe,
+              'profilePicURL': myPic,
+              'bio': myBio,
               'peerBio': document['bio'],
               'peerNickname': document['displayName'],
               'peerPhotoUrl': document['profilePicURL'],

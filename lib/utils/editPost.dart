@@ -512,8 +512,12 @@ class _editPost extends State<editPost> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: globalNavigationBar(2, context, key, false),
-      body: ListView(
-          reverse: true,
+      body: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom
+        ),
+        child: ListView(
+        shrinkWrap: true,
           children: <Widget>[
             Column(
               children: <Widget>[
@@ -525,6 +529,7 @@ class _editPost extends State<editPost> {
               ],
             ),
           ]
+      ),
       ),
     );
   }
