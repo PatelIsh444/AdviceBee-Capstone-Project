@@ -34,13 +34,14 @@ class MainScreenState extends State<MainScreen> {
   String nickname = '';
   String myBio = '';
   String myPic = '';
+  GlobalKey key = GlobalKey();
 
   SharedPreferences prefs;
 
   bool isLoading = false;
 
   getCurrentUserInfo()async{
-    Firestore.instance.collection("users").document(currentUserId).get().
+    await Firestore.instance.collection("users").document(currentUserId).get().
     then((doc){
       nickname=doc['displayName'];
       myBio=doc['bio'];
