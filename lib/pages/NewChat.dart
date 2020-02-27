@@ -333,13 +333,20 @@ class NewChatScreenState extends State<NewChatScreen> {
               ),
             ),
             onPressed: () {
+              String groupChatId;
+              if (currentUserId.hashCode <=  document['id'].hashCode) {
+                groupChatId = '$currentUserId-${document['id']}';
+              } else {
+                groupChatId = '${document['id']}-$currentUserId';
+              }
+              print("groupChat: "+groupChatId);
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => Chat(
                         userId: currentUserId,
-                        chatId: document.documentID,
-                        peerId: document.documentID,
+                        chatId: groupChatId,
+                        peerId: document['id'],
                         peerAvatar: document['profilePicURL'],
                       )
                   )
@@ -419,12 +426,19 @@ class NewChatScreenState extends State<NewChatScreen> {
               ),
             ),
             onPressed: () {
+              String groupChatId;
+              if (currentUserId.hashCode <= document['peerId'].hashCode) {
+                groupChatId = '$currentUserId-${document['peerId']}';
+              } else {
+                groupChatId = '${document['peerId']}-$currentUserId';
+              }
+              print("groupChat: "+groupChatId);
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => Chat(
-                        chatId: document.documentID,
                         userId: currentUserId,
+                        chatId: groupChatId,
                         peerId: document['peerId'],
                         peerAvatar: document['peerPhotoUrl'],
                       )
