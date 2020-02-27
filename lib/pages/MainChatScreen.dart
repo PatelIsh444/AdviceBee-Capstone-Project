@@ -34,16 +34,18 @@ class MainScreenState extends State<MainScreen> {
   final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
   final GoogleSignIn googleSignIn = GoogleSignIn();
+
   String nickname = '';
   String myBio = '';
   String myPic = '';
   GlobalKey key = GlobalKey();
-  SharedPreferences prefs;
+
 
   bool isLoading = false;
 
   getCurrentUserInfo()async{
-    await Firestore.instance.collection("users").document(currentUserId).get().then((doc){
+    await Firestore.instance.collection("users").document(currentUserId).get().
+    then((doc){
       nickname=doc['displayName'];
       myBio=doc['bio'];
       myPic=doc['profilePicURL'];
@@ -301,6 +303,7 @@ class MainScreenState extends State<MainScreen> {
               'peerId': document.documentID,
               'approved': false,
             });
+
             Navigator.pop(
                 context,true
             );
