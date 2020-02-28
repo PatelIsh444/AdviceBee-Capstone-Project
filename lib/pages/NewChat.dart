@@ -3,7 +3,11 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
+import '../utils/commonFunctions.dart';
+
 import '../Dashboard.dart';
+import '../MoreMenu.dart';
+import '../QuestionPage.dart';
 import './MainChatScreen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -34,6 +38,8 @@ class NewChatScreenState extends State<NewChatScreen> {
   var primaryColor = Colors.black;
   var themeColor = Colors.teal;
   var greyColor = Colors.grey;
+
+  GlobalKey key = GlobalKey();
 
   bool isLoading = false;
 
@@ -215,6 +221,31 @@ class NewChatScreenState extends State<NewChatScreen> {
           ],
         ), onWillPop: () {},
       ),
+      floatingActionButton:
+      FloatingActionButton(
+        onPressed: () {
+          if (CurrentUser.isNotGuest) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => postQuestion(null, null) //AddPost(),
+                ));
+          } else{
+            guestUserSignInMessage(context);
+          }
+        },
+        heroTag: "my2PostsHero",
+        tooltip: 'Increment',
+        child: CircleAvatar(
+          child: Image.asset(
+            'images/addPostIcon4.png',
+          ),
+          maxRadius: 18,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: globalNavigationBar(3, context, key, false),
+
     );
   }
 
@@ -302,13 +333,20 @@ class NewChatScreenState extends State<NewChatScreen> {
               ),
             ),
             onPressed: () {
+              String groupChatId;
+              if (currentUserId.hashCode <=  document['id'].hashCode) {
+                groupChatId = '$currentUserId-${document['id']}';
+              } else {
+                groupChatId = '${document['id']}-$currentUserId';
+              }
+              print("groupChat: "+groupChatId);
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => Chat(
                         userId: currentUserId,
-                        chatId: document.documentID,
-                        peerId: document.documentID,
+                        chatId: groupChatId,
+                        peerId: document['id'],
                         peerAvatar: document['profilePicURL'],
                       )
                   )
@@ -388,12 +426,19 @@ class NewChatScreenState extends State<NewChatScreen> {
               ),
             ),
             onPressed: () {
+              String groupChatId;
+              if (currentUserId.hashCode <= document['peerId'].hashCode) {
+                groupChatId = '$currentUserId-${document['peerId']}';
+              } else {
+                groupChatId = '${document['peerId']}-$currentUserId';
+              }
+              print("groupChat: "+groupChatId);
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => Chat(
-                        chatId: document.documentID,
                         userId: currentUserId,
+                        chatId: groupChatId,
                         peerId: document['peerId'],
                         peerAvatar: document['peerPhotoUrl'],
                       )

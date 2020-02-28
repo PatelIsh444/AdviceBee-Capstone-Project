@@ -479,7 +479,11 @@ class ProfilePageState extends State<ProfilePage> {
     });
 
     /*This code will be visited if the user actually selects a photo from
-    their gallery or takes a picture with a camera. If they press the back
+    their gallery or takes a picture
+     x
+     x
+
+     with a camera. If they press the back
     button on their phone the image will be null and this code will not be
     visited*/
     if(croppedImage!=null) {

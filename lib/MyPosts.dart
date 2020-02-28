@@ -28,6 +28,8 @@ class MyPostPageState extends State<MyPostPage> {
   int currentTab = 3;
   GlobalKey key = GlobalKey();
 
+  List<dynamic> choices=[];
+
   //FireBase reference to the user document
   final userDataDocumentRef =  Firestore.instance
       .collection('users')
@@ -427,6 +429,11 @@ class MyPostPageState extends State<MyPostPage> {
   }
 
   _edit(var questionObj, int index) {
+    if(questionObj.questionType ==1){
+      choices=questionObj.multipleChoiceAnswers;
+    }else{
+      choices=null;
+    }
     if (questionObj.numOfResponses!=0) {
       Flushbar(
         title: "Editing Failed",
@@ -435,17 +442,12 @@ class MyPostPageState extends State<MyPostPage> {
         backgroundColor: Colors.teal,
       ).show(context);
     }else {
-      Flushbar(
-        title: "Success",
-        message: "Edited successful",
-        duration: Duration(seconds: 5),
-        backgroundColor: Colors.teal,
-      ).show(context);
       setState(() {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) {
               return editPost(
-                questionObj, topicOrGroup.elementAt(index),groupIDs.elementAt(index),
+                questionObj, topicOrGroup.elementAt(index),
+                groupIDs.elementAt(index),choices
               );
             })
         );

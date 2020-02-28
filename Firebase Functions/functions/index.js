@@ -245,3 +245,35 @@ function notify(payload,userId){
 		console.log("Error: "+err);
 	});
 }
+
+
+exports.sendNewChatMessageNotification = functions.firestore
+  .document('messages/{groupId1}/{groupId2}/{message}')
+  .onCreate((snap, context) => {
+
+    const doc = snap.data()
+	const senderId = doc.idFrom
+	const receiverID = doc.idTo
+	const content = doc.content
+
+	admin.firestore().collection('users').doc(senderId).get()
+	.then(document => {
+		const senderName= document.data().displayName;
+		console.log(senderName)
+		//console.log(document)
+		const payload = {
+			notification: {
+				title: `${senderName}`,
+				body: `${content}`,
+				badge: '1',
+				sound: 'default'
+			}
+		}
+		notify(payload, receiverID)
+		return null
+	}).catch(err => {
+		console.log("Error: "+err);
+	})
+	
+    return null
+  })

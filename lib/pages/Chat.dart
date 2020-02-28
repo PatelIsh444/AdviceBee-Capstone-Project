@@ -10,6 +10,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:v0/OtherUserFollowerPage.dart';
 import 'package:v0/Profile.dart';
 
 import '../Dashboard.dart';
@@ -20,8 +21,9 @@ class Chat extends StatelessWidget {
   final String peerId;
   final String userId;
   final String peerAvatar;
+  String peerName="Chat";
 
-  Chat({Key key, @required this.chatId, @required this.userId, @required this.peerId, @required this.peerAvatar}) : super(key: key);
+  Chat({Key key,@required this.userId, @required this.chatId, @required this.peerId, @required this.peerAvatar}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class Chat extends StatelessWidget {
       appBar: new AppBar(
         backgroundColor: Colors.teal,
         title: new Text(
-          'Chat',
+          peerName,
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
         ),
         centerTitle: true,
@@ -97,16 +99,20 @@ class Chat extends StatelessWidget {
         leading: GestureDetector(
           onTap: () {
             Navigator.pop(context);
+            Firestore.instance.collection('users').document(CurrentUser.userID).updateData({'chattingWith': null});
           },
           child: Icon(Icons.arrow_back_ios),
         ),
       ),
       body: new ChatScreen(
+        userId:userId,
+        chatId:chatId,
         peerId: peerId,
         peerAvatar: peerAvatar,
       ),
     );
   }
+
   void containerForSheet<T>({BuildContext context, Widget child}) {
     showCupertinoModalPopup<T>(
       context: context,
@@ -123,22 +129,24 @@ class Chat extends StatelessWidget {
 class ChatScreen extends StatefulWidget {
   final String peerId;
   final String peerAvatar;
-
-  ChatScreen({Key key, @required this.peerId, @required this.peerAvatar}) : super(key: key);
+  final String chatId;
+  final String userId;
+  ChatScreen({Key key,this.userId, @required this.chatId, @required this.peerId, @required this.peerAvatar}) : super(key: key);
 
   @override
-  State createState() => new ChatScreenState(peerId: peerId, peerAvatar: peerAvatar);
+  State createState() => new ChatScreenState(userId:userId,chatId:chatId,peerId: peerId, peerAvatar: peerAvatar);
 }
 
 class ChatScreenState extends State<ChatScreen> {
-  ChatScreenState({Key key, @required this.peerId, @required this.peerAvatar});
+  ChatScreenState({this.userId, @required this.chatId,Key key, @required this.peerId, @required this.peerAvatar});
 
+  final String userId;
   String peerId;
   String peerAvatar;
-  String id;
 
   var listMessage;
-  String groupChatId;
+  final String chatId;
+  String peerName;
   SharedPreferences prefs;
 
   File imageFile;
@@ -154,13 +162,11 @@ class ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     focusNode.addListener(onFocusChange);
-
-    groupChatId = '';
-
     isLoading = false;
     isShowSticker = false;
     imageUrl = '';
-
+    print("peerId:" +peerId);
+    print("userid: "+userId);
     readLocal();
   }
 
@@ -174,14 +180,6 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   readLocal() async {
-    prefs = await SharedPreferences.getInstance();
-    id = prefs.getString('id') ?? '';
-    if (id.hashCode <= peerId.hashCode) {
-      groupChatId = '$id-$peerId';
-    } else {
-      groupChatId = '$peerId-$id';
-    }
-
     Firestore.instance.collection('users').document(CurrentUser.userID).updateData({'chattingWith': peerId});
 
     setState(() {});
@@ -229,16 +227,16 @@ class ChatScreenState extends State<ChatScreen> {
     // type: 0 = text, 1 = image, 2 = sticker
     if (content.trim() != '') {
       textEditingController.clear();
-
+      print(chatId);
       var documentReference = Firestore.instance
           .collection('messages')
-          .document(groupChatId)
-          .collection(groupChatId)
+          .document(chatId)
+          .collection(chatId)
           .document(DateTime.now().millisecondsSinceEpoch.toString());
 
       var chatReference = Firestore.instance
           .collection('messages')
-          .document(groupChatId);
+          .document(chatId);
 
       Firestore.instance.runTransaction((transaction) async {
         await transaction.set(
@@ -462,7 +460,7 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   bool isLastMessageLeft(int index) {
-    if ((index > 0 && listMessage != null && listMessage[index - 1]['idFrom'] == id) || index == 0) {
+    if ((index > 0 && listMessage != null && listMessage[index - 1]['idFrom'] == userId) || index == 0) {
       return true;
     } else {
       return false;
@@ -470,7 +468,7 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   bool isLastMessageRight(int index) {
-    if ((index > 0 && listMessage != null && listMessage[index - 1]['idFrom'] != id) || index == 0) {
+    if ((index > 0 && listMessage != null && listMessage[index - 1]['idFrom'] != userId) || index == 0) {
       return true;
     } else {
       return false;
@@ -483,7 +481,7 @@ class ChatScreenState extends State<ChatScreen> {
         isShowSticker = false;
       });
     } else {
-      Firestore.instance.collection('users').document(id).updateData({'chattingWith': null});
+      Firestore.instance.collection('users').document(userId).updateData({'chattingWith': null});
       Navigator.pop(context);
     }
 
@@ -705,13 +703,13 @@ class ChatScreenState extends State<ChatScreen> {
 
   Widget buildListMessage() {
     return Flexible(
-      child: groupChatId == ''
+      child: chatId == ''
           ? Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.teal)))
           : StreamBuilder(
         stream: Firestore.instance
             .collection('messages')
-            .document(groupChatId)
-            .collection(groupChatId)
+            .document(chatId)
+            .collection(chatId)
             .orderBy('timestamp', descending: true)
             .limit(20)
             .snapshots(),

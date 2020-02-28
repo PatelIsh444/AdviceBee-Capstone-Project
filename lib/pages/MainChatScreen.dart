@@ -8,6 +8,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../utils/commonFunctions.dart';
+import '../Dashboard.dart';
+import '../MoreMenu.dart';
+import '../QuestionPage.dart';
 import './Chat.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -34,13 +38,13 @@ class MainScreenState extends State<MainScreen> {
   String nickname = '';
   String myBio = '';
   String myPic = '';
+  GlobalKey key = GlobalKey();
 
-  SharedPreferences prefs;
 
   bool isLoading = false;
 
   getCurrentUserInfo()async{
-    Firestore.instance.collection("users").document(currentUserId).get().
+    await Firestore.instance.collection("users").document(currentUserId).get().
     then((doc){
       nickname=doc['displayName'];
       myBio=doc['bio'];
@@ -206,6 +210,31 @@ class MainScreenState extends State<MainScreen> {
           )
         ],
       ),
+      floatingActionButton:
+      FloatingActionButton(
+        onPressed: () {
+          if (CurrentUser.isNotGuest) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => postQuestion(null, null) //AddPost(),
+                ));
+          } else{
+            guestUserSignInMessage(context);
+          }
+        },
+        heroTag: "my2PostsHero",
+        tooltip: 'Increment',
+        child: CircleAvatar(
+          child: Image.asset(
+            'images/addPostIcon4.png',
+          ),
+          maxRadius: 18,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: globalNavigationBar(3, context, key, false),
+
     );
   }
 
