@@ -348,6 +348,7 @@ class NewChatScreenState extends State<NewChatScreen> {
                         chatId: groupChatId,
                         peerId: document['id'],
                         peerAvatar: document['profilePicURL'],
+                        peerName: document['displayName'],
                       )
                   )
               );
@@ -441,6 +442,7 @@ class NewChatScreenState extends State<NewChatScreen> {
                         chatId: groupChatId,
                         peerId: document['peerId'],
                         peerAvatar: document['peerPhotoUrl'],
+                        peerName: document['peerNickname'],
                       )
                   )
               );
