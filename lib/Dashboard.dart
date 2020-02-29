@@ -65,11 +65,14 @@ class Dashboard extends StatefulWidget {
 class DashboardState extends State<Dashboard> {
   int currentTab = 0;// to keep track of active tab index
   GlobalKey key = GlobalKey();
-
+bool iscolasped = true;
   bool isTopicLoaded = true;
   bool check = true;
   var _userCreated = false;
   List<questions> postList = [];
+  double screenHeight;
+  double screenWidth;
+  final Duration duration = const Duration(milliseconds: 300);
   Map likes;
   int NumNotification = 90;
   List<Topic> topics = new List();
@@ -92,6 +95,10 @@ class DashboardState extends State<Dashboard> {
 
   final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+
+  get children => null;
+
+  get floatingActionButton => null;
 
   @override
   void initState() {
@@ -945,138 +952,115 @@ class DashboardState extends State<Dashboard> {
     -TopicList
     -QuestionCard
      */
-
+          menu(context);
+    Size size = MediaQuery.of(context).size;
+    screenHeight = size.height;
+    screenWidth = size.width;
     //Placeholder for the horizontal scrollview of topics
     Container topicsList;
+    return AnimatedPositioned(
+        duration: duration,
+        top: iscolasped ? 0 : 0.2 * screenHeight,
+        bottom: iscolasped ? 0 : 0.2 * screenHeight,
+        left: iscolasped ? 0 : 0.6 * screenWidth,
+        right: iscolasped ? 0 : -0.4 * screenWidth,
 
-    return Scaffold(
-      appBar: AppBar(
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          title: Text('Dashboard'),
-          actions: <Widget>[
-            PopupMenuButton<String>(
-              icon: Icon(Icons.sort),
-              onSelected: selectSortType,
-              itemBuilder: (BuildContext context){
-                return choices.map((SortValues choice){
-                  return PopupMenuItem<String>(
-                    value: choice.choice,
-                      child:
-                    Text(choice.choice,
-                    style: TextStyle(color: choice.isSelected==true ? Colors.teal : Colors.black),),
-                  );
-                }).toList();
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                showSearch(
-                    context: context, delegate: TestSearch(getSearchBarData()));
-              },
-            ),
-          ]),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (CurrentUser.isNotGuest) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => postQuestion(null, null) //AddPost(),
-                    ));
-          } else {
-            guestUserSignInMessage(context);
-          }
-        },
-        heroTag: "dashboardHero1",
-        tooltip: 'Increment',
-        child: CircleAvatar(
-          child: Image.asset(
-            'images/addPostIcon4.png',
-          ),
-          maxRadius: 18,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: globalNavigationBar(currentTab, context, key, true),
-      body: RefreshIndicator(
-        onRefresh: refreshDashboard,
-        child: Stack(
-          alignment: Alignment.center,
-          children: <Widget>[
-            FutureBuilder(
-              future: Future.wait([
-                createUser(),
-                getTopicsFuture,
-              ]),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                if(snapshot.hasData)
-                {
-                  allTopicsList = snapshot.data[1];
-                  /*
-                  These two functions are used to build a horizontal listview that contains
-                  a list of topics
-                   */
-                  final listOfTopics = isTopicLoaded
-                      ? Container(
-                    height: 65.0,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: topics
-                          .map((topic) => _buildTopicCard(topic, context))
-                          .toList(),
-                    ),
-                  )
-                      : Center(
-                    child: CircularProgressIndicator(),
-                  );
+        child: Material(
+          borderRadius: BorderRadius.all(Radius.circular(40)),
 
-                   topicsList = Container(
-                    margin: EdgeInsets.only(top: 2.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 2.0,
-                        ),
-                        listOfTopics
-                      ],
-                    ),
-                  );
-                }
-                //If the post list has nothing in it return some empty space.
-                if (postList == null || postList.isEmpty) {
-                  return Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Center(
-                          child: Text(
-                            " ",
-                            style: TextStyle(fontSize: 20),
-                            textAlign: TextAlign.center,
-                          )));
-                }
-                //Build the topics and the question cards onto the page.
-                return Column(
-                  children: <Widget>[
-                    topicsList,
-                  QuestionCards.QuestionCards(CurrentUser,
-                      highlightTopic, postList, true, "topics"),
-                  ],
-                );
-              },
-            ),
-          ],
-        ),
-      ),
+            elevation: 8,
+            child: Container
+              (padding: const EdgeInsets.only(left: 16, right: 16, top: 48),
+                child: Column
+                  (
+                    children: <Widget>[
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            InkWell(
+                                child: Icon(Icons.menu, color: Colors.white),
+                                onTap: () {
+                                  setState(() {
+                                    iscolasped = !iscolasped;
+                                  });
+                                }
+                            ),
+                            Text("Dashboard", style: TextStyle(
+                                fontSize: 24, color: Colors.white)),
+                            PopupMenuButton<String>(
+                              icon: Icon(Icons.sort),
+                              onSelected: selectSortType,
+                              itemBuilder: (BuildContext context) {
+                                return choices.map((SortValues choice) {
+                                  return PopupMenuItem<String>(
+                                    value: choice.choice,
+                                    child:
+                                    Text(choice.choice,
+                                      style: TextStyle(
+                                          color: choice.isSelected == true
+                                              ? Colors.teal
+                                              : Colors.black),),
+                                  );
+                                }).toList();
+                              },
+                            ),
+                            IconButton(
+                                icon: Icon(Icons.search),
+                                onPressed: () {
+                                  showSearch(
+                                      context: context,
+                                      delegate: TestSearch(getSearchBarData()));
+                                }
+                            )
+                          ])
+                    ]
+                )
+            )
+        )
+    );
+
+  }
+  Widget menu(context){
+    return Padding(
+        padding : const EdgeInsets.only(left: 16.0, ),
+        child: Align(
+            alignment: Alignment. centerLeft,
+            child:  Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                    'About Us',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12
+                    )
+                ),
+                SizedBox(height:10),
+                Text(
+                  'Rate Us',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12
+                  ),
+                ),
+                SizedBox(height:10),
+                Text(
+                  'Top Bees',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12
+                  ),
+                ),
+                SizedBox(height:10),
+              ],
+            )
+
+        )
     );
   }
-
   _processOntapTopic(String name) async {
     FirebaseUser user = await _firebaseAuth.currentUser();
 

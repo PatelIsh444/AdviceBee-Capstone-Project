@@ -172,7 +172,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
     return Text("\n\nTopics:$topics");
   }
-  
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

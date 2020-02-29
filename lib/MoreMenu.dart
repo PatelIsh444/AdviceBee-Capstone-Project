@@ -69,16 +69,16 @@ void onShow(GlobalKey btnKey, BuildContext context) {
               LineIcons.trophy,
               color: Colors.white,
             )),
-        MenuItem(
-            title: 'Notification',
-            textStyle: TextStyle(
-                color: Colors.white,
-                fontSize: 12
-            ),
-            image: Icon(
-              LineIcons.bell,
-              color: Colors.white,
-            )),
+        //MenuItem(
+          //  title: 'Notification',
+          //  textStyle: TextStyle(
+            //    color: Colors.white,
+              //  fontSize: 12
+            //),
+            //image: Icon(
+             // LineIcons.bell,
+              //color: Colors.white,
+            //)),
 
       ],
       onClickMenu: onClickMenu,
@@ -110,13 +110,13 @@ void onClickMenu(MenuItemProvider item) {
             MaterialPageRoute(builder: (BuildContext context) => LeaderboardPage()));
         break;
       }
-    case "Notification":
-      {
-          Navigator.of(PopupMenu.context).push(
-              MaterialPageRoute(
-                  builder: (BuildContext context) => NotificationFeed()));
-          break;
-      }
+//    case "Notification":
+//      {
+//          Navigator.of(PopupMenu.context).push(
+//              MaterialPageRoute(
+//                  builder: (BuildContext context) => NotificationFeed()));
+//          break;
+//      }
   }
 }
 
@@ -132,11 +132,13 @@ void moreButtonAction(String choice, BuildContext context) {
     Navigator.of(context).push(
         MaterialPageRoute(builder: (BuildContext context) => AboutUsPage()));
   } else if (choice == 'Settings') {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (BuildContext context) => EditProfilePage()));
-  } else if (choice == 'Notification') {
-    Navigator.pushNamed(context, NotificationFeed.id);
-  } else if (choice == 'Contact Us') {
+//    Navigator.of(context).push(MaterialPageRoute(
+//        builder: (BuildContext context) => EditProfilePage()));
+  }
+//  else if (choice == 'Notification') {
+//    Navigator.pushNamed(context, NotificationFeed.id);
+//  }
+  else if (choice == 'Contact Us') {
     Navigator.of(context).push(
         MaterialPageRoute(builder: (BuildContext context) => ContactUsPage()));
   } else if (choice == 'My Posts') {
@@ -197,17 +199,17 @@ moreButtonMenu(BuildContext context) {
               moreButtonAction('Leaderboard', context);
             },
           ),
-          GestureDetector(
-            child: Container(
-              padding: const EdgeInsets.all(10.0),
-              child: Text("Notifications",
-                  textAlign: TextAlign.center, style: TextStyle(fontSize: 30)),
-            ),
-            onTap: () {
-              Navigator.of(context).pop();
-              moreButtonAction('Notification', context);
-            },
-          ),
+//          GestureDetector(
+//            child: Container(
+//              padding: const EdgeInsets.all(10.0),
+//              child: Text("Notifications",
+//                  textAlign: TextAlign.center, style: TextStyle(fontSize: 30)),
+//            ),
+//            onTap: () {
+//              Navigator.of(context).pop();
+//              moreButtonAction('Notification', context);
+//            },
+//          ),
           CurrentUser.isNotGuest
               ? Container()
               : GestureDetector(
@@ -329,7 +331,7 @@ Widget globalNavigationBar(int currentTab, BuildContext context, GlobalKey key, 
                       color: currentTab == 2 ? Colors.teal : Colors.grey,
                     ),
                     Text(
-                      'Profile',
+                      'Notification',
                       style: TextStyle(
                         color: currentTab == 2 ? Colors.teal : Colors.grey,
                         fontSize: 12,
@@ -339,26 +341,57 @@ Widget globalNavigationBar(int currentTab, BuildContext context, GlobalKey key, 
                 ),
               ),
               MaterialButton(
-                key: key,
                 minWidth: screenSize.width / 5,
-                onPressed: () => onShow(key, context),
+                onPressed: () {
+                  if (!CurrentUser.isNotGuest) {
+                    guestUserSignInMessage(context);
+                  } else {
+                    if(currentTab != 2 || !isFirstPage)
+                    {
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => NotificationFeed()),
+                              (Route<dynamic> route) => false);
+                    }
+                  }
+                },
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
-                      Icons.more_horiz,
-                      color: currentTab == 3 ? Colors.teal : Colors.grey,
+                      Icons.add_alert,
+                      color: currentTab == 2 ? Colors.teal : Colors.grey,
                     ),
                     Text(
-                      'More',
+                      'Profile',
                       style: TextStyle(
-                        color: currentTab == 3 ? Colors.teal : Colors.grey,
+                        color: currentTab == 2 ? Colors.teal : Colors.grey,
                         fontSize: 12,
                       ),
                     ),
                   ],
                 ),
-              )
+              ),
+//              MaterialButton(
+//                key: key,
+//                minWidth: screenSize.width / 5,
+//                onPressed: () => onShow(key, context),
+//                child: Column(
+//                  mainAxisAlignment: MainAxisAlignment.center,
+//                  children: <Widget>[
+//                    Icon(
+//                      Icons.more_horiz,
+//                      color: currentTab == 3 ? Colors.teal : Colors.grey,
+//                    ),
+//                    Text(
+//                      'More',
+//                      style: TextStyle(
+//                        color: currentTab == 3 ? Colors.teal : Colors.grey,
+//                        fontSize: 12,
+//                      ),
+//                    ),
+//                  ],
+//                ),
+//              )
             ],
           )
         ],
@@ -366,6 +399,83 @@ Widget globalNavigationBar(int currentTab, BuildContext context, GlobalKey key, 
     ),
   );
 }
+Widget SideBar(BuildContext context) {
+  final Color backgroundColor = Color(0xFFfbab66);
+  return Scaffold(
+  backgroundColor : backgroundColor,
+  body:Stack(
+  children: <Widget>[
+   menu(context),
+   dashboard(context),
+  ],
+
+  )
+  );
+}
+ Widget menu(context){
+  return Padding(
+    padding : const EdgeInsets.only(left: 16.0, ),
+  child: Align(
+    alignment: Alignment. centerLeft,
+    child:  Column(
+   mainAxisSize: MainAxisSize.min,
+    mainAxisAlignment: MainAxisAlignment.spaceAround,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: <Widget>[
+      Text(
+        'About Us',
+        style: TextStyle(
+            color: Colors.white,
+            fontSize: 12
+        )
+      ),
+      SizedBox(height:10),
+      Text(
+        'Rate Us',
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 12
+          ),
+        ),
+      SizedBox(height:10),
+      Text(
+        'Top Bees',
+        style: TextStyle(
+            color: Colors.white,
+            fontSize: 12
+        ),
+      ),
+      SizedBox(height:10),
+    ],
+  )
+
+  )
+  );
+ }
+  Widget dashboard(context)
+  {
+    Size screenSize = MediaQuery.of(context).size;
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Widget globalFloatingActionButton(BuildContext context) {
   return FloatingActionButton(

@@ -118,11 +118,11 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
         if (doc["title"] != null) {
           title = doc["title"];
         }
-        if (doc["dateCreated"]!=null){
-          DateTime timeStampSplit= (doc["dateCreated"]).toDate();
-          dateJoined = cProfile.getMonth(timeStampSplit.month) + timeStampSplit.year.toString();
-          print(dateJoined);
-        }
+//        if (doc["dateCreated"]!=null){
+//          DateTime timeStampSplit= (doc["dateCreated"]).toDate();
+//          dateJoined = cProfile.getMonth(timeStampSplit.month) + timeStampSplit.year.toString();
+//          print(dateJoined);
+//        }
         scores = (userInfo.dailyPoints + userInfo.earnedPoints).toString();
         tempUserID = userInfo.userID;
         if (userInfo.followers != null) {
@@ -366,9 +366,9 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     return InkWell(
         onTap: (){
       if (label == "Points") {
-        showDialog(context: context, builder: (BuildContext context) {
-          return cProfile.rankInformationMessage(context);
-        });
+//        showDialog(context: context, builder: (BuildContext context) {
+////          return cProfile.rankInformationMessage(context);
+//        });
       }
       else if (label == "Followers"){
         Navigator.push(context,

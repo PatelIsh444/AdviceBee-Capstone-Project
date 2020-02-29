@@ -24,7 +24,7 @@ import './utils/commonFunctions.dart';
 import 'package:image/image.dart' as im;
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'pages/MainChatScreen.dart';
-import 'pages/MoreQuestions.dart';
+//import 'pages/MoreQuestions.dart';
 import 'pages/NewChat.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -32,751 +32,786 @@ class ProfilePage extends StatefulWidget {
   ProfilePageState createState() => ProfilePageState();
 }
 
-class ProfilePageState extends State<ProfilePage> {
-  File _image;
-  String fullName="";
-  String bio="An Interesting Description";
-  String followers="0";
-  String following="0";
-  String posts="0";
-  String scores="100";
-  String rank="None";
-  String title;
-  String imageLink="https://firebasestorage.googleapis.com"
-      "/v0/b/advicebee-9f277.appspot.com/o/noPicture.png?"
-      "alt=media&token=111de0ef-ae68-422c-850d-8272b48904ab";
-  String rankImage="https://firebasestorage.googleapis.com/v0/b/advicebee-9f277."
-      "appspot.com/o/rankIcons%2FLarvae.png?alt=media&token=9afeb4c7-dbaf-"
-      "4f8f-9885-3906155ed612";
-  int currentTab=2;
-  GlobalKey key = GlobalKey();
-  bool noTopicChange=true;
-  String dateJoined = "October 2019";
+ class ProfilePageState extends State<ProfilePage> {
+   File _image;
+   String fullName = "";
+   String bio = "An Interesting Description";
+   String followers = "0";
+   String following = "0";
+   String posts = "0";
+   String scores = "100";
+   String rank = "None";
+   String title;
+   String imageLink = "https://firebasestorage.googleapis.com"
+       "/v0/b/advicebee-9f277.appspot.com/o/noPicture.png?"
+       "alt=media&token=111de0ef-ae68-422c-850d-8272b48904ab";
+   String rankImage = "https://firebasestorage.googleapis.com/v0/b/advicebee-9f277."
+       "appspot.com/o/rankIcons%2FLarvae.png?alt=media&token=9afeb4c7-dbaf-"
+       "4f8f-9885-3906155ed612";
+   int currentTab = 2;
+   GlobalKey key = GlobalKey();
+   bool noTopicChange = true;
+   String dateJoined = "October 2019";
 
-  List<String> selectedTopics = List();
+   List<String> selectedTopics = List();
 
-  //Added list of all available Topics
-  List<String> allTopicsList = new List();
+   //Added list of all available Topics
+   List<String> allTopicsList = new List();
 
 
-  _showReportDialog() {
-    showDialog(
-      //barrierDismissible: true,
-        context: context,
-        builder: (BuildContext context) {
-          //Here we will build the content of the dialog
-          return  AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(32.0))),
-            contentPadding: EdgeInsets.only(top: 10.0),
-            content: Container(
-              width: 300.0,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text(
-                        "What are your interests? ",
-                        style: TextStyle(
-                            fontSize: 20.0, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Divider(
-                    color: Colors.grey,
-                    height: 4.0,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                    child: Container(
-                      height: 200.0,
-                      child: SingleChildScrollView(
-                        child: MultiSelectChip(
-                          "topic",
-                          allTopicsList,
+   _showReportDialog() {
+     showDialog(
+       //barrierDismissible: true,
+         context: context,
+         builder: (BuildContext context) {
+           //Here we will build the content of the dialog
+           return AlertDialog(
+             shape: RoundedRectangleBorder(
+                 borderRadius: BorderRadius.all(Radius.circular(32.0))),
+             contentPadding: EdgeInsets.only(top: 10.0),
+             content: Container(
+               width: 300.0,
+               child: Column(
+                 mainAxisAlignment: MainAxisAlignment.start,
+                 crossAxisAlignment: CrossAxisAlignment.stretch,
+                 mainAxisSize: MainAxisSize.min,
+                 children: <Widget>[
+                   Row(
+                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                     mainAxisSize: MainAxisSize.min,
+                     children: <Widget>[
+                       Text(
+                         "What are your interests? ",
+                         style: TextStyle(
+                             fontSize: 20.0, fontWeight: FontWeight.bold),
+                       ),
+                     ],
+                   ),
+                   SizedBox(
+                     height: 5.0,
+                   ),
+                   Divider(
+                     color: Colors.grey,
+                     height: 4.0,
+                   ),
+                   Padding(
+                     padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                     child: Container(
+                       height: 200.0,
+                       child: SingleChildScrollView(
+                         child: MultiSelectChip(
+                           "topic",
+                           allTopicsList,
 
-                          onSelectionChanged: (selectedList) {
-                            setState(() {
-                              selectedTopics = selectedList;
-                              noTopicChange=false;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () => _topicOnSelected(),
-                    child: Container(
-                      padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.amber,
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(32.0),
-                            bottomRight: Radius.circular(32.0)),
-                      ),
-                      child: Text(
-                        "Confirm",
-                        style: TextStyle(color: Colors.white, fontSize: 20.0),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
+                           onSelectionChanged: (selectedList) {
+                             setState(() {
+                               selectedTopics = selectedList;
+                               noTopicChange = false;
+                             });
+                           },
+                         ),
+                       ),
+                     ),
+                   ),
+                   InkWell(
+                     onTap: () => _topicOnSelected(),
+                     child: Container(
+                       padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                       decoration: BoxDecoration(
+                         color: Colors.amber,
+                         borderRadius: BorderRadius.only(
+                             bottomLeft: Radius.circular(32.0),
+                             bottomRight: Radius.circular(32.0)),
+                       ),
+                       child: Text(
+                         "Confirm",
+                         style: TextStyle(color: Colors.white, fontSize: 20.0),
+                         textAlign: TextAlign.center,
+                       ),
+                     ),
+                   ),
+                 ],
+               ),
+             ),
+           );
+         });
+   }
 
-  _topicOnSelected() async {
+   _topicOnSelected() async {
 
-    /*Check if selectedTopics is same to myTopics. If they are then there is no
+     /*Check if selectedTopics is same to myTopics. If they are then there is no
     * topic change, which means there is no point in writing to the database*/
-    bool topicListsAreSameSize=selectedTopics!=null && CurrentUser.myTopics != null && selectedTopics.length == CurrentUser.myTopics.length;
-    if (topicListsAreSameSize){
-      CurrentUser.myTopics.sort((a, b) => a.compareTo(b));
-      selectedTopics.sort((a, b) => a.compareTo(b));
+     bool topicListsAreSameSize = selectedTopics != null &&
+         CurrentUser.myTopics != null &&
+         selectedTopics.length == CurrentUser.myTopics.length;
+     if (topicListsAreSameSize) {
+       CurrentUser.myTopics.sort((a, b) => a.compareTo(b));
+       selectedTopics.sort((a, b) => a.compareTo(b));
 
-      noTopicChange=true;
-      for (int i=0; i<selectedTopics.length; i++){
-        if (selectedTopics[i]!=CurrentUser.myTopics[i]){
-          noTopicChange=false;
-          break;
-        }
-      }
-    }
+       noTopicChange = true;
+       for (int i = 0; i < selectedTopics.length; i++) {
+         if (selectedTopics[i] != CurrentUser.myTopics[i]) {
+           noTopicChange = false;
+           break;
+         }
+       }
+     }
 
-    /*This updates the users 'myTopics' field with the selectedTopics list. However,
+     /*This updates the users 'myTopics' field with the selectedTopics list. However,
     if the list is empty we will skip the update to avoid bugs. Also checks if
     topic has actually been clicked/changed so it doesn't delete their topics
     if a user presses edit and confirm without making a selection*/
-    if (selectedTopics != null && !noTopicChange) {
+     if (selectedTopics != null && !noTopicChange) {
+       await usersRef.document(CurrentUser.userID).updateData({
+         'myTopics': selectedTopics,
+       });
 
-      await usersRef.document(CurrentUser.userID).updateData({
-        'myTopics': selectedTopics,
-      });
+       setState(() {
+         CurrentUser.myTopics = selectedTopics;
+         noTopicChange = true;
+       });
+     }
 
-      setState(() {
-        CurrentUser.myTopics = selectedTopics;
-        noTopicChange=true;
-      });
-    }
+     Navigator.pop(context);
+   }
 
-    Navigator.pop(context);
+   @override
+   void initState() {
+     super.initState();
+     getData();
+   }
 
-  }
+   //Get data from firebase
+   Future<void> getData() async {
+     Firestore.instance
+         .collection('users')
+         .document(CurrentUser.userID)
+         .get()
+         .then((DocumentSnapshot ds) {
+       setState(() {
+         if (ds.data["displayName"] != null) {
+           fullName = ds.data["displayName"];
+         }
+         if (ds.data["title"] != null) {
+           title = ds.data["title"];
+         }
+         if (ds.data["bio"] != null) {
+           bio = ds.data["bio"];
+         }
+         if (ds.data["followers"] != null) {
+           dynamic followerCount = ds.data["followers"];
+           followers = followerCount.length.toString();
+         }
+         if (ds.data["following"] != null) {
+           dynamic followingCount = ds.data["following"];
+           following = followingCount.length.toString();
+         }
+         if (ds.data["myPosts"] != null) {
+           dynamic postCount = ds.data["myPosts"];
+           posts = postCount.length.toString();
+         }
+         if (ds.data["earnedPoints"] != null ||
+             ds.data["dailyPoints"] != null) {
+           if (ds.data["earnedPoints"] == null) {
+             scores = ds.data["dailyPoints"].toString();
+           }
+           else if (ds.data["dailyPoints"] == null) {
+             scores = ds.data["earnedPoints"].toString();
+           }
+           else {
+             scores = (ds.data["earnedPoints"]
+                 + ds.data["dailyPoints"]).toString();
+           }
+         }
+         if (ds.data["profilePicURL"] != null) {
+           imageLink = ds.data["profilePicURL"];
+         }
+         if (ds.data["rank"] != null) {
+           rank = ds.data["rank"];
+         }
+         if (ds.data["rankImage"] != null) {
+           rankImage = ds.data["rankImage"];
+         }
+         if (ds.data["dateCreated"] != null) {
+//          DateTime timeStampSplit= (ds.data["dateCreated"]).toDate();
+//          dateJoined = getMonth(timeStampSplit.month) + timeStampSplit.year.toString();
+//          print(dateJoined);
+         }
+         setRank();
 
-  @override
-  void initState(){
-    super.initState();
-    getData();
-  }
-
-  //Get data from firebase
-  Future<void> getData() async {
-    Firestore.instance
-        .collection('users')
-        .document(CurrentUser.userID)
-        .get()
-        .then((DocumentSnapshot ds) {
-      setState(() {
-        if (ds.data["displayName"]!=null) {
-          fullName = ds.data["displayName"];
-        }
-        if (ds.data["title"]!=null) {
-          title = ds.data["title"];
-        }
-        if (ds.data["bio"]!=null) {
-          bio = ds.data["bio"];
-        }
-        if (ds.data["followers"]!=null) {
-          dynamic followerCount=ds.data["followers"];
-          followers = followerCount.length.toString();
-        }
-        if (ds.data["following"]!=null){
-          dynamic followingCount=ds.data["following"];
-          following = followingCount.length.toString();
-        }
-        if (ds.data["myPosts"]!=null) {
-          dynamic postCount=ds.data["myPosts"];
-          posts = postCount.length.toString();
-        }
-        if (ds.data["earnedPoints"]!=null || ds.data["dailyPoints"]!=null) {
-          if (ds.data["earnedPoints"]==null) {
-            scores=ds.data["dailyPoints"].toString();
-          }
-          else if (ds.data["dailyPoints"]==null){
-            scores=ds.data["earnedPoints"].toString();
-          }
-          else{
-            scores=(ds.data["earnedPoints"]
-                + ds.data["dailyPoints"]).toString();
-          }
-        }
-        if (ds.data["profilePicURL"]!=null) {
-          imageLink = ds.data["profilePicURL"];
-        }
-        if (ds.data["rank"]!=null){
-          rank=ds.data["rank"];
-        }
-        if (ds.data["rankImage"]!=null){
-          rankImage=ds.data["rankImage"];
-        }
-        if (ds.data["dateCreated"]!=null){
-          DateTime timeStampSplit= (ds.data["dateCreated"]).toDate();
-          dateJoined = getMonth(timeStampSplit.month) + timeStampSplit.year.toString();
-          print(dateJoined);
-        }
-        setRank();
-
-        //Call to get all Topics
-        getTopics();
-      });
-    });
-  }
-
+         //Call to get all Topics
+         getTopics();
+       });
+     });
+   }
 
 
-  //Future function to get topics by name
-  Future<void> getTopics() async {
-    List<String> tempTopics = new List();
-    await Firestore.instance
-        .collection('topics')
-        .orderBy('topicName', descending: false)
-        .getDocuments()
-        .then((QuerySnapshot data) =>
-        data.documents.forEach((doc) => tempTopics.add(
-          doc["topicName"],
-        )));
+   //Future function to get topics by name
+   Future<void> getTopics() async {
+     List<String> tempTopics = new List();
+     await Firestore.instance
+         .collection('topics')
+         .orderBy('topicName', descending: false)
+         .getDocuments()
+         .then((QuerySnapshot data) =>
+         data.documents.forEach((doc) =>
+             tempTopics.add(
+               doc["topicName"],
+             )));
 
-    setState(() {
-      allTopicsList = tempTopics;
-      //topics = tempTopics;
-    });
-  }
+     setState(() {
+       allTopicsList = tempTopics;
+       //topics = tempTopics;
+     });
+   }
 
-  Future<void> setRank() async{
-    int tempScores=int.parse(scores);
-    if (tempScores<500) {
-      if (rank=="Worker Bee" || rank == "Queen Bee")
-        showDialog(context: context, builder: (BuildContext context){
-          return demotedMessage(context, "500");
-        });
-      rank="Larvae";
-      rankImage="https://firebasestorage.googleapis.com/v0/b/advicebee-9f277."
-          "appspot.com/o/rankIcons%2FLarvae.png?alt=media&token=9afeb4c7-dbaf-"
-          "4f8f-9885-3906155ed612";
-    }
-    else if (tempScores>=500 && tempScores<1000){
-      if (rank=="Larvae"){
-        showDialog(context: context, builder: (BuildContext context){
-          return promotedMessage(context, "500");
-        });
-      }
-      else if (rank=="Queen Bee"){
-        showDialog(context: context, builder: (BuildContext context){
-          return demotedMessage(context, "1000");
-        });
-      }
-      rank="Worker Bee";
-      rankImage="https://firebasestorage.googleapis.com/v0/b/advicebee-9f277."
-          "appspot.com/o/rankIcons%2Fbee.png?alt=media&token=80bd21e2-f795-"
-          "46f4-a273-4d5653dfa414";
-    }
-    else{
-      if (rank=="Worker Bee" || rank == "Larvae")
-        showDialog(context: context, builder: (BuildContext context){
-          return promotedMessage(context, "1000");
-        });
-      rank="Queen Bee";
-      rankImage="https://firebasestorage.googleapis.com/v0/b/advicebee-9f277."
-          "appspot.com/o/rankIcons%2FqueenBee2.png?alt=media&token=c4b425ed-"
-          "76c8-44fb-a933-5ca00031168b";
-    }
-    Firestore.instance
-        .collection('users')
-        .document(CurrentUser.userID)
-        .updateData({
-      'rank': rank
-    });
-  }
+   Future<void> setRank() async {
+     int tempScores = int.parse(scores);
+     if (tempScores < 500) {
+       if (rank == "Worker Bee" || rank == "Queen Bee")
+         showDialog(context: context, builder: (BuildContext context) {
+           return demotedMessage(context, "500");
+         });
+       rank = "Larvae";
+       rankImage =
+       "https://firebasestorage.googleapis.com/v0/b/advicebee-9f277."
+           "appspot.com/o/rankIcons%2FLarvae.png?alt=media&token=9afeb4c7-dbaf-"
+           "4f8f-9885-3906155ed612";
+     }
+     else if (tempScores >= 500 && tempScores < 1000) {
+       if (rank == "Larvae") {
+         showDialog(context: context, builder: (BuildContext context) {
+           return promotedMessage(context, "500");
+         });
+       }
+       else if (rank == "Queen Bee") {
+         showDialog(context: context, builder: (BuildContext context) {
+           return demotedMessage(context, "1000");
+         });
+       }
+       rank = "Worker Bee";
+       rankImage =
+       "https://firebasestorage.googleapis.com/v0/b/advicebee-9f277."
+           "appspot.com/o/rankIcons%2Fbee.png?alt=media&token=80bd21e2-f795-"
+           "46f4-a273-4d5653dfa414";
+     }
+     else {
+       if (rank == "Worker Bee" || rank == "Larvae")
+         showDialog(context: context, builder: (BuildContext context) {
+           return promotedMessage(context, "1000");
+         });
+       rank = "Queen Bee";
+       rankImage =
+       "https://firebasestorage.googleapis.com/v0/b/advicebee-9f277."
+           "appspot.com/o/rankIcons%2FqueenBee2.png?alt=media&token=c4b425ed-"
+           "76c8-44fb-a933-5ca00031168b";
+     }
+     Firestore.instance
+         .collection('users')
+         .document(CurrentUser.userID)
+         .updateData({
+       'rank': rank
+     });
+   }
 
 
+   AlertDialog demotedMessage(BuildContext context, String pointAmount) {
+     String rankName;
+     if (pointAmount == "500") {
+       rankName = "Worker Bee";
+     } else if (pointAmount == "1000") {
+       rankName = "Queen Bee";
+     }
+     else {
+       rankName = "Unknown";
+     }
 
-  AlertDialog demotedMessage(BuildContext context, String pointAmount){
-    String rankName;
-    if (pointAmount=="500"){
-      rankName="Worker Bee";
-    } else if (pointAmount=="1000"){
-      rankName="Queen Bee";
-    }
-    else {
-      rankName="Unknown";
-    }
+     return AlertDialog(
+         title: Text("Reverse Promotion!"),
+         content: SingleChildScrollView(
+             child: ListBody(
+                 children: <Widget>[
+                   Text(
+                       "You have $scores points, get to $pointAmount and you will"
+                           " be promoted to $rankName."),
+                   Container(
+                     width: 80,
+                     height: 50,
 
-    return AlertDialog(
-        title: Text("Reverse Promotion!"),
-        content: SingleChildScrollView(
-            child: ListBody(
-                children: <Widget>[
-                  Text("You have $scores points, get to $pointAmount and you will"
-                      " be promoted to $rankName."),
-                  Container(
-                    width: 80,
-                    height: 50,
+                     child: GestureDetector(
+                       child: Text("\nContinue",
+                         style: TextStyle(color: Colors.blue),),
+                       onTap: () {
+                         Navigator.pop(context);
+                       },
+                     ),
+                   ),
+                 ]
+             )
+         )
+     );
+   }
 
-                    child:GestureDetector(
-                      child: Text("\nContinue",
-                        style: TextStyle(color: Colors.blue),),
-                      onTap: (){
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                ]
-            )
-        )
-    );
-  }
+   AlertDialog promotedMessage(BuildContext context, String pointAmount) {
+     String rankName, nextRankName;
+     if (pointAmount == "500") {
+       rankName = "Worker Bee";
+       nextRankName = "Get to 1000 and you will be promoted to Queen Bee.";
+     } else if (pointAmount == "1000") {
+       rankName = "Queen Bee";
+       nextRankName =
+       "You have proven yourself as the biggest bee in the hive! "
+           "There is no higher prestige than Queen Bee. Thank you for"
+           " helping out your fellow bees!";
+     }
+     else {
+       rankName = "Unknown";
+       nextRankName = " ";
+     }
 
-  AlertDialog promotedMessage(BuildContext context, String pointAmount){
-    String rankName, nextRankName;
-    if (pointAmount=="500"){
-      rankName="Worker Bee";
-      nextRankName="Get to 1000 and you will be promoted to Queen Bee.";
-    } else if (pointAmount=="1000"){
-      rankName="Queen Bee";
-      nextRankName="You have proven yourself as the biggest bee in the hive! "
-          "There is no higher prestige than Queen Bee. Thank you for"
-          " helping out your fellow bees!";
-    }
-    else {
-      rankName="Unknown";
-      nextRankName=" ";
-    }
+     //Dialog if they reach 500-1000 points
+     return AlertDialog(
+         title: Text("Bee Promotion!"),
+         content: SingleChildScrollView(
+             child: ListBody(
+                 children: <Widget>[
+                   Text("You have $scores points, you are now a $rankName. "
+                       "$nextRankName"),
+                   Container(
+                     width: 80,
+                     height: 50,
 
-    //Dialog if they reach 500-1000 points
-    return AlertDialog(
-        title: Text("Bee Promotion!"),
-        content: SingleChildScrollView(
-            child: ListBody(
-                children: <Widget>[
-                  Text("You have $scores points, you are now a $rankName. "
-                      "$nextRankName"),
-                  Container(
-                    width: 80,
-                    height: 50,
+                     child: GestureDetector(
+                       child: Text("\nContinue",
+                         style: TextStyle(color: Colors.blue),),
+                       onTap: () {
+                         Navigator.pop(context);
+                       },
+                     ),
+                   ),
+                 ]
+             )
+         )
+     );
+   }
 
-                    child:GestureDetector(
-                      child: Text("\nContinue",
-                        style: TextStyle(color: Colors.blue),),
-                      onTap: (){
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                ]
-            )
-        )
-    );
-  }
-
-  Widget buildRank(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(4.0),
-      ),
-      child: GestureDetector(
-        onTap: (){
-          showDialog(context: context, builder: (BuildContext context){
-            return rankInformationMessage(context);
-          });
-        },
-        child:Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children:<Widget>[
-            Container(
-              width: 30.0,
-              height: 30.0,
-              decoration: BoxDecoration(
-                image: new DecorationImage(image: new CachedNetworkImageProvider(rankImage),
-                  //fit: BoxFit.cover,
-                ),
-                //borderRadius: BorderRadius.circular(80.0),
-                /*border: Border.all(
+   Widget buildRank(BuildContext context) {
+     return Container(
+       padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
+       decoration: BoxDecoration(
+         color: Theme
+             .of(context)
+             .scaffoldBackgroundColor,
+         borderRadius: BorderRadius.circular(4.0),
+       ),
+       child: GestureDetector(
+         onTap: () {
+//          showDialog(context: context, builder: (BuildContext context){
+//            return rankInformationMessage(context);
+//          });
+         },
+         child: Row(
+           mainAxisAlignment: MainAxisAlignment.center,
+           children: <Widget>[
+             Container(
+               width: 30.0,
+               height: 30.0,
+               decoration: BoxDecoration(
+                 image: new DecorationImage(
+                   image: new CachedNetworkImageProvider(rankImage),
+                   //fit: BoxFit.cover,
+                 ),
+                 //borderRadius: BorderRadius.circular(80.0),
+                 /*border: Border.all(
               color: Colors.black,
               width: 5.0,
             ),*/
-              ),
-            ),
-            Text(
-              " " + rank + " ",
-              style: TextStyle(
-                fontFamily: 'Spectral',
-                color: Colors.black,
-                fontSize: 20.0,
-                fontWeight: FontWeight.w300,
-              ),
-            ),
-            Container(
-              width: 30.0,
-              height: 30.0,
-              decoration: BoxDecoration(
-                image: new DecorationImage(image: new CachedNetworkImageProvider(rankImage),
-                  //fit: BoxFit.cover,
-                ),
-                //borderRadius: BorderRadius.circular(80.0),
-                /*border: Border.all(
+               ),
+             ),
+             Text(
+               " " + rank + " ",
+               style: TextStyle(
+                 fontFamily: 'Spectral',
+                 color: Colors.black,
+                 fontSize: 20.0,
+                 fontWeight: FontWeight.w300,
+               ),
+             ),
+             Container(
+               width: 30.0,
+               height: 30.0,
+               decoration: BoxDecoration(
+                 image: new DecorationImage(
+                   image: new CachedNetworkImageProvider(rankImage),
+                   //fit: BoxFit.cover,
+                 ),
+                 //borderRadius: BorderRadius.circular(80.0),
+                 /*border: Border.all(
               color: Colors.black,
               width: 5.0,
             ),*/
-              ),
-            ),
-          ],
+               ),
+             ),
+           ],
 
-        ),
-      ),
-    );
-  }
+         ),
+       ),
+     );
+   }
 
-  /*Chooses an image from the camera then uploads it to firebase storage.
+   /*Chooses an image from the camera then uploads it to firebase storage.
   * After image is successfully uploaded, it returns a message notifying them*/
-  getCameraImage() async {
-    //Select Image from camera
-    Navigator.pop(context);
-    var image = await ImagePicker.pickImage(source: ImageSource.camera,
-        imageQuality: 65);
+   getCameraImage() async {
+     //Select Image from camera
+     Navigator.pop(context);
+     var image = await ImagePicker.pickImage(source: ImageSource.camera,
+         imageQuality: 65);
 
-    File croppedImage = await ImageCropper.cropImage(
-      sourcePath: image.path,
-      cropStyle: CropStyle.circle,
-      androidUiSettings: AndroidUiSettings(
-          toolbarTitle: 'Cropper',
-          toolbarColor: Colors.teal,
-          toolbarWidgetColor: Colors.white,
-          hideBottomControls: true,
-          initAspectRatio: CropAspectRatioPreset.square,
-          lockAspectRatio: true),
-      iosUiSettings: IOSUiSettings(
-        minimumAspectRatio: 1.0,
-      ),
-      //maxWidth: 160,
-      //maxHeight: 160,
-    );
+     File croppedImage = await ImageCropper.cropImage(
+       sourcePath: image.path,
+       cropStyle: CropStyle.circle,
+       androidUiSettings: AndroidUiSettings(
+           toolbarTitle: 'Cropper',
+           toolbarColor: Colors.teal,
+           toolbarWidgetColor: Colors.white,
+           hideBottomControls: true,
+           initAspectRatio: CropAspectRatioPreset.square,
+           lockAspectRatio: true),
+       iosUiSettings: IOSUiSettings(
+         minimumAspectRatio: 1.0,
+       ),
+       //maxWidth: 160,
+       //maxHeight: 160,
+     );
 
-    setState(() {
-      _image = croppedImage ?? _image;
-    });
+     setState(() {
+       _image = croppedImage ?? _image;
+     });
 
-    /*This code will be visited if the user actually selects a photo from
+     /*This code will be visited if the user actually selects a photo from
     their gallery or takes a picture with a camera. If they press the back
     button on their phone the image will be null and this code will not be
     visited*/
-    if(croppedImage!=null) {
-      //Upload Image
-      final StorageReference pictureNameInStorage =
-      FirebaseStorage().ref().child("profilePictures/"+CurrentUser.userID+"profilePicture");
-      final StorageUploadTask uploadTask = pictureNameInStorage.putFile(_image);
-      await uploadTask.onComplete;
+     if (croppedImage != null) {
+       //Upload Image
+       final StorageReference pictureNameInStorage =
+       FirebaseStorage().ref().child(
+           "profilePictures/" + CurrentUser.userID + "profilePicture");
+       final StorageUploadTask uploadTask = pictureNameInStorage.putFile(
+           _image);
+       await uploadTask.onComplete;
 
-      //Resize image to thumbnail
-      var tImage = im.decodeImage(File(_image.path).readAsBytesSync());
-      var thumbnailImage = im.copyResize(tImage, width: 100, height: 100);
-      File(_image.path)..writeAsBytesSync(im.encodePng(thumbnailImage));
+       //Resize image to thumbnail
+       var tImage = im.decodeImage(File(_image.path).readAsBytesSync());
+       var thumbnailImage = im.copyResize(tImage, width: 100, height: 100);
+       File(_image.path)
+         ..writeAsBytesSync(im.encodePng(thumbnailImage));
 
-      //Upload thumbnail
-      final StorageReference thumbnailPictureNameInStorage =
-      FirebaseStorage().ref().child("profilePictures/"+CurrentUser.userID+"profileThumbnailPicture");
-      final StorageUploadTask uploadTask2 = thumbnailPictureNameInStorage.putFile(_image);
-      await uploadTask2.onComplete;
+       //Upload thumbnail
+       final StorageReference thumbnailPictureNameInStorage =
+       FirebaseStorage().ref().child(
+           "profilePictures/" + CurrentUser.userID + "profileThumbnailPicture");
+       final StorageUploadTask uploadTask2 = thumbnailPictureNameInStorage
+           .putFile(_image);
+       await uploadTask2.onComplete;
 
-      var imageURL = await pictureNameInStorage.getDownloadURL() as String;
-      var thumbnailImageURL = await thumbnailPictureNameInStorage.getDownloadURL() as String;
-      Firestore.instance
-          .collection('users')
-          .document(CurrentUser.userID)
-          .updateData({
-        'profilePicURL': imageURL,
-        'thumbnailPicURL': thumbnailImageURL,
-      });
+       var imageURL = await pictureNameInStorage.getDownloadURL() as String;
+       var thumbnailImageURL = await thumbnailPictureNameInStorage
+           .getDownloadURL() as String;
+       Firestore.instance
+           .collection('users')
+           .document(CurrentUser.userID)
+           .updateData({
+         'profilePicURL': imageURL,
+         'thumbnailPicURL': thumbnailImageURL,
+       });
 
-      setState(() {
-        getData();
-      });
+       setState(() {
+         getData();
+       });
 
 
-      // return showDialog(context: context, builder: (BuildContext context) {
-      if (uploadTask.isSuccessful) {
-        imageUpdatedMessage(context);
-      }
-      else{
-        imageFailedToUpdateMessage(context);
-      }
-      // });
-    }
-  }
+       // return showDialog(context: context, builder: (BuildContext context) {
+       if (uploadTask.isSuccessful) {
+         imageUpdatedMessage(context);
+       }
+       else {
+         imageFailedToUpdateMessage(context);
+       }
+       // });
+     }
+   }
 
-  /*Chooses an image from the gallery then uploads it to firebase storage.
+   /*Chooses an image from the gallery then uploads it to firebase storage.
   * After image is successfully uploaded, it returns a message notifying them*/
-  getGalleryImage() async {
-    //Select Image from gallery
-    Navigator.pop(context);
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery,
-        imageQuality: 65);
+   getGalleryImage() async {
+     //Select Image from gallery
+     Navigator.pop(context);
+     var image = await ImagePicker.pickImage(source: ImageSource.gallery,
+         imageQuality: 65);
 
-    File croppedImage = await ImageCropper.cropImage(
-      sourcePath: image.path,
-      cropStyle: CropStyle.circle,
-      androidUiSettings: AndroidUiSettings(
-          toolbarTitle: 'Cropper',
-          toolbarColor: Colors.teal,
-          toolbarWidgetColor: Colors.white,
-          hideBottomControls: true,
-          initAspectRatio: CropAspectRatioPreset.square,
-          lockAspectRatio: true),
-      iosUiSettings: IOSUiSettings(
-        minimumAspectRatio: 1.0,
-      ),
-      //maxWidth: 160,
-      //maxHeight: 160,
-    );
+     File croppedImage = await ImageCropper.cropImage(
+       sourcePath: image.path,
+       cropStyle: CropStyle.circle,
+       androidUiSettings: AndroidUiSettings(
+           toolbarTitle: 'Cropper',
+           toolbarColor: Colors.teal,
+           toolbarWidgetColor: Colors.white,
+           hideBottomControls: true,
+           initAspectRatio: CropAspectRatioPreset.square,
+           lockAspectRatio: true),
+       iosUiSettings: IOSUiSettings(
+         minimumAspectRatio: 1.0,
+       ),
+       //maxWidth: 160,
+       //maxHeight: 160,
+     );
 
-    setState(() {
-      _image = croppedImage ?? _image;
-    });
+     setState(() {
+       _image = croppedImage ?? _image;
+     });
 
-    /*This code will be visited if the user actually selects a photo from
+     /*This code will be visited if the user actually selects a photo from
     their gallery or takes a picture with a camera. If they press the back
     button on their phone the image will be null and this code will not be
     visited*/
-    if(croppedImage!=null) {
-      //Upload image
-      final StorageReference pictureNameInStorage =
-      FirebaseStorage().ref().child("profilePictures/"+CurrentUser.userID+"profilePicture");
-      final StorageUploadTask uploadTask = pictureNameInStorage.putFile(_image);
-      await uploadTask.onComplete;
+     if (croppedImage != null) {
+       //Upload image
+       final StorageReference pictureNameInStorage =
+       FirebaseStorage().ref().child(
+           "profilePictures/" + CurrentUser.userID + "profilePicture");
+       final StorageUploadTask uploadTask = pictureNameInStorage.putFile(
+           _image);
+       await uploadTask.onComplete;
 
-      //Resize image to thumbnail
-      var tImage = im.decodeImage(File(_image.path).readAsBytesSync());
-      var thumbnailImage = im.copyResize(tImage, width: 100, height: 100);
-      File(_image.path)..writeAsBytesSync(im.encodePng(thumbnailImage));
+       //Resize image to thumbnail
+       var tImage = im.decodeImage(File(_image.path).readAsBytesSync());
+       var thumbnailImage = im.copyResize(tImage, width: 100, height: 100);
+       File(_image.path)
+         ..writeAsBytesSync(im.encodePng(thumbnailImage));
 
-      //Upload thumbnail
-      final StorageReference thumbnailPictureNameInStorage =
-      FirebaseStorage().ref().child("profilePictures/"+CurrentUser.userID+"profileThumbnailPicture");
-      final StorageUploadTask uploadTask2 = thumbnailPictureNameInStorage.putFile(_image);
-      await uploadTask2.onComplete;
+       //Upload thumbnail
+       final StorageReference thumbnailPictureNameInStorage =
+       FirebaseStorage().ref().child(
+           "profilePictures/" + CurrentUser.userID + "profileThumbnailPicture");
+       final StorageUploadTask uploadTask2 = thumbnailPictureNameInStorage
+           .putFile(_image);
+       await uploadTask2.onComplete;
 
 
-      var imageURL = await pictureNameInStorage.getDownloadURL() as String;
-      var thumbnailImageURL = await thumbnailPictureNameInStorage.getDownloadURL() as String;
-      setState(() {
-        Firestore.instance
-            .collection('users')
-            .document(CurrentUser.userID)
-            .updateData({
-          'profilePicURL': imageURL,
-          'thumbnailPicURL': thumbnailImageURL,
-        });
-        getData();
-      });
+       var imageURL = await pictureNameInStorage.getDownloadURL() as String;
+       var thumbnailImageURL = await thumbnailPictureNameInStorage
+           .getDownloadURL() as String;
+       setState(() {
+         Firestore.instance
+             .collection('users')
+             .document(CurrentUser.userID)
+             .updateData({
+           'profilePicURL': imageURL,
+           'thumbnailPicURL': thumbnailImageURL,
+         });
+         getData();
+       });
 
-      if (uploadTask.isSuccessful) {
-        imageUpdatedMessage(context);
-      }
-      else{
-        imageFailedToUpdateMessage(context);
-      }
-    }
-  }
+       if (uploadTask.isSuccessful) {
+         imageUpdatedMessage(context);
+       }
+       else {
+         imageFailedToUpdateMessage(context);
+       }
+     }
+   }
 
-  /*Button action calls this function, this function displays the options
+   /*Button action calls this function, this function displays the options
   the user has, they can choose Camera or Gallery*/
-  Future getImageMenu() async{
-    return showDialog(context: context, builder: (BuildContext context){
-      return AlertDialog(
-          title: Text("Snap or Choose a Photo?"),
-          content: SingleChildScrollView(
-              child: ListBody(
-                  children: <Widget>[
-                    GestureDetector(
-                      child: Text("Camera"),
-                      onTap: (){
-                        getCameraImage();
-                      },
-                    ),
-                    Padding(padding: EdgeInsets.all(7)),
-                    GestureDetector(
-                      child: Text("Gallery"),
-                      onTap: (){
-                        getGalleryImage();
-                      },
-                    ),
-                  ]
-              )
-          )
-      );
-    });
-  }
+   Future getImageMenu() async {
+     return showDialog(context: context, builder: (BuildContext context) {
+       return AlertDialog(
+           title: Text("Snap or Choose a Photo?"),
+           content: SingleChildScrollView(
+               child: ListBody(
+                   children: <Widget>[
+                     GestureDetector(
+                       child: Text("Camera"),
+                       onTap: () {
+                         getCameraImage();
+                       },
+                     ),
+                     Padding(padding: EdgeInsets.all(7)),
+                     GestureDetector(
+                       child: Text("Gallery"),
+                       onTap: () {
+                         getGalleryImage();
+                       },
+                     ),
+                   ]
+               )
+           )
+       );
+     });
+   }
 
-  //Update Image
-  Future<void> updateImage() async {
-    await Firestore.instance
-        .collection('users')
-        .document(CurrentUser.userID)
-        .get()
-        .then((DocumentSnapshot ds) {
-      setState(() {
-        if (ds.data["profilePicURL"]!=null) {
-          imageLink = ds.data["profilePicURL"];
-        }
-      });
-    });
-  }
+   //Update Image
+   Future<void> updateImage() async {
+     await Firestore.instance
+         .collection('users')
+         .document(CurrentUser.userID)
+         .get()
+         .then((DocumentSnapshot ds) {
+       setState(() {
+         if (ds.data["profilePicURL"] != null) {
+           imageLink = ds.data["profilePicURL"];
+         }
+       });
+     });
+   }
 
-  Widget buildBackgroundImage(Size screenSize) {
-    return Container(
-      height: screenSize.height/4,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/mountains.jpg'),
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
+   Widget buildBackgroundImage(Size screenSize) {
+     return Container(
+       height: screenSize.height / 4,
+       decoration: BoxDecoration(
+         image: DecorationImage(
+           image: AssetImage('assets/mountains.jpg'),
+           fit: BoxFit.cover,
+         ),
+       ),
+     );
+   }
 
-  Widget buildEditPhotoButton(){
-    return Padding(
-      padding: EdgeInsets.only(left: 0, right: 0),
-      child: new Align(
-        alignment: Alignment(0,0),
-        child: new Container(
-          width: 40,
-          height: 40,
-          child:new FloatingActionButton(
-            heroTag: "editPhoto",
-            onPressed: getImageMenu,
-            tooltip: 'Pick Image',
-            child: new Icon(Icons.add_a_photo, size: 28,),
-          ),
-        ),
-      ),
-    );
-  }
+   Widget buildEditPhotoButton() {
+     return Padding(
+       padding: EdgeInsets.only(left: 0, right: 0),
+       child: new Align(
+         alignment: Alignment(0, 0),
+         child: new Container(
+           width: 40,
+           height: 40,
+           child: new FloatingActionButton(
+             heroTag: "editPhoto",
+             onPressed: getImageMenu,
+             tooltip: 'Pick Image',
+             child: new Icon(Icons.add_a_photo, size: 28,),
+           ),
+         ),
+       ),
+     );
+   }
 
-  Widget buildProfileImage() {
-    return Center(
-      child: GestureDetector(
-        onTap: getImageMenu,
-        child: ClipOval(
-          child: CachedNetworkImage(imageUrl:imageLink,
-            width: 160.0,
-            height: 160.0,
-          ),
-        ),
-      ),
-    );
-  }
+   Widget buildProfileImage() {
+     return Center(
+       child: GestureDetector(
+         onTap: getImageMenu,
+         child: ClipOval(
+           child: CachedNetworkImage(imageUrl: imageLink,
+             width: 160.0,
+             height: 160.0,
+           ),
+         ),
+       ),
+     );
+   }
 
-  Widget buildFullName() {
-    TextStyle nameTextStyle = TextStyle(
-      fontFamily: 'Roboto',
-      color: Colors.black,
-      fontSize: 28.0,
-      fontWeight: FontWeight.w700,
-    );
+   Widget buildFullName() {
+     TextStyle nameTextStyle = TextStyle(
+       fontFamily: 'Roboto',
+       color: Colors.black,
+       fontSize: 28.0,
+       fontWeight: FontWeight.w700,
+     );
 
-    return AutoSizeText(
-      fullName,
-      style: nameTextStyle,
-      maxLines: 1,
-    );
-  }
+     return AutoSizeText(
+       fullName,
+       style: nameTextStyle,
+       maxLines: 1,
+     );
+   }
 
 
-  Widget buildScoreBar(String label, String count) {
-    TextStyle statLabelTextStyle = TextStyle(
-      fontFamily: 'Roboto',
-      color: Colors.black,
-      fontSize: 16.0,
-      fontWeight: FontWeight.w200,
-    );
+   Widget buildScoreBar(String label, String count) {
+     TextStyle statLabelTextStyle = TextStyle(
+       fontFamily: 'Roboto',
+       color: Colors.black,
+       fontSize: 16.0,
+       fontWeight: FontWeight.w200,
+     );
 
-    TextStyle statCountTextStyle = TextStyle(
-      color: Colors.black54,
-      fontSize: 24.0,
-      fontWeight: FontWeight.bold,
-    );
+     TextStyle statCountTextStyle = TextStyle(
+       color: Colors.black54,
+       fontSize: 24.0,
+       fontWeight: FontWeight.bold,
+     );
 
-    Size screenSize = MediaQuery.of(context).size;
-    return InkWell(
-        onTap: (){
-          if (label == "Points") {
-            showDialog(context: context, builder: (BuildContext context) {
-              return rankInformationMessage(context);
-            });
-          }
-          else if (label == "Followers"){
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) {
-                  return new FollowingFollowersPage(0);
-                }));
-          }
-          else if (label == "Following"){
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) {
-                  return new FollowingFollowersPage(1);
-                }));
-          }
-          else if (label == "Posts"){
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) {
-                  return new MyPostPage();
-                }));
-          }
-          else{
-            print("Unknown Statbar button click");
-          }
-        },
-        child: Container(
-            width: screenSize.width/4,
-            child:Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  count,
-                  style: statCountTextStyle,
-                ),
-                Text(
-                  label,
-                  style: statLabelTextStyle,
-                ),
-              ],
-            )));
-  }
+     Size screenSize = MediaQuery
+         .of(context)
+         .size;
+     return InkWell(
+         onTap: () {
+           if (label == "Points") {
+//            showDialog(context: context, builder: (BuildContext context) {
+//              return rankInformationMessage(context);
+//            });
+           }
+           else if (label == "Followers") {
+             Navigator.push(context,
+                 MaterialPageRoute(builder: (context) {
+                   return new FollowingFollowersPage(0);
+                 }));
+           }
+           else if (label == "Following") {
+             Navigator.push(context,
+                 MaterialPageRoute(builder: (context) {
+                   return new FollowingFollowersPage(1);
+                 }));
+           }
+           else if (label == "Posts") {
+             Navigator.push(context,
+                 MaterialPageRoute(builder: (context) {
+                   return new MyPostPage();
+                 }));
+           }
+           else {
+             print("Unknown Statbar button click");
+           }
+         },
+         child: Container(
+             width: screenSize.width / 4,
+             child: Column(
+               mainAxisAlignment: MainAxisAlignment.center,
+               children: <Widget>[
+                 Text(
+                   count,
+                   style: statCountTextStyle,
+                 ),
+                 Text(
+                   label,
+                   style: statLabelTextStyle,
+                 ),
+               ],
+             )));
+   }
 
-  Widget buildStatContainer() {
-    return Container(
-        height: 60.0,
-        margin: EdgeInsets.only(top: 8.0),
-    decoration: BoxDecoration(
-    color: Color(0xFFEFF4F7),
-    ),
-    child: Row(
-    mainAxisAlignment: MainAxisAlignment.spaceAround,
-    children: <Widget>[
-    buildScoreBar("Followers", followers),
-    buildScoreBar("Following", following),
-    buildScoreBar("Posts", posts)
+   Widget buildStatContainer() {
+     return Container(
+         height: 60.0,
+         margin: EdgeInsets.only(top: 8.0),
+         decoration: BoxDecoration(
+           color: Color(0xFFEFF4F7),
+         ),
+         child: Row(
+             mainAxisAlignment: MainAxisAlignment.spaceAround,
+             children: <Widget>[
+               buildScoreBar("Followers", followers),
+               buildScoreBar("Following", following),
+               buildScoreBar("Posts", posts),
+             ])
+     );
+   }
+
+   @override
+   Widget build(BuildContext context) {
+     // TODO: implement build
+     return null;
+   }
+ }
+
+
