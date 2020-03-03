@@ -737,7 +737,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
           Firestore.instance.collection('chats').document(groupChatId)
               .setData({
             'id': currentUserId,
-            'displayName': currentUser.userID,
+            'displayName': currentUser.displayName,
             'profilePicURL': currentUser.profilePicURL,
             'bio': currentUser.bio,
             'peerBio': peerLocal.bio,
