@@ -964,7 +964,6 @@ class DashboardState extends State<Dashboard> {
               Icons.menu,
               color: Colors.white,
             ),
-
           ),
           actions: <Widget>[
             PopupMenuButton<String>(
