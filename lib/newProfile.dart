@@ -724,7 +724,10 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     return Center(
       child: InkResponse(
         onTap: () {
-          MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,));
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,)),
+          );
         },
         child: Padding(
           padding: EdgeInsets.only(left: 30, right: 30),
