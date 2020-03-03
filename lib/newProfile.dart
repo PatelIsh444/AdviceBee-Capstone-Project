@@ -16,6 +16,7 @@ import 'Profile.dart' as cProfile;
 import 'OtherUserPosts.dart';
 import 'OtherUserFollowerPage.dart';
 import './utils/commonFunctions.dart';
+import 'pages/NewChat.dart';
 
 class UserDetailsPage extends StatefulWidget {
   String userID;
@@ -721,7 +722,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     return Center(
       child: InkResponse(
         onTap: () {
-
+          MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,));
         },
         child: Padding(
           padding: EdgeInsets.only(left: 30, right: 30),
