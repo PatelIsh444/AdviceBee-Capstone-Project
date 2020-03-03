@@ -1,3 +1,6 @@
+import 'package:v0/OtherUserFollowerPage.dart';
+import 'package:v0/pages/NewChat.dart';
+
 import 'AboutUs.dart';
 import 'ContactUs.dart';
 import 'EditProfile.dart';
@@ -30,11 +33,8 @@ Future<void> _SignOut(BuildContext context) async {
 }
 
 
-
-void onShow(GlobalKey btnKey, BuildContext context) {
-  PopupMenu.context = context;
-
-  PopupMenu menu = PopupMenu(
+PopupMenu onShow(GlobalKey btnKey, BuildContext context) {
+  return PopupMenu(
     backgroundColor: Colors.teal,
     lineColor: Colors.white70,
     // maxColumn: 2,
@@ -84,7 +84,7 @@ void onShow(GlobalKey btnKey, BuildContext context) {
       onClickMenu: onClickMenu,
       // stateChanged: stateChanged,
       onDismiss: onDismiss);
-  menu.show(widgetKey: btnKey);
+  //menu.show(widgetKey: btnKey);
 }
 
 
@@ -339,18 +339,28 @@ Widget globalNavigationBar(int currentTab, BuildContext context, GlobalKey key, 
                 ),
               ),
               MaterialButton(
-                key: key,
                 minWidth: screenSize.width / 5,
-                onPressed: () => onShow(key, context),
+                onPressed: () {
+                  if (!CurrentUser.isNotGuest) {
+                    guestUserSignInMessage(context);
+                  } else {
+                    if(currentTab != 3 || !isFirstPage)
+                    {
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => NewChatScreen(currentUserId: CurrentUser.userID,)),
+                              (Route<dynamic> route) => false);
+                    }
+                  }
+                },
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
-                      Icons.more_horiz,
+                      Icons.chat,
                       color: currentTab == 3 ? Colors.teal : Colors.grey,
                     ),
                     Text(
-                      'More',
+                      'Chat',
                       style: TextStyle(
                         color: currentTab == 3 ? Colors.teal : Colors.grey,
                         fontSize: 12,
@@ -358,7 +368,7 @@ Widget globalNavigationBar(int currentTab, BuildContext context, GlobalKey key, 
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           )
         ],
