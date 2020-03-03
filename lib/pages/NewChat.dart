@@ -3,6 +3,8 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_slidable/flutter_slidable.dart';
+
 import '../SearchBar.dart';
 import '../utils/commonFunctions.dart';
 
@@ -36,7 +38,8 @@ class NewChatScreenState extends State<NewChatScreen> {
 
   final String currentUserId;
   final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      new FlutterLocalNotificationsPlugin();
   final GoogleSignIn googleSignIn = GoogleSignIn();
   var primaryColor = Colors.black;
   var themeColor = Colors.teal;
@@ -51,7 +54,7 @@ class NewChatScreenState extends State<NewChatScreen> {
     super.initState();
     registerNotification();
     configLocalNotification();
-    if (Platform.isIOS){
+    if (Platform.isIOS) {
       iOS_Permission();
     }
   }
@@ -72,7 +75,10 @@ class NewChatScreenState extends State<NewChatScreen> {
 
     firebaseMessaging.getToken().then((token) {
       print('token: $token');
-      Firestore.instance.collection('users').document(currentUserId).updateData({'pushToken': token});
+      Firestore.instance
+          .collection('users')
+          .document(currentUserId)
+          .updateData({'pushToken': token});
     }).catchError((err) {
       Fluttertoast.showToast(msg: err.message.toString());
     });
@@ -80,26 +86,27 @@ class NewChatScreenState extends State<NewChatScreen> {
 
   void iOS_Permission() {
     firebaseMessaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true)
-    );
+        IosNotificationSettings(sound: true, badge: true, alert: true));
     firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings)
-    {
+        .listen((IosNotificationSettings settings) {
       print("Settings registered: $settings");
     });
   }
 
   void configLocalNotification() {
-    var initializationSettingsAndroid = new AndroidInitializationSettings('app_icon');
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('app_icon');
     var initializationSettingsIOS = new IOSInitializationSettings();
-    var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   void showNotification(message) async {
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        new FlutterLocalNotificationsPlugin();
     var initializationSettingsAndroid =
-    new AndroidInitializationSettings('app_icon');
+        new AndroidInitializationSettings('app_icon');
     var initializationSettingsIOS = new IOSInitializationSettings(
         onDidReceiveLocalNotification: onDidReceiveLocalNotification);
     var initializationSettings = new InitializationSettings(
@@ -107,7 +114,7 @@ class NewChatScreenState extends State<NewChatScreen> {
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-      Platform.isAndroid ? 'com.mojab.advicebee.v0': 'com.mojab.advicebee.v0',
+      Platform.isAndroid ? 'com.mojab.advicebee.v0' : 'com.mojab.advicebee.v0',
       'Flutter chat demo',
       'your channel description',
       playSound: true,
@@ -117,10 +124,10 @@ class NewChatScreenState extends State<NewChatScreen> {
       priority: Priority.High,
     );
     var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-    var platformChannelSpecifics =
-    new NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-        0, message['title'].toString(), message['body'].toString(), platformChannelSpecifics,
+    var platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(0, message['title'].toString(),
+        message['body'].toString(), platformChannelSpecifics,
         payload: json.encode(message));
   }
 
@@ -163,16 +170,18 @@ class NewChatScreenState extends State<NewChatScreen> {
         backgroundColor: Colors.teal,
         title: Text(
           'Chat',
-          style: TextStyle(color: Colors.white,),
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
         leading: GestureDetector(
           onTap: () {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => MainScreen(currentUserId: CurrentUser.userID,)
-                )
-            );
+                    builder: (context) => MainScreen(
+                          currentUserId: CurrentUser.userID,
+                        )));
           },
           child: Icon(Icons.add_comment),
         ),
@@ -201,11 +210,14 @@ class NewChatScreenState extends State<NewChatScreen> {
                       if (!snapshot.hasData) {
                         return Center(
                           child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.teal),
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.teal),
                           ),
                         );
                       } else {
-                        for(int index = 0; index < snapshot.data.documents.length; index++){
+                        for (int index = 0;
+                            index < snapshot.data.documents.length;
+                            index++) {
                           buildItem(context, snapshot.data.documents[index]);
                         }
                         return ListView(
@@ -230,18 +242,18 @@ class NewChatScreenState extends State<NewChatScreen> {
               ],
             ),
           ],
-        ), onWillPop: () {},
+        ),
+        onWillPop: () {},
       ),
-      floatingActionButton:
-      FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (CurrentUser.isNotGuest) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => postQuestion(null, null) //AddPost(),
-                ));
-          } else{
+                    ));
+          } else {
             guestUserSignInMessage(context);
           }
         },
@@ -256,14 +268,13 @@ class NewChatScreenState extends State<NewChatScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: globalNavigationBar(3, context, key, false),
-
     );
   }
 
   Widget buildItem(BuildContext context, DocumentSnapshot document) {
-    if(document['peerId'] == currentUserId){
+    if (document['peerId'] == currentUserId) {
       if (document.documentID == currentUserId) {
-      } else if(document['approved'] == false){
+      } else if (document['approved'] == false) {
         waitingFromSet.add(Container(
           child: Card(
             child: Column(
@@ -287,23 +298,35 @@ class NewChatScreenState extends State<NewChatScreen> {
                     style: TextStyle(color: primaryColor),
                   ),
                 ),
-                new ButtonBar(
-                    children: <Widget>[
-                      new FlatButton(
-                        child: const Text('Accept Chat', style: TextStyle(color: Colors.green),),
-                        onPressed: () { Firestore.instance.collection('chats').document(document.documentID).updateData({'approved': true}); },
-                      ),
-                      new FlatButton(
-                        child: const Text('Deny Chat', style: TextStyle(color: Colors.red)),
-                        onPressed: () { Firestore.instance.collection('chats').document(document.documentID).delete(); },
-                      )
-                    ]
-                ),
+                new ButtonBar(children: <Widget>[
+                  new FlatButton(
+                    child: const Text(
+                      'Accept Chat',
+                      style: TextStyle(color: Colors.green),
+                    ),
+                    onPressed: () {
+                      Firestore.instance
+                          .collection('chats')
+                          .document(document.documentID)
+                          .updateData({'approved': true});
+                    },
+                  ),
+                  new FlatButton(
+                    child: const Text('Deny Chat',
+                        style: TextStyle(color: Colors.red)),
+                    onPressed: () {
+                      Firestore.instance
+                          .collection('chats')
+                          .document(document.documentID)
+                          .delete();
+                    },
+                  )
+                ]),
               ],
             ),
           ),
         ));
-      } else if(document['approved'] == true){
+      } else if (document['approved'] == true) {
         chatsSet.add(Container(
           child: FlatButton(
             child: Card(
@@ -311,25 +334,26 @@ class NewChatScreenState extends State<NewChatScreen> {
                 leading: Material(
                   child: document['profilePicURL'] != null
                       ? CachedNetworkImage(
-                    placeholder: (context, url) => Container(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 1.0,
-                        valueColor: AlwaysStoppedAnimation<Color>(themeColor),
-                      ),
-                      width: 50.0,
-                      height: 50.0,
-                      padding: EdgeInsets.all(15.0),
-                    ),
-                    imageUrl: document['profilePicURL'],
-                    width: 50.0,
-                    height: 50.0,
-                    fit: BoxFit.cover,
-                  )
+                          placeholder: (context, url) => Container(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 1.0,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(themeColor),
+                            ),
+                            width: 50.0,
+                            height: 50.0,
+                            padding: EdgeInsets.all(15.0),
+                          ),
+                          imageUrl: document['profilePicURL'],
+                          width: 50.0,
+                          height: 50.0,
+                          fit: BoxFit.cover,
+                        )
                       : Icon(
-                    Icons.account_circle,
-                    size: 50.0,
-                    color: greyColor,
-                  ),
+                          Icons.account_circle,
+                          size: 50.0,
+                          color: greyColor,
+                        ),
                   borderRadius: BorderRadius.all(Radius.circular(25.0)),
                   clipBehavior: Clip.hardEdge,
                 ),
@@ -345,59 +369,71 @@ class NewChatScreenState extends State<NewChatScreen> {
             ),
             onPressed: () {
               String groupChatId;
-              if (currentUserId.hashCode <=  document['id'].hashCode) {
+              if (currentUserId.hashCode <= document['id'].hashCode) {
                 groupChatId = '$currentUserId-${document['id']}';
               } else {
                 groupChatId = '${document['id']}-$currentUserId';
               }
-              print("groupChat: "+groupChatId);
+              print("groupChat: " + groupChatId);
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => Chat(
-                        userId: currentUserId,
-                        chatId: groupChatId,
-                        peerId: document['id'],
-                        peerAvatar: document['profilePicURL'],
-                        peerName: document['displayName'],
-                      )
-                  )
-              );
+                            userId: currentUserId,
+                            chatId: groupChatId,
+                            peerId: document['id'],
+                            peerAvatar: document['profilePicURL'],
+                            peerName: document['displayName'],
+                          )));
             },
           ),
         ));
       }
-    }else if(document['id'] == currentUserId){
+    } else if (document['id'] == currentUserId) {
       if (document['peerId'] == currentUserId) {
-      } else if(document['approved'] == false){
-        waitingToSet.add(Container(
-          child: Card(
-            child: Column(
-              children: <Widget>[
-                ListTile(
-                  leading: Material(
-                    child: Icon(
-                      Icons.comment,
-                      size: 50.0,
-                      color: Colors.grey,
+      } else if (document['approved'] == false) {
+        waitingToSet.add(Slidable(
+            actionPane: SlidableDrawerActionPane(),
+            actionExtentRatio: 0.25,
+            secondaryActions: <Widget>[
+              IconSlideAction(
+                  caption: 'Cancel',
+                  color: Colors.red,
+                  icon: Icons.cancel,
+                  onTap: (){
+                    Firestore.instance.collection('chats').document(document.documentID).delete();
+                  }
+              ),
+            ],
+            child: Container(
+              child: Card(
+                child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      leading: Material(
+                        child: Icon(
+                          Icons.comment,
+                          size: 50.0,
+                          color: Colors.grey,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                        clipBehavior: Clip.hardEdge,
+                      ),
+                      title: Text(
+                        'Name: ${document['peerNickname']}',
+                        style: TextStyle(color: primaryColor),
+                      ),
+                      subtitle: Text(
+                        'Pending approval...',
+                        style: TextStyle(color: primaryColor),
+                      ),
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                    clipBehavior: Clip.hardEdge,
-                  ),
-                  title: Text(
-                    'Name: ${document['peerNickname']}',
-                    style: TextStyle(color: primaryColor),
-                  ),
-                  subtitle: Text(
-                    'Pending approval...',
-                    style: TextStyle(color: primaryColor),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-        ));
-      } else if(document['approved'] == true){
+              ),
+            ))
+        );
+      } else if (document['approved'] == true) {
         chatsSet.add(Container(
           child: FlatButton(
             child: Card(
@@ -405,25 +441,26 @@ class NewChatScreenState extends State<NewChatScreen> {
                 leading: Material(
                   child: document['peerPhotoUrl'] != null
                       ? CachedNetworkImage(
-                    placeholder: (context, url) => Container(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 1.0,
-                        valueColor: AlwaysStoppedAnimation<Color>(themeColor),
-                      ),
-                      width: 50.0,
-                      height: 50.0,
-                      padding: EdgeInsets.all(15.0),
-                    ),
-                    imageUrl: document['peerPhotoUrl'],
-                    width: 50.0,
-                    height: 50.0,
-                    fit: BoxFit.cover,
-                  )
+                          placeholder: (context, url) => Container(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 1.0,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(themeColor),
+                            ),
+                            width: 50.0,
+                            height: 50.0,
+                            padding: EdgeInsets.all(15.0),
+                          ),
+                          imageUrl: document['peerPhotoUrl'],
+                          width: 50.0,
+                          height: 50.0,
+                          fit: BoxFit.cover,
+                        )
                       : Icon(
-                    Icons.account_circle,
-                    size: 50.0,
-                    color: greyColor,
-                  ),
+                          Icons.account_circle,
+                          size: 50.0,
+                          color: greyColor,
+                        ),
                   borderRadius: BorderRadius.all(Radius.circular(25.0)),
                   clipBehavior: Clip.hardEdge,
                 ),
@@ -444,19 +481,17 @@ class NewChatScreenState extends State<NewChatScreen> {
               } else {
                 groupChatId = '${document['peerId']}-$currentUserId';
               }
-              print("groupChat: "+groupChatId);
+              print("groupChat: " + groupChatId);
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => Chat(
-                        userId: currentUserId,
-                        chatId: groupChatId,
-                        peerId: document['peerId'],
-                        peerAvatar: document['peerPhotoUrl'],
-                        peerName: document['peerNickname'],
-                      )
-                  )
-              );
+                            userId: currentUserId,
+                            chatId: groupChatId,
+                            peerId: document['peerId'],
+                            peerAvatar: document['peerPhotoUrl'],
+                            peerName: document['peerNickname'],
+                          )));
             },
           ),
         ));

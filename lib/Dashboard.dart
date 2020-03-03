@@ -956,13 +956,14 @@ class DashboardState extends State<Dashboard> {
           title: Text('Dashboard'),
           leading: MaterialButton(
             key: key,
-            minWidth: MediaQuery.of(context).size.width,
+            minWidth: MediaQuery.of(context).size.width / 5,
             onPressed: () {
               onShow(key, context);
             },
-            child: Icon(Icons.menu, color:Colors.white)
-
-
+            child: Icon(
+              Icons.menu,
+              color: Colors.white,
+            ),
           ),
           actions: <Widget>[
             PopupMenuButton<String>(
@@ -986,7 +987,7 @@ class DashboardState extends State<Dashboard> {
             IconButton(
               icon: Icon(Icons.search),
               onPressed: () async {
-               await showSearch(
+                await showSearch(
                     context: context, delegate: TestSearch(getSearchBarData()));
               },
             ),
