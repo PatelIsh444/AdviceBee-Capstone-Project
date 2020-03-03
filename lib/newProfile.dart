@@ -180,7 +180,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                 doc["views"],
                   doc["reports"],
                 doc["anonymous"],
-                doc["multipleResponses"] == null ? false : doc["multipleResponses"],
+                doc["multipleResponses"] == null  Me  false : doc["multipleResponses"],
                 doc["imageURL"] == null ? null : doc["imageURL"],
               ));
               break;
