@@ -457,6 +457,8 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
             buildSeparator(deviceWidth),
             SizedBox(height: 10.0),
             CurrentUser.isNotGuest && CurrentUser.userID != widget.userID ? getFollowButton() : Container(),
+            SizedBox(height: 10.0),
+            CurrentUser.isNotGuest && CurrentUser.userID != widget.userID ? getChatButton() : Container(),
             SizedBox(height: 30.0),
             //userPosts(deviceWidth),
             //SizedBox(height: 30,)
