@@ -178,9 +178,9 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                 doc["topicName"] == null ? null : doc["topicName"],
                 doc["likes"],
                 doc["views"],
-                doc["reports"],
+                  doc["reports"],
                 doc["anonymous"],
-                doc["multipleResponses"] == null ? null : doc["multipleResponses"],
+                doc["multipleResponses"] == null ? false : doc["multipleResponses"],
                 doc["imageURL"] == null ? null : doc["imageURL"],
               ));
               break;
@@ -725,33 +725,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     return Center(
       child: InkResponse(
         onTap: () {
-            String groupChatId = '';
-            String peerIdLocal = widget.userID;
-            User peerUserInfo = userInformation;
-            String localUserId = CurrentUser.userID;
-            if (localUserId.hashCode <= peerIdLocal.hashCode) {
-              groupChatId = "$localUserId-$peerIdLocal";
-            } else {
-              groupChatId = "$peerIdLocal-$localUserId";
-            }
-            Firestore.instance.collection('chats').document(groupChatId)
-                .setData({
-              'id': localUserId,
-              'displayName': CurrentUser.displayName,
-              'profilePicURL': CurrentUser.profilePicURL,
-              'bio': CurrentUser.bio,
-              'peerBio': peerUserInfo.bio,
-              'peerNickname': peerUserInfo.displayName,
-              'peerPhotoUrl': peerUserInfo.profilePicURL,
-              'peerId': peerIdLocal,
-              'approved': false,
-            });
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,)
-              ),
-          );
+          print("Navigate me");
         },
         child: Padding(
           padding: EdgeInsets.only(left: 30, right: 30),
