@@ -24,6 +24,7 @@ import './utils/commonFunctions.dart';
 import 'package:image/image.dart' as im;
 
 import 'pages/MainChatScreen.dart';
+import 'pages/MoreQuestions.dart';
 import 'pages/NewChat.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -938,6 +939,10 @@ class ProfilePageState extends State<ProfilePage> {
     else if(link == "chat"){
       route=MaterialPageRoute(
           builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,));
+    }else if(link == "buyquestions"){
+      route=MaterialPageRoute(
+          builder: (BuildContext context) => BuyMoreQuestions()
+      );
     }
 
 
@@ -988,7 +993,7 @@ class ProfilePageState extends State<ProfilePage> {
         borderRadius: BorderRadius.circular(8.0),
         shadowColor: Colors.white,
         child: Container(
-          height: 300.0,
+          height: 400.0,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.0),
@@ -1002,6 +1007,8 @@ class ProfilePageState extends State<ProfilePage> {
               _buildIconTile(LineIcons.cog, Colors.grey.withOpacity(0.6), 'Settings', 'profile'),
               hr,
               _buildIconTile(Icons.chat, Colors.black, 'Chats','chat'),
+              hr,
+              _buildIconTile(Icons.card_giftcard, Colors.yellow, 'Buy More Questions','buyquestions'),
               hr,
             ],
           ),
