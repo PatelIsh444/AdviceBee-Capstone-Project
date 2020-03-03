@@ -731,7 +731,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
           child: Container(
             height: 40.0,
             decoration: BoxDecoration(
-                color: Colors.teal,
+                color: Colors.lightBlueAccent,
                 borderRadius: BorderRadius.circular(20.0)),
             child: Center(
               child: Row(
