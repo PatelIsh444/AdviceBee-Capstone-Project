@@ -724,6 +724,28 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     return Center(
       child: InkResponse(
         onTap: () {
+          String groupChatId = '';
+          String peerIdLocal = userInformation.userID;
+          User peerLocal = userInformation;
+          String currentUserId = CurrentUser.userID;
+          User currentUser = CurrentUser;
+          if (currentUserId.hashCode <= peerIdLocal.hashCode) {
+            groupChatId = "$currentUserId-$peerIdLocal";
+          } else {
+            groupChatId = "$peerIdLocal-$currentUserId";
+          }
+          Firestore.instance.collection('chats').document(groupChatId)
+              .setData({
+            'id': currentUserId,
+            'displayName': currentUser.userID,
+            'profilePicURL': currentUser.profilePicURL,
+            'bio': currentUser.bio,
+            'peerBio': peerLocal.bio,
+            'peerNickname': peerLocal.displayName,
+            'peerPhotoUrl': peerLocal.profilePicURL,
+            'peerId': peerLocal.userID,
+            'approved': false,
+          });
           Navigator.push(
               context,
               MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,)),
