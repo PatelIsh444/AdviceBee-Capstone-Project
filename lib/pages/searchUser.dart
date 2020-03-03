@@ -89,7 +89,6 @@ class searchUser extends SearchDelegate<String> {
               .where((d) =>
                   d["displayName"].toString().toLowerCase().contains(query))
               .toList();
-
           return SuggestionList(
             query: query,
             suggestions: suggestions,
