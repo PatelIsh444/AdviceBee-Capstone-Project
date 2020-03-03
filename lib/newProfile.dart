@@ -717,6 +717,40 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     );
   }
 
+  Widget getChatButton() {
+    return Center(
+      child: InkResponse(
+        onTap: () {
+
+        },
+        child: Padding(
+          padding: EdgeInsets.only(left: 30, right: 30),
+          child: Container(
+            height: 40.0,
+            decoration: BoxDecoration(
+                color: Colors.teal,
+                borderRadius: BorderRadius.circular(20.0)),
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text(
+                    "Message",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget getFollowButton() {
     if (isFollowed) {
       buttonText = "Unfollow";
