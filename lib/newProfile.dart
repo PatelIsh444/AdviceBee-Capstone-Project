@@ -16,6 +16,8 @@ import 'Profile.dart' as cProfile;
 import 'OtherUserPosts.dart';
 import 'OtherUserFollowerPage.dart';
 import './utils/commonFunctions.dart';
+import 'pages/Chat.dart';
+import 'pages/NewChat.dart';
 
 class UserDetailsPage extends StatefulWidget {
   String userID;
@@ -456,6 +458,8 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
             buildSeparator(deviceWidth),
             SizedBox(height: 10.0),
             CurrentUser.isNotGuest && CurrentUser.userID != widget.userID ? getFollowButton() : Container(),
+            SizedBox(height: 10.0),
+            CurrentUser.isNotGuest && CurrentUser.userID != widget.userID ? getChatButton() : Container(),
             SizedBox(height: 30.0),
             //userPosts(deviceWidth),
             //SizedBox(height: 30,)
@@ -712,6 +716,40 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
           userInformation.bio,
           textAlign: TextAlign.center,
           style: bioTextStyle,
+        ),
+      ),
+    );
+  }
+
+  Widget getChatButton() {
+    return Center(
+      child: InkResponse(
+        onTap: () {
+          print("Navigate me");
+        },
+        child: Padding(
+          padding: EdgeInsets.only(left: 30, right: 30),
+          child: Container(
+            height: 40.0,
+            decoration: BoxDecoration(
+                color: Colors.teal,
+                borderRadius: BorderRadius.circular(20.0)),
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text(
+                    "Message",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
