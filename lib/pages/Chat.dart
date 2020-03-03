@@ -21,12 +21,15 @@ class Chat extends StatelessWidget {
   final String peerId;
   final String userId;
   final String peerAvatar;
-  String peerName="Chat";
+  final String peerName;
 
-  Chat({Key key,@required this.userId, @required this.chatId, @required this.peerId, @required this.peerAvatar}) : super(key: key);
+  Chat({Key key,@required this.userId, @required this.chatId,
+    @required this.peerId,@required this.peerAvatar,@required this.peerName
+    }) : super(key: key);
 
-  @override
+
   Widget build(BuildContext context) {
+
     return new Scaffold(
       appBar: new AppBar(
         backgroundColor: Colors.teal,

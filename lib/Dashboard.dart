@@ -971,8 +971,8 @@ class DashboardState extends State<Dashboard> {
             ),
             IconButton(
               icon: Icon(Icons.search),
-              onPressed: () {
-                showSearch(
+              onPressed: () async {
+               await showSearch(
                     context: context, delegate: TestSearch(getSearchBarData()));
               },
             ),

@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
+import '../SearchBar.dart';
 import '../utils/commonFunctions.dart';
 
 import '../Dashboard.dart';
@@ -18,6 +19,8 @@ import './chat.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+import 'searchUser.dart';
 
 class NewChatScreen extends StatefulWidget {
   final String currentUserId;
@@ -173,6 +176,14 @@ class NewChatScreenState extends State<NewChatScreen> {
           },
           child: Icon(Icons.add_comment),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              showSearch(context: context, delegate: searchUser());
+            },
+          ),
+        ],
       ),
       body: WillPopScope(
         child: ListView(
@@ -348,6 +359,7 @@ class NewChatScreenState extends State<NewChatScreen> {
                         chatId: groupChatId,
                         peerId: document['id'],
                         peerAvatar: document['profilePicURL'],
+                        peerName: document['displayName'],
                       )
                   )
               );
@@ -441,6 +453,7 @@ class NewChatScreenState extends State<NewChatScreen> {
                         chatId: groupChatId,
                         peerId: document['peerId'],
                         peerAvatar: document['peerPhotoUrl'],
+                        peerName: document['peerNickname'],
                       )
                   )
               );
