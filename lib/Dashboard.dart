@@ -55,7 +55,9 @@ class Dashboard extends StatefulWidget {
   static String id = 'dashboard';
 
   String selectedTopic;
+
   Dashboard();
+
   Dashboard.selectedTopic(this.selectedTopic);
 
   @override
@@ -63,7 +65,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class DashboardState extends State<Dashboard> {
-  int currentTab = 0;// to keep track of active tab index
+  int currentTab = 0; // to keep track of active tab index
   GlobalKey key = GlobalKey();
 
   bool isTopicLoaded = true;
@@ -85,13 +87,14 @@ class DashboardState extends State<Dashboard> {
     SortValues("Most Responded", false),
   ];
   Future<List<String>> getTopicsFuture;
-  bool noTopicChange=true;
+  bool noTopicChange = true;
 
   //Code for late use: like number format 1K, 1M
   var _formattedNumber = NumberFormat.compact().format(1000);
 
   final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      new FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -100,7 +103,7 @@ class DashboardState extends State<Dashboard> {
     super.initState();
     registerNotification();
     configLocalNotification();
-    if (Platform.isIOS){
+    if (Platform.isIOS) {
       iOS_Permission();
     }
     if (widget.selectedTopic == null) {
@@ -133,7 +136,10 @@ class DashboardState extends State<Dashboard> {
 
     firebaseMessaging.getToken().then((token) {
       print('token: $token');
-      Firestore.instance.collection('users').document(CurrentUser.userID).updateData({'pushToken': token});
+      Firestore.instance
+          .collection('users')
+          .document(CurrentUser.userID)
+          .updateData({'pushToken': token});
     }).catchError((err) {
       Fluttertoast.showToast(msg: err.message.toString());
     });
@@ -141,26 +147,27 @@ class DashboardState extends State<Dashboard> {
 
   void iOS_Permission() {
     firebaseMessaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true)
-    );
+        IosNotificationSettings(sound: true, badge: true, alert: true));
     firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings)
-    {
+        .listen((IosNotificationSettings settings) {
       print("Settings registered: $settings");
     });
   }
 
   void configLocalNotification() {
-    var initializationSettingsAndroid = new AndroidInitializationSettings('icon.png');
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('icon.png');
     var initializationSettingsIOS = new IOSInitializationSettings();
-    var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   void showNotification(message) async {
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        new FlutterLocalNotificationsPlugin();
     var initializationSettingsAndroid =
-    new AndroidInitializationSettings('icon.png');
+        new AndroidInitializationSettings('icon.png');
     var initializationSettingsIOS = new IOSInitializationSettings(
         onDidReceiveLocalNotification: onDidReceiveLocalNotification);
     var initializationSettings = new InitializationSettings(
@@ -168,7 +175,7 @@ class DashboardState extends State<Dashboard> {
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-      Platform.isAndroid ? 'mojab.app.advicebee.v0': 'mojab.app.advicebee.v0',
+      Platform.isAndroid ? 'mojab.app.advicebee.v0' : 'mojab.app.advicebee.v0',
       'AdviceBee Mobile App',
       'AdviceBee Ask Anything',
       playSound: true,
@@ -178,10 +185,10 @@ class DashboardState extends State<Dashboard> {
       priority: Priority.High,
     );
     var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-    var platformChannelSpecifics =
-    new NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-        0, message['title'].toString(), message['body'].toString(), platformChannelSpecifics,
+    var platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(0, message['title'].toString(),
+        message['body'].toString(), platformChannelSpecifics,
         payload: json.encode(message));
   }
 
@@ -191,7 +198,8 @@ class DashboardState extends State<Dashboard> {
     }
   }
 
-  Future onDidReceiveLocalNotification(int id, String title, String body, String payload) async {
+  Future onDidReceiveLocalNotification(
+      int id, String title, String body, String payload) async {
     // display a dialog with the notification details, tap ok to go to another page
     showDialog(
       context: context,
@@ -228,9 +236,9 @@ class DashboardState extends State<Dashboard> {
         .orderBy('topicName', descending: false)
         .getDocuments()
         .then((QuerySnapshot data) =>
-        data.documents.forEach((doc) => tempTopics.add(
-          doc["topicName"],
-        )));
+            data.documents.forEach((doc) => tempTopics.add(
+                  doc["topicName"],
+                )));
 
     allTopicsName = tempTopics;
     //topics = tempTopics;
@@ -280,11 +288,10 @@ class DashboardState extends State<Dashboard> {
                         child: MultiSelectChip(
                           "topic",
                           allTopicsName,
-
                           onSelectionChanged: (selectedList) {
                             setState(() {
                               selectedTopics = selectedList;
-                              noTopicChange=false;
+                              noTopicChange = false;
                             });
                           },
                         ),
@@ -319,15 +326,17 @@ class DashboardState extends State<Dashboard> {
   _topicOnSelected(FirebaseUser user) async {
     /*Check if selectedTopics is same to myTopics. If they are then there is no
     * topic change, which means there is no point in writing to the database*/
-    bool topicListsAreSameSize=selectedTopics!=null && CurrentUser.myTopics != null && selectedTopics.length == CurrentUser.myTopics.length;
-    if (topicListsAreSameSize){
+    bool topicListsAreSameSize = selectedTopics != null &&
+        CurrentUser.myTopics != null &&
+        selectedTopics.length == CurrentUser.myTopics.length;
+    if (topicListsAreSameSize) {
       CurrentUser.myTopics.sort((a, b) => a.compareTo(b));
       selectedTopics.sort((a, b) => a.compareTo(b));
 
-      noTopicChange=true;
-      for (int i=0; i<selectedTopics.length; i++){
-        if (selectedTopics[i]!=CurrentUser.myTopics[i]){
-          noTopicChange=false;
+      noTopicChange = true;
+      for (int i = 0; i < selectedTopics.length; i++) {
+        if (selectedTopics[i] != CurrentUser.myTopics[i]) {
+          noTopicChange = false;
           break;
         }
       }
@@ -338,14 +347,13 @@ class DashboardState extends State<Dashboard> {
     topic has actually been clicked/changed so it doesn't delete their topics
     if a user presses edit and confirm without making a selection*/
     if (selectedTopics != null && !noTopicChange) {
-
       await usersRef.document(user.uid).updateData({
         'myTopics': selectedTopics,
       });
 
       setState(() {
         CurrentUser.myTopics = selectedTopics;
-        noTopicChange=true;
+        noTopicChange = true;
         getTopics();
       });
       Navigator.pushNamed(context, Dashboard.id);
@@ -475,9 +483,9 @@ class DashboardState extends State<Dashboard> {
         CurrentUser = UserClass.User.fromDocument(doc);
         //If the user logged in with email for the first time then
         //prompt topics selection
-      }
-
-      else if(!user.isEmailVerified && !user.isAnonymous && user.photoUrl == null) {
+      } else if (!user.isEmailVerified &&
+          !user.isAnonymous &&
+          user.photoUrl == null) {
         //user logged with Facebook email is null but email is verified
         //Bypassed email confirmation for Facebook User
 
@@ -682,18 +690,16 @@ class DashboardState extends State<Dashboard> {
     }
 
     postList = postInfo;
-    if (choices[2].isSelected){
+    if (choices[2].isSelected) {
       sortByLikes();
-    }
-    else if(choices[3].isSelected){
+    } else if (choices[3].isSelected) {
       sortByViews();
-    }
-    else if (choices[4].isSelected){
+    } else if (choices[4].isSelected) {
       sortByResponseCount();
     }
 
     getThumbnails();
-    if (postInfo==null || (postInfo!=null && postInfo.length<1)){
+    if (postInfo == null || (postInfo != null && postInfo.length < 1)) {
       emptyTopic(context, topicName);
     }
     return true;
@@ -702,7 +708,8 @@ class DashboardState extends State<Dashboard> {
   Widget emptyTopic(BuildContext context, String topicName) {
     return Flushbar(
       title: "No Posts!",
-      message: "There are no posts in $topicName right now. Be the first to post!",
+      message:
+          "There are no posts in $topicName right now. Be the first to post!",
       duration: Duration(seconds: 6),
       backgroundColor: Colors.teal,
     )..show(context);
@@ -731,33 +738,28 @@ class DashboardState extends State<Dashboard> {
     }
   }
 
-  void selectSortType(String choice){
+  void selectSortType(String choice) {
     //Check if list of posts is null or empty before attempting sorts
-    if (postList==null || postList.length<1){
+    if (postList == null || postList.length < 1) {
       return;
     }
 
     String newChoice = choice.toLowerCase();
-    if (newChoice=="most likes"){
+    if (newChoice == "most likes") {
       print("sorting by likes");
       sortByLikes();
-    }
-    else if (newChoice=="recently added"){
+    } else if (newChoice == "recently added") {
       print("sorting by recently added");
       sortByDate();
-    }
-    else if (newChoice=="most viewed"){
+    } else if (newChoice == "most viewed") {
       print("sorting by views");
       sortByViews();
-    }
-    else if (newChoice=="most responded"){
+    } else if (newChoice == "most responded") {
       print("Sorting by responses count");
       sortByResponseCount();
-    }
-    else {
+    } else {
       print("Couldn't identify sorting method");
     }
-
   }
 
   int getLikeCount(Map likes) {
@@ -775,24 +777,25 @@ class DashboardState extends State<Dashboard> {
     return count;
   }
 
-  void sortByLikes(){
+  void sortByLikes() {
     List<questions> tempList = new List();
     List<questions> sortedList = new List();
 
     /*Add all items from postList to tempList, DO NOT USE tempList=postList, as this
     * changes the memory location only and will result in postList losing half of it's
     * values everytime this function is called*/
-    for (int i=0; i<postList.length; i++){
+    for (int i = 0; i < postList.length; i++) {
       tempList.add(postList[i]);
     }
 
     //Sorting algorithm to find most liked objects
-    for (int i = 0; i<postList.length; i++){
-      int mostLikedIndex=0;
-      for (int j = 1; j < tempList.length; j++){
+    for (int i = 0; i < postList.length; i++) {
+      int mostLikedIndex = 0;
+      for (int j = 1; j < tempList.length; j++) {
         //Check the number of likes, if j's object has more likes then set new index
-        if (getLikeCount(tempList[j].likes) > getLikeCount(tempList[mostLikedIndex].likes)){
-          mostLikedIndex=j;
+        if (getLikeCount(tempList[j].likes) >
+            getLikeCount(tempList[mostLikedIndex].likes)) {
+          mostLikedIndex = j;
         }
       }
       sortedList.add(tempList[mostLikedIndex]);
@@ -800,39 +803,38 @@ class DashboardState extends State<Dashboard> {
     }
 
     setState(() {
-      postList=sortedList;
+      postList = sortedList;
 
       /*Changes isSelected to true for "Most Likes" and false for everything else
       * to properly highlight the user's selected sorting method*/
-      for (int i=0; i< choices.length; i++){
-        if (choices[i].choice=="Most Likes"){
-          choices[i].isSelected=true;
-        }
-        else {
-          choices[i].isSelected=false;
+      for (int i = 0; i < choices.length; i++) {
+        if (choices[i].choice == "Most Likes") {
+          choices[i].isSelected = true;
+        } else {
+          choices[i].isSelected = false;
         }
       }
     });
   }
 
-  void sortByViews(){
+  void sortByViews() {
     List<questions> tempList = new List();
     List<questions> sortedList = new List();
 
     /*Add all items from postList to tempList, DO NOT USE tempList=postList, as this
     * changes the memory location only and will result in postList losing half of it's
     * values everytime this function is called*/
-    for (int i=0; i<postList.length; i++){
+    for (int i = 0; i < postList.length; i++) {
       tempList.add(postList[i]);
     }
 
     //Sorting algorithm to find most liked objects
-    for (int i = 0; i<postList.length; i++){
-      int mostViewedIndex=0;
-      for (int j = 1; j < tempList.length; j++){
+    for (int i = 0; i < postList.length; i++) {
+      int mostViewedIndex = 0;
+      for (int j = 1; j < tempList.length; j++) {
         //Check the number of likes, if j's object has more likes then set new index
-        if (tempList[j].views.length > tempList[mostViewedIndex].views.length){
-          mostViewedIndex=j;
+        if (tempList[j].views.length > tempList[mostViewedIndex].views.length) {
+          mostViewedIndex = j;
         }
       }
       sortedList.add(tempList[mostViewedIndex]);
@@ -840,39 +842,39 @@ class DashboardState extends State<Dashboard> {
     }
 
     setState(() {
-      postList=sortedList;
+      postList = sortedList;
 
       /*Changes isSelected to true for "Most Viewed" and false for everything else
       * to properly highlight the user's selected sorting method*/
-      for (int i=0; i< choices.length; i++){
-        if (choices[i].choice=="Most Viewed"){
-          choices[i].isSelected=true;
-        }
-        else {
-          choices[i].isSelected=false;
+      for (int i = 0; i < choices.length; i++) {
+        if (choices[i].choice == "Most Viewed") {
+          choices[i].isSelected = true;
+        } else {
+          choices[i].isSelected = false;
         }
       }
     });
   }
 
-  void sortByDate(){
+  void sortByDate() {
     List<questions> tempList = new List();
     List<questions> sortedList = new List();
 
     /*Add all items from postList to tempList, DO NOT USE tempList=postList, as this
     * changes the memory location only and will result in postList losing half of it's
     * values everytime this function is called*/
-    for (int i=0; i<postList.length; i++){
+    for (int i = 0; i < postList.length; i++) {
       tempList.add(postList[i]);
     }
 
     //Sorting algorithm to find most liked objects
-    for (int i = 0; i<postList.length; i++){
-      int dateIndex=0;
-      for (int j = 1; j < tempList.length; j++){
+    for (int i = 0; i < postList.length; i++) {
+      int dateIndex = 0;
+      for (int j = 1; j < tempList.length; j++) {
         //Check the number of likes, if j's object has more likes then set new index
-        if (tempList[j].datePosted.compareTo(tempList[dateIndex].datePosted) >=0 ) {
-          dateIndex=j;
+        if (tempList[j].datePosted.compareTo(tempList[dateIndex].datePosted) >=
+            0) {
+          dateIndex = j;
         }
       }
       sortedList.add(tempList[dateIndex]);
@@ -880,39 +882,39 @@ class DashboardState extends State<Dashboard> {
     }
 
     setState(() {
-      postList=sortedList;
+      postList = sortedList;
 
       /*Changes isSelected to true for "Recently Added" and false for everything else
       * to properly highlight the user's selected sorting method*/
-      for (int i=0; i< choices.length; i++){
-        if (choices[i].choice=="Recently Added"){
-          choices[i].isSelected=true;
-        }
-        else {
-          choices[i].isSelected=false;
+      for (int i = 0; i < choices.length; i++) {
+        if (choices[i].choice == "Recently Added") {
+          choices[i].isSelected = true;
+        } else {
+          choices[i].isSelected = false;
         }
       }
     });
   }
 
-  void sortByResponseCount(){
+  void sortByResponseCount() {
     List<questions> tempList = new List();
     List<questions> sortedList = new List();
 
     /*Add all items from postList to tempList, DO NOT USE tempList=postList, as this
     * changes the memory location only and will result in postList losing half of it's
     * values everytime this function is called*/
-    for (int i=0; i<postList.length; i++){
+    for (int i = 0; i < postList.length; i++) {
       tempList.add(postList[i]);
     }
 
     //Sorting algorithm to find most liked objects
-    for (int i = 0; i<postList.length; i++){
-      int mostRespondedIndex=0;
-      for (int j = 1; j < tempList.length; j++){
+    for (int i = 0; i < postList.length; i++) {
+      int mostRespondedIndex = 0;
+      for (int j = 1; j < tempList.length; j++) {
         //Check the number of likes, if j's object has more likes then set new index
-        if (tempList[j].numOfResponses > tempList[mostRespondedIndex].numOfResponses){
-          mostRespondedIndex=j;
+        if (tempList[j].numOfResponses >
+            tempList[mostRespondedIndex].numOfResponses) {
+          mostRespondedIndex = j;
         }
       }
       sortedList.add(tempList[mostRespondedIndex]);
@@ -920,16 +922,15 @@ class DashboardState extends State<Dashboard> {
     }
 
     setState(() {
-      postList=sortedList;
+      postList = sortedList;
 
       /*Changes isSelected to true for "Most Responded" and false for everything else
       * to properly highlight the user's selected sorting method*/
-      for (int i=0; i< choices.length; i++){
-        if (choices[i].choice=="Most Responded"){
-          choices[i].isSelected=true;
-        }
-        else {
-          choices[i].isSelected=false;
+      for (int i = 0; i < choices.length; i++) {
+        if (choices[i].choice == "Most Responded") {
+          choices[i].isSelected = true;
+        } else {
+          choices[i].isSelected = false;
         }
       }
     });
@@ -937,7 +938,6 @@ class DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-
     /*
     All components of the dashboard
     -AppBar
@@ -954,17 +954,32 @@ class DashboardState extends State<Dashboard> {
           automaticallyImplyLeading: false,
           centerTitle: true,
           title: Text('Dashboard'),
+          leading: MaterialButton(
+            key: key,
+            minWidth: MediaQuery.of(context).size.width / 5,
+            onPressed: () {
+              onShow(key, context);
+            },
+            child: Icon(
+              Icons.menu,
+              color: Colors.white,
+            ),
+          ),
           actions: <Widget>[
             PopupMenuButton<String>(
               icon: Icon(Icons.sort),
               onSelected: selectSortType,
-              itemBuilder: (BuildContext context){
-                return choices.map((SortValues choice){
+              itemBuilder: (BuildContext context) {
+                return choices.map((SortValues choice) {
                   return PopupMenuItem<String>(
                     value: choice.choice,
-                      child:
-                    Text(choice.choice,
-                    style: TextStyle(color: choice.isSelected==true ? Colors.teal : Colors.black),),
+                    child: Text(
+                      choice.choice,
+                      style: TextStyle(
+                          color: choice.isSelected == true
+                              ? Colors.teal
+                              : Colors.black),
+                    ),
                   );
                 }).toList();
               },
@@ -972,7 +987,7 @@ class DashboardState extends State<Dashboard> {
             IconButton(
               icon: Icon(Icons.search),
               onPressed: () async {
-               await showSearch(
+                await showSearch(
                     context: context, delegate: TestSearch(getSearchBarData()));
               },
             ),
@@ -1016,8 +1031,7 @@ class DashboardState extends State<Dashboard> {
                     child: CircularProgressIndicator(),
                   );
                 }
-                if(snapshot.hasData)
-                {
+                if (snapshot.hasData) {
                   allTopicsList = snapshot.data[1];
                   /*
                   These two functions are used to build a horizontal listview that contains
@@ -1025,19 +1039,19 @@ class DashboardState extends State<Dashboard> {
                    */
                   final listOfTopics = isTopicLoaded
                       ? Container(
-                    height: 65.0,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: topics
-                          .map((topic) => _buildTopicCard(topic, context))
-                          .toList(),
-                    ),
-                  )
+                          height: 65.0,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: topics
+                                .map((topic) => _buildTopicCard(topic, context))
+                                .toList(),
+                          ),
+                        )
                       : Center(
-                    child: CircularProgressIndicator(),
-                  );
+                          child: CircularProgressIndicator(),
+                        );
 
-                   topicsList = Container(
+                  topicsList = Container(
                     margin: EdgeInsets.only(top: 2.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1056,17 +1070,17 @@ class DashboardState extends State<Dashboard> {
                       padding: EdgeInsets.all(20),
                       child: Center(
                           child: Text(
-                            " ",
-                            style: TextStyle(fontSize: 20),
-                            textAlign: TextAlign.center,
-                          )));
+                        " ",
+                        style: TextStyle(fontSize: 20),
+                        textAlign: TextAlign.center,
+                      )));
                 }
                 //Build the topics and the question cards onto the page.
                 return Column(
                   children: <Widget>[
                     topicsList,
-                  QuestionCards.QuestionCards(CurrentUser,
-                      highlightTopic, postList, true, "topics"),
+                    QuestionCards.QuestionCards(
+                        CurrentUser, highlightTopic, postList, true, "topics"),
                   ],
                 );
               },
