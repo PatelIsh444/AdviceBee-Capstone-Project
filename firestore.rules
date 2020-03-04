@@ -14,26 +14,35 @@ service cloud.firestore {
 
     match /groups/{groupId} {
     	allow read;
-      allow update; // TODO: update current logic to use FB-Functions instead of direct modification.
-      allow create, delete: if userIsQueenBee() || userIsAdmin();
+      allow update: if request.auth != null; // TODO: update current logic to use FB-Functions instead of direct modification.
+      allow create: if userIsQueenBee() || userIsAdmin();
+      allow delete: if isOwnerOfGroup() || userIsAdmin();
 
       function userIsQueenBee() {
         return getUser().rank == 'Queen Bee';
       }
+
+      function isOwnerOfGroup() {
+      	return ("createdBy" in existingData()) && existingData().createdBy == request.auth.uid;
+      }
     }
     
     match /groups/{groupId}/groupQuestions/{question} {
-      allow read: if groupIsOpenToPublic() || userIsApartOfGroup(groupId) || userIsAdmin();
+      allow read: if groupIsOpenToPublic(groupId) || userIsApartOfGroup(groupId) || userIsAdmin();
       allow create: if userIsApartOfGroup(groupId) || userIsAdmin();
       allow update: if isOwnerOfPost() || userIsAdmin();
       allow delete: if isOwnerOfPost() || userIsAdmin();
+
+      function getGroupData(groupId) {
+        return get(/databases/$(database)/documents/groups/$(groupId)).data;
+      }
     
-      function groupIsOpenToPublic() {
-        return (("privateGroup" in existingData()) && existingData().privateGroup == false) || (("publicGroup" in existingData()) && existingData().publicGroup == true);
+      function groupIsOpenToPublic(groupId) {
+        return (("privateGroup" in getGroupData(groupId)) && getGroupData(groupId).privateGroup == false) || (("publicGroup" in getGroupData(groupId)) && getGroupData(groupId).publicGroup == true);
       }
 
       function userIsApartOfGroup(groupId) {
-        return ("joinedGroups" in existingData()) && getUser().joinedGroups.hasAll([groupId]);
+        return ("joinedGroups" in getUser()) && getUser().joinedGroups.hasAll([groupId]);
       }
 
       function isOwnerOfPost() {
