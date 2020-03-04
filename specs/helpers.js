@@ -6,7 +6,7 @@ module.exports.setup = async (auth, data) => {
     // we need to give it a unique project id.
     const projectId = `rules-spec-${Date.now()}`;
 
-    const app = await firebase.initializeTestApp({
+    const app = firebase.initializeTestApp({
         projectId,
         auth
     });
