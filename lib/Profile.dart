@@ -23,6 +23,10 @@ import 'QuestionPage.dart';
 import './utils/commonFunctions.dart';
 import 'package:image/image.dart' as im;
 
+import 'pages/MainChatScreen.dart';
+import 'pages/MoreQuestions.dart';
+import 'pages/NewChat.dart';
+
 class ProfilePage extends StatefulWidget {
   @override
   ProfilePageState createState() => ProfilePageState();
@@ -932,6 +936,14 @@ class ProfilePageState extends State<ProfilePage> {
       route=MaterialPageRoute(
           builder: (BuildContext context) => AboutUsPage());
     }
+    else if(link == "chat"){
+      route=MaterialPageRoute(
+          builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,));
+    }else if(link == "buyquestions"){
+      route=MaterialPageRoute(
+          builder: (BuildContext context) => BuyMoreQuestions()
+      );
+    }
 
 
     //Building menu card container
@@ -981,7 +993,7 @@ class ProfilePageState extends State<ProfilePage> {
         borderRadius: BorderRadius.circular(8.0),
         shadowColor: Colors.white,
         child: Container(
-          height: 210.0,
+          height: 400.0,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.0),
@@ -993,6 +1005,11 @@ class ProfilePageState extends State<ProfilePage> {
               _buildIconTile(LineIcons.tags, Colors.black, 'Topics','topic'),
               hr,
               _buildIconTile(LineIcons.cog, Colors.grey.withOpacity(0.6), 'Settings', 'profile'),
+              hr,
+              _buildIconTile(Icons.chat, Colors.black, 'Chats','chat'),
+              hr,
+              _buildIconTile(Icons.card_giftcard, Colors.yellow, 'Buy More Questions','buyquestions'),
+              hr,
             ],
           ),
         ),

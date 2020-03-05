@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
 
       setState(() => _isLoading = true);
 
-     await auth.signInAnonymously();
+      await auth.signInAnonymously();
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -58,14 +58,12 @@ class _MyAppState extends State<MyApp> {
 
       await auth.signInWithGoogle(context);
       Navigator.pushNamed(context, Dashboard.id);
-    }
-    catch(e){
+    } catch (e) {
       print(e.toString());
     } finally {
       _isLoading = false;
     }
   }
-
 
   Future<void> _signInWithFacebook(BuildContext context) async {
     try {
@@ -79,8 +77,7 @@ class _MyAppState extends State<MyApp> {
           context,
           MaterialPageRoute(
             builder: (context) => Dashboard(),
-          )
-      );
+          ));
     } catch (e) {
       print(e.toString());
     } finally {
@@ -90,7 +87,6 @@ class _MyAppState extends State<MyApp> {
 
   void _signInWithEmail(BuildContext context) {
     Navigator.pushNamed(context, SignInScreen.id);
-
   }
 
   void _signUp(BuildContext context) {
@@ -104,199 +100,202 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.teal,
+      resizeToAvoidBottomPadding: false,
       body: ModalProgressHUD(
         inAsyncCall: _isLoading,
         child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              CircleAvatar(
-                backgroundColor: Colors.transparent,
-                radius: 50.0,
-                backgroundImage: AssetImage('images/logo.png'),
-              ),
-              Text(
-                'AdviceBee',
-                style: TextStyle(
-                    fontFamily: 'Pacifico',
-                    fontSize: 40.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
-              ),
-              Text(
-                'ASK FOR ADVICE',
-                style: TextStyle(
-                  fontFamily: 'Source Sans Pro',
-                  color: Colors.teal.shade100,
-                  fontSize: 20.0,
-                  letterSpacing: 2.5,
-                  fontWeight: FontWeight.bold,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  radius: 50.0,
+                  backgroundImage: AssetImage('images/logo.png'),
                 ),
-              ),
-              SizedBox(
-                height: 20.0,
-                width: 150.0,
-                child: Divider(
-                  color: Colors.teal.shade100,
+                Text(
+                  'AdviceBee',
+                  style: TextStyle(
+                      fontFamily: 'Pacifico',
+                      fontSize: 40.0,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
                 ),
-              ),
-              GestureDetector(
-                onTap: () => _signInWithEmail(context),
-                child: Container(
-                  padding: EdgeInsets.all(10.0),
-                  margin:
-                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(7.0),
-                    border: Border.all(color: Colors.white),
-                    color: Colors.transparent,
+                Text(
+                  'ASK FOR ADVICE',
+                  style: TextStyle(
+                    fontFamily: 'Source Sans Pro',
+                    color: Colors.teal.shade100,
+                    fontSize: 20.0,
+                    letterSpacing: 2.5,
+                    fontWeight: FontWeight.bold,
                   ),
-                  child: Center(
-                    child: Text(
-                      'LOG IN',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20.0,
-                        color: Colors.white,
+                ),
+                SizedBox(
+                  height: 20.0,
+                  width: 150.0,
+                  child: Divider(
+                    color: Colors.teal.shade100,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => _signInWithEmail(context),
+                  child: Container(
+                    padding: EdgeInsets.all(10.0),
+                    margin:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(7.0),
+                      border: Border.all(color: Colors.white),
+                      color: Colors.transparent,
+                    ),
+                    child: Center(
+                      child: Text(
+                        'LOG IN',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20.0,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () => _signUp(context),
-                child: Container(
-                  padding: EdgeInsets.all(10.0),
-                  margin:
-                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(7.0),
-                    border: Border.all(color: Colors.white),
-                    color: Colors.white,
-                  ),
-                  child: Center(
-                    child: Text(
-                      'SIGN UP',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20.0,
+                GestureDetector(
+                  onTap: () => _signUp(context),
+                  child: Container(
+                    padding: EdgeInsets.all(10.0),
+                    margin:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(7.0),
+                      border: Border.all(color: Colors.white),
+                      color: Colors.white,
+                    ),
+                    child: Center(
+                      child: Text(
+                        'SIGN UP',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20.0,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () => _signInAnonymously(context),
-                child: Container(
-                  padding: EdgeInsets.all(10.0),
-                  margin:
-                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(7.0),
-                    border: Border.all(color: Color(0xFFFFE000)),
-                    color: Color(0xFFFFE000),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Guest Access',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20.0,
+                GestureDetector(
+                  onTap: () => _signInAnonymously(context),
+                  child: Container(
+                    padding: EdgeInsets.all(10.0),
+                    margin:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(7.0),
+                      border: Border.all(color: Color(0xFFFFE000)),
+                      color: Color(0xFFFFE000),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Guest Access',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20.0,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 10.0),
-                child: Row(
+                Padding(
+                  padding: EdgeInsets.only(top: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: new LinearGradient(
+                              colors: [
+                                Colors.white10,
+                                Colors.white,
+                              ],
+                              begin: const FractionalOffset(0.0, 0.0),
+                              end: const FractionalOffset(1.0, 1.0),
+                              stops: [0.0, 1.0],
+                              tileMode: TileMode.clamp),
+                        ),
+                        width: 100.0,
+                        height: 1.0,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 15.0, right: 15.0),
+                        child: Text(
+                          "Or",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                              fontFamily: "Source Sans Pro"),
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: new LinearGradient(
+                              colors: [
+                                Colors.white,
+                                Colors.white10,
+                              ],
+                              begin: const FractionalOffset(0.0, 0.0),
+                              end: const FractionalOffset(1.0, 1.0),
+                              stops: [0.0, 1.0],
+                              tileMode: TileMode.clamp),
+                        ),
+                        width: 100.0,
+                        height: 1.0,
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: new LinearGradient(
-                            colors: [
-                              Colors.white10,
-                              Colors.white,
-                            ],
-                            begin: const FractionalOffset(0.0, 0.0),
-                            end: const FractionalOffset(1.0, 1.0),
-                            stops: [0.0, 1.0],
-                            tileMode: TileMode.clamp),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0, right: 40.0),
+                      child: GestureDetector(
+                        onTap: () => _signInWithGoogle(context),
+                        child: Container(
+                          padding: const EdgeInsets.all(15.0),
+                          decoration: new BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                          child: new Icon(
+                            FontAwesomeIcons.google,
+                            color: Color(0xFFEA4335),
+                            size: 30.0,
+                          ),
+                        ),
                       ),
-                      width: 100.0,
-                      height: 1.0,
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 15.0, right: 15.0),
-                      child: Text(
-                        "Or",
-                        style: TextStyle(
+                      padding: EdgeInsets.only(top: 10.0),
+                      child: GestureDetector(
+                        onTap: () => _signInWithFacebook(context),
+                        child: Container(
+                          padding: const EdgeInsets.all(15.0),
+                          decoration: new BoxDecoration(
+                            shape: BoxShape.circle,
                             color: Colors.white,
-                            fontSize: 16.0,
-                            fontFamily: "Source Sans Pro"),
+                          ),
+                          child: new Icon(
+                            FontAwesomeIcons.facebookF,
+                            color: Color(0xFF3B5998),
+                            size: 30.0,
+                          ),
+                        ),
                       ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: new LinearGradient(
-                            colors: [
-                              Colors.white,
-                              Colors.white10,
-                            ],
-                            begin: const FractionalOffset(0.0, 0.0),
-                            end: const FractionalOffset(1.0, 1.0),
-                            stops: [0.0, 1.0],
-                            tileMode: TileMode.clamp),
-                      ),
-                      width: 100.0,
-                      height: 1.0,
                     ),
                   ],
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 10.0, right: 40.0),
-                    child: GestureDetector(
-                      onTap: () => _signInWithGoogle(context),
-                      child: Container(
-                        padding: const EdgeInsets.all(15.0),
-                        decoration: new BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                        ),
-                        child: new Icon(
-                          FontAwesomeIcons.google,
-                          color: Color(0xFFEA4335),
-                          size: 30.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10.0),
-                    child: GestureDetector(
-                      onTap: () => _signInWithFacebook(context),
-                      child: Container(
-                        padding: const EdgeInsets.all(15.0),
-                        decoration: new BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                        ),
-                        child: new Icon(
-                          FontAwesomeIcons.facebookF,
-                          color: Color(0xFF3B5998),
-                          size: 30.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

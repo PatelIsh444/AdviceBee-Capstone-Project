@@ -97,24 +97,24 @@ Future<bool> isAnonymousUser() async{
 Future<void> checkDailyPoints() async {
   await FirebaseAuth.instance.currentUser().then((curUser) {
     if(!curUser.isAnonymous)
-      {
-        DocumentReference curUserDocRef = Firestore.instance.collection('users').document(curUser.uid);
+    {
+      DocumentReference curUserDocRef = Firestore.instance.collection('users').document(curUser.uid);
 
-        curUserDocRef.get().then((DocumentSnapshot doc) {
-          Timestamp lastPointReset = doc["lastPointReset"];
-          int lastPointResetEpoch = lastPointReset.millisecondsSinceEpoch;
-          int currentTime = Timestamp.now().millisecondsSinceEpoch;
-          int dailyPoints = doc["dailyPoints"];
+      curUserDocRef.get().then((DocumentSnapshot doc) {
+        Timestamp lastPointReset = doc["lastPointReset"];
+        int lastPointResetEpoch = lastPointReset.millisecondsSinceEpoch;
+        int currentTime = Timestamp.now().millisecondsSinceEpoch;
+        int dailyPoints = doc["dailyPoints"];
 
-          if (((currentTime - lastPointResetEpoch) >= 86400000) &&
-              (dailyPoints < 100)) {
-            curUserDocRef.updateData({
-              'lastPointReset': Timestamp.now(),
-              'dailyPoints': 100,
-            });
-          }
-        });
-      }
+        if (((currentTime - lastPointResetEpoch) >= 86400000) &&
+            (dailyPoints < 100)) {
+          curUserDocRef.updateData({
+            'lastPointReset': Timestamp.now(),
+            'dailyPoints': 100,
+          });
+        }
+      });
+    }
   });
 }
 
@@ -165,8 +165,8 @@ Widget guestUserSignInMessage(BuildContext context) {
         CurrentUser = null;
       },
       child: Text(
-        "Sign Up",
-        style: TextStyle(fontSize: 20.0,) //decoration: TextDecoration.underline,),
+          "Sign Up",
+          style: TextStyle(fontSize: 20.0,) //decoration: TextDecoration.underline,),
       ),
     ),
     backgroundColor: Colors.teal,
