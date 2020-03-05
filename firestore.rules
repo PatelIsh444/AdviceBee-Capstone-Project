@@ -7,14 +7,47 @@ service cloud.firestore {
       allow write: if request.auth != null;
     }
     
-    match /groups/{document=**} {
-      allow read;
-      allow write: if request.auth != null;
-    }
-    
     match /reports/{document=**} {
       allow read;
       allow write: if request.auth != null;
+    }
+
+    match /groups/{groupId} {
+    	allow read;
+      allow update: if request.auth != null; // TODO: update current logic to use FB-Functions instead of direct modification.
+      allow create: if userIsQueenBee() || userIsAdmin();
+      allow delete: if isOwnerOfGroup() || userIsAdmin();
+
+      function userIsQueenBee() {
+        return getUser().rank == 'Queen Bee';
+      }
+
+      function isOwnerOfGroup() {
+      	return ("createdBy" in existingData()) && existingData().createdBy == request.auth.uid;
+      }
+    }
+    
+    match /groups/{groupId}/groupQuestions/{question} {
+      allow read: if groupIsOpenToPublic(groupId) || userIsApartOfGroup(groupId) || userIsAdmin();
+      allow create: if userIsApartOfGroup(groupId) || userIsAdmin();
+      allow update: if isOwnerOfPost() || userIsAdmin();
+      allow delete: if isOwnerOfPost() || userIsAdmin();
+
+      function getGroupData(groupId) {
+        return get(/databases/$(database)/documents/groups/$(groupId)).data;
+      }
+    
+      function groupIsOpenToPublic(groupId) {
+        return (("privateGroup" in getGroupData(groupId)) && getGroupData(groupId).privateGroup == false) || (("publicGroup" in getGroupData(groupId)) && getGroupData(groupId).publicGroup == true);
+      }
+
+      function userIsApartOfGroup(groupId) {
+        return ("joinedGroups" in getUser()) && getUser().joinedGroups.hasAll([groupId]);
+      }
+
+      function isOwnerOfPost() {
+      	return ("createdBy" in existingData()) && existingData().createdBy == request.auth.uid;
+      }
     }
     
     match /topics/{topic} {
