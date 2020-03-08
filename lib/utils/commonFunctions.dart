@@ -105,7 +105,9 @@ Future<void> checkDailyPoints() async {
         int lastPointResetEpoch = lastPointReset.millisecondsSinceEpoch;
         int currentTime = Timestamp.now().millisecondsSinceEpoch;
         int dailyPoints = doc["dailyPoints"];
-
+        curUserDocRef.updateData({
+          'last access': 'online',
+        });
         if (((currentTime - lastPointResetEpoch) >= 86400000) &&
             (dailyPoints < 100)) {
           curUserDocRef.updateData({
@@ -199,4 +201,24 @@ Widget loadingScaffold(int currentTab, BuildContext context, GlobalKey key, bool
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: globalNavigationBar(currentTab, context, key, isFirstPage),
       body: Center(child: CircularProgressIndicator()));
+}
+
+void setUserOnline() {
+  Firestore.instance
+      .collection('users')
+      .document(CurrentUser.userID)
+      .updateData({'last access': 'online'})
+      .catchError((onError) {
+    print("error" + onError);
+  });
+}
+
+void setUserLastAccess(){
+  Firestore.instance
+      .collection('users')
+      .document(CurrentUser.userID)
+      .updateData({'last access': DateTime.now().millisecondsSinceEpoch.toString()})
+      .catchError((onError) {
+    print("error" + onError);
+  });
 }

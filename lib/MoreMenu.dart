@@ -21,6 +21,7 @@ Future<void> _SignOut(BuildContext context) async {
   try {
     final auth = AuthProvider.of(context);
     await auth.SignOut();
+    setUserLastAccess();
     //Destroy all navigation stacks
     Navigator.of(context)
         .pushNamedAndRemoveUntil(MyApp.id, (Route<dynamic> route) => false);
