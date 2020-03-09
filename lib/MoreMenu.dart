@@ -60,10 +60,10 @@ void onShow(GlobalKey btnKey, BuildContext context) {
               color: Colors.white,
             )),
         MenuItem(
-            title: 'Notification',
+            title: 'Chat',
             textStyle: TextStyle(color: Colors.white, fontSize: 12),
             image: Icon(
-              LineIcons.bell,
+              Icons.chat,
               color: Colors.white,
             )),
       ],
@@ -93,10 +93,10 @@ void onClickMenu(MenuItemProvider item) {
             builder: (BuildContext context) => LeaderboardPage()));
         break;
       }
-    case "Notification":
+    case "Chat":
       {
         Navigator.of(PopupMenu.context).push(MaterialPageRoute(
-            builder: (BuildContext context) => NotificationFeed()));
+            builder: (BuildContext context) => NewChatScreen()));
         break;
       }
   }
@@ -252,8 +252,7 @@ Widget globalNavigationBar(
                     if (currentTab != 3 || !isFirstPage) {
                       Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
-                              builder: (context) => NewChatScreen(
-                                    currentUserId: CurrentUser.userID,
+                              builder: (context) =>  NotificationFeed(
                                   )),
                           (Route<dynamic> route) => false);
                     }
@@ -263,11 +262,11 @@ Widget globalNavigationBar(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
-                      Icons.chat,
+                      LineIcons.bell,
                       color: currentTab == 3 ? Colors.teal : Colors.grey,
                     ),
                     Text(
-                      'Chat',
+                      'Notification',
                       style: TextStyle(
                         color: currentTab == 3 ? Colors.teal : Colors.grey,
                         fontSize: 12,
