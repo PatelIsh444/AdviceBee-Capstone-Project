@@ -54,13 +54,9 @@ const primaryGradient = const LinearGradient(
 
 class Dashboard extends StatefulWidget {
   static String id = 'dashboard';
-
   String selectedTopic;
-
   Dashboard();
-
   Dashboard.selectedTopic(this.selectedTopic);
-
   @override
   DashboardState createState() => DashboardState();
 }
@@ -68,7 +64,6 @@ class Dashboard extends StatefulWidget {
 class DashboardState extends State<Dashboard> {
   int currentTab = 0; // to keep track of active tab index
   GlobalKey key = GlobalKey();
-
   bool isTopicLoaded = true;
   bool check = true;
   var _userCreated = false;
@@ -228,7 +223,6 @@ class DashboardState extends State<Dashboard> {
       getPosts(widget.selectedTopic);
     }
   }
-
   //Future function to get topics by name
   Future<void> getTopicsName() async {
     List<String> tempTopics = new List();
@@ -240,11 +234,9 @@ class DashboardState extends State<Dashboard> {
             data.documents.forEach((doc) => tempTopics.add(
                   doc["topicName"],
                 )));
-
     allTopicsName = tempTopics;
     //topics = tempTopics;
   }
-
   //Show selecting topic to the User
   showEditTopicMenu(FirebaseUser user) {
     showDialog(
@@ -964,8 +956,9 @@ class DashboardState extends State<Dashboard> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => NewChatScreen() //AddPost(),
-                    ));
+                        builder: (BuildContext context) =>
+                            NewChatScreen(currentUserId: CurrentUser.userID,)
+              ));
               } else {
                 guestUserSignInMessage(context);
               }
@@ -1133,11 +1126,6 @@ class DashboardState extends State<Dashboard> {
         InkWell(
           onTap: () => {
             _processOntapTopic(topic.name)
-            /*print(topic.name),
-            highlightTopic = topic.name,
-          getPosts(topic.name)
-
-             */
           },
           child: Stack(
             children: <Widget>[
