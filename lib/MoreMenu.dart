@@ -38,27 +38,27 @@ void onShow(GlobalKey btnKey, BuildContext context) {
       lineColor: Colors.white70,
       // maxColumn: 2,
       items: [
-        MenuItem(
-            title: 'About Us',
-            textStyle: TextStyle(color: Colors.white, fontSize: 12),
-            image: Icon(
-              LineIcons.info,
-              color: Colors.white,
-            )),
-        MenuItem(
-            title: 'Rate Us',
-            textStyle: TextStyle(color: Colors.white, fontSize: 12),
-            image: Icon(
-              LineIcons.paper_plane,
-              color: Colors.white,
-            )),
-        MenuItem(
-            title: 'Top Bees',
-            textStyle: TextStyle(color: Colors.white, fontSize: 12),
-            image: Icon(
-              LineIcons.trophy,
-              color: Colors.white,
-            )),
+//        MenuItem(
+//            title: 'About Us',
+//            textStyle: TextStyle(color: Colors.white, fontSize: 12),
+//            image: Icon(
+//              LineIcons.info,
+//              color: Colors.white,
+//            )),
+//        MenuItem(
+//            title: 'Rate Us',
+//            textStyle: TextStyle(color: Colors.white, fontSize: 12),
+//            image: Icon(
+//              LineIcons.paper_plane,
+//              color: Colors.white,
+//            )),
+//        MenuItem(
+//            title: 'Top Bees',
+//            textStyle: TextStyle(color: Colors.white, fontSize: 12),
+//            image: Icon(
+//              LineIcons.trophy,
+//              color: Colors.white,
+//            )),
         MenuItem(
             title: 'Chat',
             textStyle: TextStyle(color: Colors.white, fontSize: 12),
@@ -75,24 +75,24 @@ void onShow(GlobalKey btnKey, BuildContext context) {
 
 void onClickMenu(MenuItemProvider item) {
   switch (item.menuTitle) {
-    case "About Us":
-      {
-        Navigator.of(PopupMenu.context).push(MaterialPageRoute(
-            builder: (BuildContext context) => AboutUsPage()));
-        break;
-      }
-    case "Rate Us":
-      {
-        Navigator.of(PopupMenu.context).push(MaterialPageRoute(
-            builder: (BuildContext context) => ContactUsPage()));
-        break;
-      }
-    case "Top Bees":
-      {
-        Navigator.of(PopupMenu.context).push(MaterialPageRoute(
-            builder: (BuildContext context) => LeaderboardPage()));
-        break;
-      }
+//    case "About Us":
+//      {
+//        Navigator.of(PopupMenu.context).push(MaterialPageRoute(
+//            builder: (BuildContext context) => AboutUsPage()));
+//        break;
+//      }
+//    case "Rate Us":
+//      {
+//        Navigator.of(PopupMenu.context).push(MaterialPageRoute(
+//            builder: (BuildContext context) => ContactUsPage()));
+//        break;
+//      }
+//    case "Top Bees":
+//      {
+//        Navigator.of(PopupMenu.context).push(MaterialPageRoute(
+//            builder: (BuildContext context) => LeaderboardPage()));
+//        break;
+//      }
     case "Chat":
       {
         Navigator.of(PopupMenu.context).push(MaterialPageRoute(

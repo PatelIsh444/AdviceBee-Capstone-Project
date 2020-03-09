@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:v0/pages/NewChat.dart';
 
 import 'EmailVerification.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -958,10 +959,19 @@ class DashboardState extends State<Dashboard> {
             key: key,
             minWidth: MediaQuery.of(context).size.width / 5,
             onPressed: () {
-              onShow(key, context);
+             // onShow(key, context);
+              if (CurrentUser.isNotGuest) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => NewChatScreen() //AddPost(),
+                    ));
+              } else {
+                guestUserSignInMessage(context);
+              }
             },
             child: Icon(
-              Icons.menu,
+              Icons.chat,
               color: Colors.white,
             ),
           ),
