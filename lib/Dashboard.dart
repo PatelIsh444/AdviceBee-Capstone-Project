@@ -425,13 +425,16 @@ class DashboardState extends State<Dashboard> {
         if (!doc.exists) {
           //Change profile picture quality when fetching from Google or Facebook
           var qualityPhoto = user.photoUrl;
+
           if (qualityPhoto != null) {
             //Fetch high resolution profile photo from Facebook
             if (qualityPhoto.contains('graph.facebook.com')) {
               qualityPhoto = qualityPhoto + "?height=500";
-            } else {
+              qualityPhotoThumbnail=qualityPhotoThumbnail+ "?height=500";
+            } else  {
               //Fetch high resolution profile photo from Google
               qualityPhoto = qualityPhoto.replaceAll('s96-c', 's400-c');
+              qualityPhotoThumbnail=qualityPhotoThumbnail.replaceAll('s96-c', 's400-c');
             }
           } else {
             //Default profile photo
@@ -707,11 +710,6 @@ class DashboardState extends State<Dashboard> {
   }
 
   Future<void> getThumbnails() async {
-    String defaultPhoto =
-        "https://firebasestorage.googleapis.com/v0/b/advicebee"
-        "-9f277.appspot.com/o/noPictureThumbnail.png?alt=media&token=b7189670-"
-        "8770-4f85-a51d-936a39b597a1";
-
     for (questions questionObj in postList) {
       Firestore.instance
           .collection('users')
@@ -720,9 +718,9 @@ class DashboardState extends State<Dashboard> {
           .then((DocumentSnapshot ds) {
         setState(() {
           if (questionObj.anonymous == false) {
-            questionObj.thumbnailURL = ds["thumbnailPicURL"];
+            questionObj.thumbnailURL = ds['profilePicURL'];
           } else {
-            questionObj.thumbnailURL = defaultPhoto;
+            questionObj.thumbnailURL = ds['thumbnailPicURL'] ;
           }
         });
       });
