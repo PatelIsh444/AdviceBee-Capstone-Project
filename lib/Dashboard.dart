@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:v0/pages/NewChat.dart';
-
 import 'EmailVerification.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import './Topics.dart';

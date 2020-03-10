@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import 'AboutUs.dart';
 import 'ContactUs.dart';
 import 'Favorite.dart';
@@ -629,51 +631,37 @@ class ProfilePageState extends State<ProfilePage> {
     });
   }
 
-  Widget buildBackgroundImage(Size screenSize) {
-    return Container(
-      height: screenSize.height / 4,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/mountains.jpg'),
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
-
-  Widget buildEditPhotoButton() {
-    return Padding(
-      padding: EdgeInsets.only(left: 0, right: 0),
-      child: new Align(
-        alignment: Alignment(0, 0),
-        child: new Container(
-          width: 40,
-          height: 40,
-          child: new FloatingActionButton(
-            heroTag: "editPhoto",
-            onPressed: getImageMenu,
-            tooltip: 'Pick Image',
-            child: new Icon(
-              Icons.add_a_photo,
-              size: 28,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget buildProfileImage() {
     return Center(
-      child: GestureDetector(
-        onTap: getImageMenu,
-        child: ClipOval(
-          child: CachedNetworkImage(
-            imageUrl: imageLink,
-            width: 160.0,
-            height: 160.0,
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(5.0),
           ),
-        ),
+          GestureDetector(
+            onTap: getImageMenu,
+            child: ClipOval(
+              child: CachedNetworkImage(
+                imageUrl: imageLink,
+                width: 150.0,
+                height: 150.0,
+              ),
+            ),
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.edit,
+              color: Colors.black,
+              size: 30.0,
+            ),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => EditProfilePage()));
+            },
+          ),
+        ],
       ),
     );
   }
@@ -846,48 +834,16 @@ class ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget buildEditButton() {
-    return Padding(
-      padding: EdgeInsets.only(left: 10, top: 8, bottom: 30),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: GestureDetector(
-              onTap: () => setState(() {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => EditProfilePage()));
-              }),
-              child: Container(
-                height: 40.0,
-                decoration: BoxDecoration(
-                  borderRadius: new BorderRadius.all(new Radius.circular(20.0)),
-                  color: Color(0xFF009688),
-                ),
-                child: Center(
-                  child: Text(
-                    "EDIT DETAILS",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(width: 10.0),
-        ],
-      ),
-    );
-  }
+
 
   Widget _buildIconTile(IconData icon, Color color, String title, String link) {
     //These selection for responding to onTap on each menu
     MaterialPageRoute route;
-    if (link == "profile") {
-      route = MaterialPageRoute(
-          builder: (BuildContext context) => EditProfilePage());
-    } else if (link == "mypost") {
+//    if (link == "profile") {
+//      route = MaterialPageRoute(
+//          builder: (BuildContext context) => EditProfilePage());
+//    }
+     if (link == "mypost") {
       route =
           MaterialPageRoute(builder: (BuildContext context) => MyPostPage());
     } else if (link == "favorite") {
@@ -897,26 +853,17 @@ class ProfilePageState extends State<ProfilePage> {
       route = MaterialPageRoute(builder: (BuildContext context) => GroupPage());
     } else if (link == "topic") {
       route = null;
-    }
-//    else if (link == "contact") {
-//      route =
-//          MaterialPageRoute(builder: (BuildContext context) => ContactUsPage());
-//    }
-    else if (link == "follower") {
+    } else if (link == "follower") {
       route = MaterialPageRoute(
           builder: (BuildContext context) => FollowingFollowersPage(0));
     }
-//    else if (link == "about") {
-//      route =
-//          MaterialPageRoute(builder: (BuildContext context) => AboutUsPage());
+//    else if (link == "chat") {
+//      route = MaterialPageRoute(
+//          builder: (BuildContext context) => NewChatScreen(
+//                currentUserId: CurrentUser.userID,
+//              ));
 //    }
-    else if (link == "chat") {
-      route = MaterialPageRoute(
-          builder: (BuildContext context) =>
-              NewChatScreen(
-                currentUserId: CurrentUser.userID,
-              ));
-    } else if (link == "buyquestions") {
+    else if (link == "buyquestions") {
       route = MaterialPageRoute(
           builder: (BuildContext context) => BuyMoreQuestions());
     } else if (link == "aboutus") {
@@ -979,13 +926,11 @@ class ProfilePageState extends State<ProfilePage> {
         borderRadius: BorderRadius.circular(8.0),
         shadowColor: Colors.white,
         child: Container(
-          height: 600.0,
+          height: 432.0,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.0),
-
           ),
-
           child: Column(
             children: <Widget>[
               _buildIconTile(
@@ -993,11 +938,11 @@ class ProfilePageState extends State<ProfilePage> {
               hr,
               _buildIconTile(LineIcons.tags, Colors.black, 'Topics', 'topic'),
               hr,
-              _buildIconTile(LineIcons.cog, Colors.black.withOpacity(0.6),
-                  'Help', 'profile'),
-              hr,
-              _buildIconTile(Icons.chat, Colors.black, 'Chats', 'chat'),
-              hr,
+//              _buildIconTile(LineIcons.cog, Colors.black.withOpacity(0.6),
+//                  'Help', 'profile'),
+//              hr,
+//              _buildIconTile(Icons.chat, Colors.black, 'Chats', 'chat'),
+//              hr,
               _buildIconTile(Icons.card_giftcard, Colors.yellow,
                   'Buy More Questions', 'buyquestions'),
               hr,
