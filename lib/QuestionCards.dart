@@ -1215,27 +1215,25 @@ class _QuestionCardsState extends State<QuestionCards> {
   }
 
   void AddPostToReport(int index) async{
-    //This method is to retrieve name for user that signed up with email
-    //user.displayName is null
+    questions post = widget.postList[index];
+    DocumentReference reportedPostRef = reportRef.document(post.postID);
 
-    // add a notification to the postOwner's activity feed
-    reportRef
-        .document(widget.postList[index].postID)
-        .collection("ReportedUsers")
-        .document(widget.postList[index].createdBy)
-        .setData({
+    reportedPostRef.setData({
+      "postId": post.postID,
+      "postTitle": post.question,
+      "postCreatedBy": post.createdBy
+    });
+    
+    reportedPostRef.collection("ReportedUsers").document(CurrentUser.userID).setData({
       "reasons": selectedReportList,
-      "status": "new",
-      "reportedBy": widget.CurrentUser.displayName,
-      "userId": widget.CurrentUser.userID,
+      "reportedBy": widget.CurrentUser.userID,
+      "userDisplayName": widget.CurrentUser.displayName,
       "userProfileImg": widget.CurrentUser.profilePicURL,
-      "postId": widget.postList[index].postID,
-      "postName": widget.postList[index].question,
-      "timestamp": timestamp,
-      "groups_or_topics": widget.groups_or_topics,
-      "groupOrTopicID": widget.groups_or_topics == "topics"
-          ? widget.postList[index].topic
-          : widget.groupID,
+      "reportedPostId": post.postID,
+      "reportedPostTitle": post.question,
+      "dateReported": timestamp,
+      "postLocation": widget.groups_or_topics,
+      "postLocationId": widget.groups_or_topics == "topics" ? post.topic : widget.groupID,
     });
 
     print("Added post to Report");
