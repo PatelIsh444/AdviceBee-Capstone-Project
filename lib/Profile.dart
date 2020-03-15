@@ -839,10 +839,6 @@ class ProfilePageState extends State<ProfilePage> {
   Widget _buildIconTile(IconData icon, Color color, String title, String link) {
     //These selection for responding to onTap on each menu
     MaterialPageRoute route;
-//    if (link == "profile") {
-//      route = MaterialPageRoute(
-//          builder: (BuildContext context) => EditProfilePage());
-//    }
      if (link == "mypost") {
       route =
           MaterialPageRoute(builder: (BuildContext context) => MyPostPage());
@@ -857,12 +853,7 @@ class ProfilePageState extends State<ProfilePage> {
       route = MaterialPageRoute(
           builder: (BuildContext context) => FollowingFollowersPage(0));
     }
-//    else if (link == "chat") {
-//      route = MaterialPageRoute(
-//          builder: (BuildContext context) => NewChatScreen(
-//                currentUserId: CurrentUser.userID,
-//              ));
-//    }
+
     else if (link == "buyquestions") {
       route = MaterialPageRoute(
           builder: (BuildContext context) => BuyMoreQuestions());

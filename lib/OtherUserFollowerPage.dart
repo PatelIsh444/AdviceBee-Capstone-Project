@@ -143,6 +143,7 @@ class _OtherFollowersViewState extends State<OtherFollowersView> {
     //Return null if no followers are in firebase
     if(followerIDsStr == null) {
       return null;
+
     }
     else{
       //Iterate through list of followers and pull their information

@@ -9,6 +9,7 @@ class User {
   String profilePicURL;
   String bio;
   List<dynamic> myPosts;
+  List<dynamic> blocked;
   List<dynamic> favoritePosts;
   List<dynamic> joinedGroups;
   List<dynamic> followers;
@@ -36,6 +37,7 @@ class User {
     this.likedPosts,
     this.myResponses,
     this.bio,
+    this.blocked,
     this.dailyPoints,
     this.earnedPoints,
     this.isNotGuest,
@@ -65,9 +67,9 @@ class User {
       this.dailyPoints = doc["dailyPoints"];
       this.earnedPoints = doc["earnedPoints"];
       this.isNotGuest = true;
+      this.blocked = doc["blocked"];
     });
   }
-
   factory User.fromDocument(DocumentSnapshot doc) {
     return User.withInfo(
       displayName: doc["displayName"],
@@ -82,6 +84,7 @@ class User {
       likedPosts: doc["likedPosts"],
       myResponses: doc["myResponses"],
       bio: doc["bio"],
+      blocked: doc["blocked"],
       dailyPoints: doc["dailyPoints"],
       earnedPoints: doc["earnedPoints"],
       myTopics: doc["myTopics"],

@@ -682,7 +682,6 @@ class DashboardState extends State<Dashboard> {
                 }
               }));
     }
-
     postList = postInfo;
     if (choices[2].isSelected) {
       sortByLikes();

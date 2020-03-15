@@ -350,6 +350,7 @@ class MyPostPageState extends State<MyPostPage> {
   Widget _getColumnText(String title,String description){
     return new Expanded(
         child: new Container(
+
           margin: new EdgeInsets.all(10.0),
           child: new Column(
             crossAxisAlignment:CrossAxisAlignment.start,
