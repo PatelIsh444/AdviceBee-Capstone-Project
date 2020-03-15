@@ -1221,19 +1221,18 @@ class _QuestionCardsState extends State<QuestionCards> {
     reportedPostRef.setData({
       "postId": post.postID,
       "postTitle": post.question,
-      "postCreatedBy": post.createdBy
+      "postCreatedBy": post.createdBy,
+      "postLocation": widget.groups_or_topics,
+      "postLocationId": widget.groups_or_topics == "topics" ? post.topic : widget.groupID,
     });
     
     reportedPostRef.collection("ReportedUsers").document(CurrentUser.userID).setData({
+      "reportedPostId": post.postID,
       "reasons": selectedReportList,
       "reportedBy": widget.CurrentUser.userID,
       "userDisplayName": widget.CurrentUser.displayName,
       "userProfileImg": widget.CurrentUser.profilePicURL,
-      "reportedPostId": post.postID,
-      "reportedPostTitle": post.question,
       "dateReported": timestamp,
-      "postLocation": widget.groups_or_topics,
-      "postLocationId": widget.groups_or_topics == "topics" ? post.topic : widget.groupID,
     });
 
     print("Added post to Report");
