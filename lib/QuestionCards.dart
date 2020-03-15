@@ -1243,7 +1243,7 @@ class _QuestionCardsState extends State<QuestionCards> {
     reportRef
         .document(widget.postList[index].postID)
         .collection("ReportedUsers")
-        .document(widget.postList[index].createdBy)
+        .document(CurrentUser.userID)
         .get()
         .then((doc) {
       if (doc.exists) {
