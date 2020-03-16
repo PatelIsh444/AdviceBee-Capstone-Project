@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import 'package:v0/pages/NewChat.dart';
 import 'EmailVerification.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import './Topics.dart';
@@ -53,13 +52,9 @@ const primaryGradient = const LinearGradient(
 
 class Dashboard extends StatefulWidget {
   static String id = 'dashboard';
-
   String selectedTopic;
-
   Dashboard();
-
   Dashboard.selectedTopic(this.selectedTopic);
-
   @override
   DashboardState createState() => DashboardState();
 }
@@ -67,7 +62,6 @@ class Dashboard extends StatefulWidget {
 class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
   int currentTab = 0; // to keep track of active tab index
   GlobalKey key = GlobalKey();
-
   bool isTopicLoaded = true;
   bool check = true;
   var _userCreated = false;
@@ -229,7 +223,7 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
     }
   }
 
-//Future function to get topics by name
+  //Future function to get topics by name
   Future<void> getTopicsName() async {
     List<String> tempTopics = new List();
     await Firestore.instance
@@ -240,12 +234,10 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
             data.documents.forEach((doc) => tempTopics.add(
                   doc["topicName"],
                 )));
-
     allTopicsName = tempTopics;
     //topics = tempTopics;
   }
-
-//Show selecting topic to the User
+  //Show selecting topic to the User
   showEditTopicMenu(FirebaseUser user) {
     showDialog(
         //barrierDismissible: true,
@@ -436,13 +428,16 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
         if (!doc.exists) {
           //Change profile picture quality when fetching from Google or Facebook
           var qualityPhoto = user.photoUrl;
+
           if (qualityPhoto != null) {
             //Fetch high resolution profile photo from Facebook
             if (qualityPhoto.contains('graph.facebook.com')) {
               qualityPhoto = qualityPhoto + "?height=500";
-            } else {
+              qualityPhotoThumbnail=qualityPhotoThumbnail+ "?height=500";
+            } else  {
               //Fetch high resolution profile photo from Google
               qualityPhoto = qualityPhoto.replaceAll('s96-c', 's400-c');
+              qualityPhotoThumbnail=qualityPhotoThumbnail.replaceAll('s96-c', 's400-c');
             }
           } else {
             //Default profile photo
@@ -720,11 +715,6 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
   }
 
   Future<void> getThumbnails() async {
-    String defaultPhoto =
-        "https://firebasestorage.googleapis.com/v0/b/advicebee"
-        "-9f277.appspot.com/o/noPictureThumbnail.png?alt=media&token=b7189670-"
-        "8770-4f85-a51d-936a39b597a1";
-
     for (questions questionObj in postList) {
       Firestore.instance
           .collection('users')
@@ -733,9 +723,9 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
           .then((DocumentSnapshot ds) {
         setState(() {
           if (questionObj.anonymous == false) {
-            questionObj.thumbnailURL = ds["thumbnailPicURL"];
+            questionObj.thumbnailURL = ds['profilePicURL'];
           } else {
-            questionObj.thumbnailURL = defaultPhoto;
+            questionObj.thumbnailURL = ds['thumbnailPicURL'] ;
           }
         });
       });
@@ -961,10 +951,20 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
             key: key,
             minWidth: MediaQuery.of(context).size.width / 5,
             onPressed: () {
-              onShow(key, context);
+             // onShow(key, context);
+              if (CurrentUser.isNotGuest) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            NewChatScreen(currentUserId: CurrentUser.userID,)
+              ));
+              } else {
+                guestUserSignInMessage(context);
+              }
             },
             child: Icon(
-              Icons.menu,
+              Icons.chat,
               color: Colors.white,
             ),
           ),
@@ -1126,11 +1126,6 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
         InkWell(
           onTap: () => {
             _processOntapTopic(topic.name)
-            /*print(topic.name),
-            highlightTopic = topic.name,
-          getPosts(topic.name)
-
-             */
           },
           child: Stack(
             children: <Widget>[

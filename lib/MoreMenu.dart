@@ -1,15 +1,7 @@
-import 'package:v0/pages/NewChat.dart';
-import 'AboutUs.dart';
-import 'ContactUs.dart';
-import 'EditProfile.dart';
-import 'MyPosts.dart';
-import 'Favorite.dart';
+
 import 'Notification.dart';
-import 'landing.dart';
-import './services/AuthProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:popup_menu/popup_menu.dart';
 import 'Profile.dart';
 import 'GroupPage.dart';
 import 'Dashboard.dart';
@@ -29,110 +21,6 @@ Future<void> _SignOut(BuildContext context) async {
     print(e.toString());
   }
   CurrentUser = null;
-}
-
-void onShow(GlobalKey btnKey, BuildContext context) {
-  PopupMenu.context = context;
-
-  PopupMenu menu = PopupMenu(
-      backgroundColor: Colors.teal,
-      lineColor: Colors.white70,
-      // maxColumn: 2,
-      items: [
-        MenuItem(
-            title: 'About Us',
-            textStyle: TextStyle(color: Colors.white, fontSize: 12),
-            image: Icon(
-              LineIcons.info,
-              color: Colors.white,
-            )),
-        MenuItem(
-            title: 'Rate Us',
-            textStyle: TextStyle(color: Colors.white, fontSize: 12),
-            image: Icon(
-              LineIcons.paper_plane,
-              color: Colors.white,
-            )),
-        MenuItem(
-            title: 'Top Bees',
-            textStyle: TextStyle(color: Colors.white, fontSize: 12),
-            image: Icon(
-              LineIcons.trophy,
-              color: Colors.white,
-            )),
-        MenuItem(
-            title: 'Notification',
-            textStyle: TextStyle(color: Colors.white, fontSize: 12),
-            image: Icon(
-              LineIcons.bell,
-              color: Colors.white,
-            )),
-      ],
-      onClickMenu: onClickMenu,
-      // stateChanged: stateChanged,
-      onDismiss: () {});
-  menu.show(widgetKey: btnKey);
-}
-
-void onClickMenu(MenuItemProvider item) {
-  switch (item.menuTitle) {
-    case "About Us":
-      {
-        Navigator.of(PopupMenu.context).push(MaterialPageRoute(
-            builder: (BuildContext context) => AboutUsPage()));
-        break;
-      }
-    case "Rate Us":
-      {
-        Navigator.of(PopupMenu.context).push(MaterialPageRoute(
-            builder: (BuildContext context) => ContactUsPage()));
-        break;
-      }
-    case "Top Bees":
-      {
-        Navigator.of(PopupMenu.context).push(MaterialPageRoute(
-            builder: (BuildContext context) => LeaderboardPage()));
-        break;
-      }
-    case "Notification":
-      {
-        Navigator.of(PopupMenu.context).push(MaterialPageRoute(
-            builder: (BuildContext context) => NotificationFeed()));
-        break;
-      }
-  }
-}
-
-/*When a choice from the more button list is selected this widget is returned.
-* It takes the value that was chosen as a string and goes to the selected
-* page with the navigator class*/
-void moreButtonAction(String choice, BuildContext context) {
-  if (choice == 'About Us') {
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (BuildContext context) => AboutUsPage()));
-  } else if (choice == 'Settings') {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (BuildContext context) => EditProfilePage()));
-  } else if (choice == 'Notification') {
-    Navigator.pushNamed(context, NotificationFeed.id);
-  } else if (choice == 'Contact Us') {
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (BuildContext context) => ContactUsPage()));
-  } else if (choice == 'My Posts') {
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (BuildContext context) => MyPostPage()));
-  } else if (choice == 'Favorites') {
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (BuildContext context) => FavoritePage()));
-  } else if (choice == "Followers") {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (BuildContext context) => FollowingFollowersPage(0)));
-  } else if (choice == 'Sign Out') {
-    _SignOut(context);
-  } else if (choice == 'Leaderboard') {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (BuildContext context) => LeaderboardPage()));
-  }
 }
 
 /*This widget displays the bottom navigation bar. It is used in the
@@ -253,8 +141,7 @@ Widget globalNavigationBar(
                     if (currentTab != 3 || !isFirstPage) {
                       Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
-                              builder: (context) => NewChatScreen(
-                                    currentUserId: CurrentUser.userID,
+                              builder: (context) =>  NotificationFeed(
                                   )),
                           (Route<dynamic> route) => false);
                     }
@@ -264,11 +151,11 @@ Widget globalNavigationBar(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
-                      Icons.chat,
+                      LineIcons.bell,
                       color: currentTab == 3 ? Colors.teal : Colors.grey,
                     ),
                     Text(
-                      'Chat',
+                      'Notification',
                       style: TextStyle(
                         color: currentTab == 3 ? Colors.teal : Colors.grey,
                         fontSize: 12,
