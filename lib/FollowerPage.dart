@@ -253,9 +253,7 @@ class FollowingView extends StatefulWidget {
   _FollowingViewState createState() => _FollowingViewState();
 }
 
-class _FollowingViewState extends State<FollowingView> {
-  //Variables
-  List<String> userFollowingIDs;
+class _FollowingViewState extends State<FollowingView>{
   List<User> userFollowing;
   Future<List<User>> userFollowingFuture;
 

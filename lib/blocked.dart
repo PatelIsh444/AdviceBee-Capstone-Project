@@ -1,3 +1,6 @@
+import 'package:v0/UserInfor.dart';
+import 'package:v0/pages/NewChat.dart';
+
 import 'User.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,41 +11,42 @@ import 'MoreMenu.dart';
 import 'Dashboard.dart';
 import './utils/commonFunctions.dart';
 import 'QuestionPage.dart';
-
-
-
 class blocked extends StatefulWidget {
   blocked( );
-  createState() => blockedState();
-
+  @override
+  _blockedpageViewState createState() => _blockedpageViewState();
 }
-class blockedState extends State<blocked> with SingleTickerProviderStateMixin
+class _blockedpageViewState extends State<blocked> with SingleTickerProviderStateMixin
 {
   GlobalKey key = GlobalKey();
   List<dynamic> userblocked = [];
-
+  @override
+  void initState() {
+  super.initState();
+  common.getUserInformation(CurrentUser.userID).then((updatedInfo) {
+    CurrentUser = updatedInfo;
+  });
+  }
   Future<void> getblocked() async {
-    List<String> Blocked;
-    await Firestore.instance.collection('users').document(CurrentUser.userID).get().then(
-          (DocumentSnapshot doc) => Blocked = doc['blocked'],
+    List<String> blocked;
+    await Firestore.instance.collection('users').document().get().then(
+          (DocumentSnapshot doc) => blocked = doc['blocked'],
     );
     setState(() {
-      userblocked = Blocked;
+      userblocked = blocked;
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
            appBar: AppBar(
-                  title: Text("Blocked"),
+                  title: Text("Blocked List"),
                    centerTitle: true,
               ),
-      body:ListView(
-          children: <Widget>[
-          blockedView(),
-      ]
-      ),
+                 body:ListView(
+                     children: <Widget>[
+                     blockedView(),
+                ] ),
         floatingActionButton:
         FloatingActionButton(
             onPressed: () {
@@ -56,7 +60,7 @@ class blockedState extends State<blocked> with SingleTickerProviderStateMixin
              guestUserSignInMessage(context);
                  }
            },
-               heroTag: "efollowerHero",
+               heroTag: "eblockedrHero",
                  tooltip: 'Increment',
                  child: CircleAvatar(
                    child: Image.asset(
@@ -67,44 +71,35 @@ class blockedState extends State<blocked> with SingleTickerProviderStateMixin
                        ),
                     floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                           bottomNavigationBar: globalNavigationBar(2, context, key, false),
+
          );
   }
 }
 class blockedView extends StatefulWidget {
   @override
-  createState() => blockedViewState();
+  _blockedViewState  createState() => _blockedViewState();
 }
-class blockedViewState extends State<blockedView> {
+class _blockedViewState extends State<blockedView> {
   //Variables
-  List<String> BlockedIDs;
-  List<User> userBlocked;
+  List<User> userblocked;
   Future<List<User>> userBlockedFuture;
-
+  BuildContext get key => null;
   @override
   void initState() {
     super.initState();
     userBlockedFuture = getBlockedUsers();
   }
-
   Future<List<User>> getBlockedUsers() async {
-    var blockedIDsStr;
-    await Firestore.instance.collection('users').document(CurrentUser.userID).get().then(
-          (DocumentSnapshot doc) => blockedIDsStr = doc['blocked'],
-    );
-
-    //Pull list of followers from user
     List<User> blockedUsers = [];
-    //List<String> followingIDsStr = new List.from(CurrentUser.following);
-
-    //Return null if no followers are in firebase
+    List<String> blockedIDsStr = new List.from(CurrentUser.blocked);
     if(blockedIDsStr == null) {
       return null;
     }
     else{
       //Iterate through list of followers and pull their information
-      for(String blockedID in blockedIDsStr)
+      for(String BlockedIDs in blockedIDsStr)
       {
-        User blockedInfo = await common.getUserInformation(blockedID);
+        User blockedInfo = await common.getUserInformation(BlockedIDs);
         blockedUsers.add(blockedInfo);
       }
     }
@@ -132,15 +127,15 @@ class blockedViewState extends State<blockedView> {
               );
             case ConnectionState.done:
               if (snapshot.hasData) {
-
-                userBlocked = snapshot.data;
-                if(userBlocked !=null && userBlocked.length>0){
+                if (CurrentUser.blocked.isNotEmpty) {
+                  userblocked = snapshot.data;
                   return Scaffold(
                     body: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         generateUserCards(),
                       ],
+                      
                     ),
                   );
                 }
@@ -151,23 +146,21 @@ class blockedViewState extends State<blockedView> {
                 return noBlockedPage();
               }
           }
-          return Scaffold(
-              body: Center(
+         return Scaffold(
+          body: Center(
                   child: CircularProgressIndicator()
-              )
-          );
+          )
+         );
         });
   }
-
-  //Show when a user does not follow anyone
   Widget noBlockedPage() {
     return Padding(
       padding: EdgeInsets.all(20),
       child:Container(
         child: Text(
           "You have not blocked anyone",
-          textAlign: TextAlign.center,
-          style: TextStyle(
+            textAlign: TextAlign.center,
+            style: TextStyle(
             color: Colors.black,
             fontSize: 20.0,
             fontWeight: FontWeight.w700,
@@ -176,15 +169,14 @@ class blockedViewState extends State<blockedView> {
       ),
     );
   }
-  //Generate the cards that a user sees when navigating to the page
-  Widget generateUserCards() {
+    Widget generateUserCards() {
     return Expanded(
       child: SizedBox(
         height: 200.0,
         child: ListView.builder(
-            itemCount: userBlocked.length,
+            itemCount: userblocked.length,
             itemBuilder: (context, index) {
-              var userObj = userBlocked[index];
+              var userObj = userblocked[index];
               return Card(
                 key: Key(userObj.userID),
                 elevation: 5,
@@ -192,8 +184,9 @@ class blockedViewState extends State<blockedView> {
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) =>
-                          UserDetailsPage(userBlocked[index].userID),
-                    ));
+                      NewChatScreen(currentUserId: null),
+                   )
+      );
                   },
                   child:ListTile(
                     leading: CircleAvatar(backgroundImage: CachedNetworkImageProvider(userObj.profilePicURL),),

@@ -737,9 +737,9 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
             groupChatId = "$peerIdLocal-$currentUserId";
           }
 
-            if (blocked.contains(currentUserId)) {
-           return;
-        }
+//            if (blocked.contains(currentUserId)) {
+//           return;
+//         }
           Firestore.instance.collection('chats').document(groupChatId)
               .setData({
             'id': currentUserId,
