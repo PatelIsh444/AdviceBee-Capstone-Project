@@ -1,4 +1,3 @@
-
 import 'Notification.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
@@ -7,9 +6,10 @@ import 'GroupPage.dart';
 import 'Dashboard.dart';
 import './utils/commonFunctions.dart';
 
-
 /*This widget displays the bottom navigation bar. It is used in the
 * bottomNavigationBar property in the "Scaffold" class*/
+
+
 Widget globalNavigationBar(
     int currentTab, BuildContext context, GlobalKey key, bool isFirstPage) {
   Size screenSize = MediaQuery.of(context).size;

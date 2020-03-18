@@ -870,7 +870,7 @@ class ProfilePageState extends State<ProfilePage> {
           builder: (BuildContext context) => LeaderboardPage());
     }
     else if (link == "blocked") {
-       route = MaterialPageRoute(builder: (BuildContext context) => blocked());
+       route = MaterialPageRoute(builder: (BuildContext context) => blockedView());
      }
 
     //Building menu card container
