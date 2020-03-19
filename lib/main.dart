@@ -9,10 +9,46 @@ import './services/AuthProvider.dart';
 import './services/auth.dart';
 import 'SignUp.dart';
 import 'package:flutter/material.dart';
+import './utils/commonFunctions.dart';
 
 void main() => runApp(Advicebee());
 
-class Advicebee extends StatelessWidget {
+class Advicebee extends StatefulWidget{
+
+  @override
+  AdvicebeeState createState() => AdvicebeeState();
+
+}
+
+class AdvicebeeState extends State<Advicebee> with WidgetsBindingObserver {
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+
+    super.initState();
+  }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('state = $state');
+    if (CurrentUser.isNotGuest) {
+      if (state == AppLifecycleState.resumed) {
+        print('state = $state');
+        setUserOnline();
+      } else {
+        print('state = $state');
+        setUserLastAccess();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    setUserLastAccess();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
 

@@ -8,7 +8,7 @@ import 'MoreMenu.dart';
 import 'Dashboard.dart';
 import './utils/commonFunctions.dart';
 import 'QuestionPage.dart';
-
+import './utils/commonFunctions.dart';
 class EditProfilePage extends StatefulWidget {
   @override
   EditProfilePageState createState() => EditProfilePageState();
@@ -56,6 +56,7 @@ class EditProfilePageState extends State<EditProfilePage> {
     try {
       final auth = AuthProvider.of(context);
       await auth.SignOut();
+      setUserLastAccess();
       //Destroy all navigation stacks
       Navigator.of(context)
           .pushNamedAndRemoveUntil(MyApp.id, (Route<dynamic> route) => false);

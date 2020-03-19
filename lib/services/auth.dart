@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:meta/meta.dart';
+import 'package:v0/utils/commonFunctions.dart';
 
 final DateTime timestamp = DateTime.now();
 
@@ -144,6 +145,7 @@ class Auth implements AuthBase {
   //Sign out function
   //End all session
   Future<void> SignOut() async {
+    setUserLastAccess();
     final googleSignIn = GoogleSignIn();
     await googleSignIn.signOut();
     final facebookLogin = FacebookLogin();

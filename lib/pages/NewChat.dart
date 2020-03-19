@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
 
 import '../SearchBar.dart';
 import '../utils/commonFunctions.dart';
@@ -39,7 +40,7 @@ class NewChatScreenState extends State<NewChatScreen> {
   final String currentUserId;
   final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      new FlutterLocalNotificationsPlugin();
+  new FlutterLocalNotificationsPlugin();
   final GoogleSignIn googleSignIn = GoogleSignIn();
   var primaryColor = Colors.black;
   var themeColor = Colors.teal;
@@ -95,7 +96,7 @@ class NewChatScreenState extends State<NewChatScreen> {
 
   void configLocalNotification() {
     var initializationSettingsAndroid =
-        new AndroidInitializationSettings('app_icon');
+    new AndroidInitializationSettings('app_icon');
     var initializationSettingsIOS = new IOSInitializationSettings();
     var initializationSettings = new InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
@@ -104,9 +105,9 @@ class NewChatScreenState extends State<NewChatScreen> {
 
   void showNotification(message) async {
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        new FlutterLocalNotificationsPlugin();
+    new FlutterLocalNotificationsPlugin();
     var initializationSettingsAndroid =
-        new AndroidInitializationSettings('app_icon');
+    new AndroidInitializationSettings('app_icon');
     var initializationSettingsIOS = new IOSInitializationSettings(
         onDidReceiveLocalNotification: onDidReceiveLocalNotification);
     var initializationSettings = new InitializationSettings(
@@ -137,12 +138,13 @@ class NewChatScreenState extends State<NewChatScreen> {
     }
   }
 
-  Future onDidReceiveLocalNotification(
-      int id, String title, String body, String payload) async {
+  Future onDidReceiveLocalNotification(int id, String title, String body,
+      String payload) async {
     // display a dialog with the notification details, tap ok to go to another page
     showDialog(
       context: context,
-      builder: (BuildContext context) => new CupertinoAlertDialog(
+      builder: (BuildContext context) =>
+      new CupertinoAlertDialog(
         title: new Text(title),
         content: new Text(body),
         actions: [
@@ -179,7 +181,8 @@ class NewChatScreenState extends State<NewChatScreen> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => MainScreen(
+                    builder: (context) =>
+                        MainScreen(
                           currentUserId: CurrentUser.userID,
                         )));
           },
@@ -202,42 +205,65 @@ class NewChatScreenState extends State<NewChatScreen> {
                 // List
                 Container(
                   child: StreamBuilder(
-                    stream: Firestore.instance.collection('chats').snapshots(),
-                    builder: (context, snapshot) {
-                      chatsSet.clear();
-                      waitingFromSet.clear();
-                      waitingToSet.clear();
-                      if (!snapshot.hasData) {
-                        return Center(
-                          child: CircularProgressIndicator(
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.teal),
-                          ),
+                      stream:
+                      Firestore.instance.collection('users').snapshots(),
+                      builder: (context, snap) {
+                        return StreamBuilder(
+                          stream: Firestore.instance
+                              .collection('chats')
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            chatsSet.clear();
+                            waitingFromSet.clear();
+                            waitingToSet.clear();
+                            if (!snapshot.hasData) {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.teal),
+                                ),
+                              );
+                            } else {
+                              for (int index = 0;
+                              index < snapshot.data.documents.length;
+                              index++) {
+                                List<DocumentSnapshot> id = snap.data.documents
+                                    .where((doc) =>
+                                doc.documentID ==
+                                    snapshot.data.documents[index]['id'])
+                                    .toList();
+                                List<DocumentSnapshot> peerId = snap
+                                    .data.documents
+                                    .where((doc) =>
+                                doc.documentID ==
+                                    snapshot.data.documents[index]
+                                    ['peerId'])
+                                    .toList();
+                                buildItem(
+                                    context,
+                                    snapshot.data.documents[index],
+                                    id.elementAt(0),
+                                    peerId.elementAt(0));
+                              }
+                              return ListView(
+                                shrinkWrap: true,
+                                padding: EdgeInsets.all(5.0),
+                                children: <Widget>[
+                                  Column(
+                                    children: waitingFromSet.toList(),
+                                  ),
+                                  Column(
+                                    children: chatsSet.toList(),
+                                  ),
+                                  Column(
+                                    children: waitingToSet.toList(),
+                                  ),
+                                ],
+                              );
+                            }
+                          },
                         );
-                      } else {
-                        for (int index = 0;
-                            index < snapshot.data.documents.length;
-                            index++) {
-                          buildItem(context, snapshot.data.documents[index]);
-                        }
-                        return ListView(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.all(5.0),
-                          children: <Widget>[
-                            Column(
-                              children: waitingFromSet.toList(),
-                            ),
-                            Column(
-                              children: chatsSet.toList(),
-                            ),
-                            Column(
-                              children: waitingToSet.toList(),
-                            ),
-                          ],
-                        );
-                      }
-                    },
-                  ),
+                      }),
                 ),
               ],
             ),
@@ -252,7 +278,7 @@ class NewChatScreenState extends State<NewChatScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => postQuestion(null, null) //AddPost(),
-                    ));
+                ));
           } else {
             guestUserSignInMessage(context);
           }
@@ -271,10 +297,11 @@ class NewChatScreenState extends State<NewChatScreen> {
     );
   }
 
-  Widget buildItem(BuildContext context, DocumentSnapshot document) {
+  Widget buildItem(BuildContext context, DocumentSnapshot document,
+      DocumentSnapshot idDoc, DocumentSnapshot peerDoc) {
     if (document['peerId'] == currentUserId) {
-      if (document.documentID == currentUserId) {
-      } else if (document['approved'] == false) {
+      if (document.documentID == currentUserId) {} else
+      if (document['approved'] == false) {
         waitingFromSet.add(Container(
           child: Card(
             child: Column(
@@ -327,6 +354,19 @@ class NewChatScreenState extends State<NewChatScreen> {
           ),
         ));
       } else if (document['approved'] == true) {
+        print("i am peer");
+        print(peerDoc['displayName']);
+        String lastAccess = " ";
+        if (idDoc['last access'] != null) {
+          if (idDoc['last access'].toString() == "online") {
+            lastAccess = "Online";
+          }
+          else {
+            lastAccess = "Last Access: "+ DateFormat('dd MMM kk:mm')
+                .format(DateTime.fromMillisecondsSinceEpoch(int.parse(idDoc['last access']))).toString();
+            print(lastAccess);
+          }
+        }
         chatsSet.add(Container(
           child: FlatButton(
             child: Card(
@@ -334,26 +374,27 @@ class NewChatScreenState extends State<NewChatScreen> {
                 leading: Material(
                   child: document['profilePicURL'] != null
                       ? CachedNetworkImage(
-                          placeholder: (context, url) => Container(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 1.0,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(themeColor),
-                            ),
-                            width: 50.0,
-                            height: 50.0,
-                            padding: EdgeInsets.all(15.0),
+                    placeholder: (context, url) =>
+                        Container(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 1.0,
+                            valueColor:
+                            AlwaysStoppedAnimation<Color>(themeColor),
                           ),
-                          imageUrl: document['profilePicURL'],
                           width: 50.0,
                           height: 50.0,
-                          fit: BoxFit.cover,
-                        )
-                      : Icon(
-                          Icons.account_circle,
-                          size: 50.0,
-                          color: greyColor,
+                          padding: EdgeInsets.all(15.0),
                         ),
+                    imageUrl: document['profilePicURL'],
+                    width: 50.0,
+                    height: 50.0,
+                    fit: BoxFit.cover,
+                  )
+                      : Icon(
+                    Icons.account_circle,
+                    size: 50.0,
+                    color: greyColor,
+                  ),
                   borderRadius: BorderRadius.all(Radius.circular(25.0)),
                   clipBehavior: Clip.hardEdge,
                 ),
@@ -362,7 +403,7 @@ class NewChatScreenState extends State<NewChatScreen> {
                   style: TextStyle(color: primaryColor),
                 ),
                 subtitle: Text(
-                  'Bio: ${document['bio'] ?? 'Not available'}',
+                  lastAccess,
                   style: TextStyle(color: primaryColor),
                 ),
               ),
@@ -378,7 +419,8 @@ class NewChatScreenState extends State<NewChatScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Chat(
+                      builder: (context) =>
+                          Chat(
                             userId: currentUserId,
                             chatId: groupChatId,
                             peerId: document['id'],
@@ -390,8 +432,8 @@ class NewChatScreenState extends State<NewChatScreen> {
         ));
       }
     } else if (document['id'] == currentUserId) {
-      if (document['peerId'] == currentUserId) {
-      } else if (document['approved'] == false) {
+      if (document['peerId'] == currentUserId) {} else
+      if (document['approved'] == false) {
         waitingToSet.add(Slidable(
             actionPane: SlidableDrawerActionPane(),
             actionExtentRatio: 0.25,
@@ -400,10 +442,12 @@ class NewChatScreenState extends State<NewChatScreen> {
                   caption: 'Cancel',
                   color: Colors.red,
                   icon: Icons.cancel,
-                  onTap: (){
-                    Firestore.instance.collection('chats').document(document.documentID).delete();
-                  }
-              ),
+                  onTap: () {
+                    Firestore.instance
+                        .collection('chats')
+                        .document(document.documentID)
+                        .delete();
+                  }),
             ],
             child: Container(
               child: Card(
@@ -431,9 +475,23 @@ class NewChatScreenState extends State<NewChatScreen> {
                   ],
                 ),
               ),
-            ))
-        );
+            )));
       } else if (document['approved'] == true) {
+        print("i am id");
+        print(idDoc['displayName']);
+
+        String lastAccess= " ";
+        if (peerDoc['last access'] != null) {
+          if (peerDoc['last access'].toString() == "online") {
+            lastAccess = "Online";
+          }
+          else {
+
+            lastAccess ="Last access: "+  DateFormat('dd MMM kk:mm')
+                .format(DateTime.fromMillisecondsSinceEpoch(
+                int.parse(peerDoc['last access'])));
+          }
+        }
         chatsSet.add(Container(
           child: FlatButton(
             child: Card(
@@ -441,26 +499,27 @@ class NewChatScreenState extends State<NewChatScreen> {
                 leading: Material(
                   child: document['peerPhotoUrl'] != null
                       ? CachedNetworkImage(
-                          placeholder: (context, url) => Container(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 1.0,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(themeColor),
-                            ),
-                            width: 50.0,
-                            height: 50.0,
-                            padding: EdgeInsets.all(15.0),
+                    placeholder: (context, url) =>
+                        Container(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 1.0,
+                            valueColor:
+                            AlwaysStoppedAnimation<Color>(themeColor),
                           ),
-                          imageUrl: document['peerPhotoUrl'],
                           width: 50.0,
                           height: 50.0,
-                          fit: BoxFit.cover,
-                        )
-                      : Icon(
-                          Icons.account_circle,
-                          size: 50.0,
-                          color: greyColor,
+                          padding: EdgeInsets.all(15.0),
                         ),
+                    imageUrl: document['peerPhotoUrl'],
+                    width: 50.0,
+                    height: 50.0,
+                    fit: BoxFit.cover,
+                  )
+                      : Icon(
+                    Icons.account_circle,
+                    size: 50.0,
+                    color: greyColor,
+                  ),
                   borderRadius: BorderRadius.all(Radius.circular(25.0)),
                   clipBehavior: Clip.hardEdge,
                 ),
@@ -469,7 +528,7 @@ class NewChatScreenState extends State<NewChatScreen> {
                   style: TextStyle(color: primaryColor),
                 ),
                 subtitle: Text(
-                  'Bio: ${document['peerBio'] ?? 'Not available'}',
+                  lastAccess,
                   style: TextStyle(color: primaryColor),
                 ),
               ),
@@ -485,7 +544,8 @@ class NewChatScreenState extends State<NewChatScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Chat(
+                      builder: (context) =>
+                          Chat(
                             userId: currentUserId,
                             chatId: groupChatId,
                             peerId: document['peerId'],
