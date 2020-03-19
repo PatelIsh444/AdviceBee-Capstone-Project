@@ -1,4 +1,5 @@
 import 'dart:async';
+//import 'dart:html';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -76,6 +77,7 @@ class Chat extends StatelessWidget {
                           onPressed: () {
                             var list = List<String>();
                             list.add(peerId);
+                            CurrentUser.blocked.add(peerId);
                             Firestore.instance.collection('chats').document(chatId).delete();
                             Firestore.instance.collection('users').document(userId).updateData({"blocked": FieldValue.arrayUnion(list)});
                             Firestore.instance.collection('users').document(userId).updateData({'chattingWith': null});
