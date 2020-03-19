@@ -1,4 +1,3 @@
-
 import 'Notification.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
@@ -8,6 +7,7 @@ import 'Dashboard.dart';
 import './utils/commonFunctions.dart';
 import 'FollowerPage.dart';
 import 'Leaderboard.dart';
+
 
 Future<void> _SignOut(BuildContext context) async {
   try {
@@ -25,6 +25,8 @@ Future<void> _SignOut(BuildContext context) async {
 
 /*This widget displays the bottom navigation bar. It is used in the
 * bottomNavigationBar property in the "Scaffold" class*/
+
+
 Widget globalNavigationBar(
     int currentTab, BuildContext context, GlobalKey key, bool isFirstPage) {
   Size screenSize = MediaQuery.of(context).size;
