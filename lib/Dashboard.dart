@@ -59,7 +59,7 @@ class Dashboard extends StatefulWidget {
   DashboardState createState() => DashboardState();
 }
 
-class DashboardState extends State<Dashboard> {
+class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
   int currentTab = 0; // to keep track of active tab index
   GlobalKey key = GlobalKey();
   bool isTopicLoaded = true;
@@ -97,6 +97,7 @@ class DashboardState extends State<Dashboard> {
     super.initState();
     registerNotification();
     configLocalNotification();
+
     if (Platform.isIOS) {
       iOS_Permission();
     }
@@ -133,7 +134,7 @@ class DashboardState extends State<Dashboard> {
       Firestore.instance
           .collection('users')
           .document(CurrentUser.userID)
-          .updateData({'pushToken': token});
+          .updateData({'pushToken': token, 'last access': 'online'});
     }).catchError((err) {
       Fluttertoast.showToast(msg: err.message.toString());
     });
@@ -221,6 +222,7 @@ class DashboardState extends State<Dashboard> {
       getPosts(widget.selectedTopic);
     }
   }
+
   //Future function to get topics by name
   Future<void> getTopicsName() async {
     List<String> tempTopics = new List();
@@ -313,7 +315,7 @@ class DashboardState extends State<Dashboard> {
         });
   }
 
-  //Upload selected topic to current user
+//Upload selected topic to current user
   _topicOnSelected(FirebaseUser user) async {
     /*Check if selectedTopics is same to myTopics. If they are then there is no
     * topic change, which means there is no point in writing to the database*/
@@ -393,7 +395,7 @@ class DashboardState extends State<Dashboard> {
     return tempAllTopicsList;
   }
 
-  /*
+/*
   This function establish user to Firebase after the first login
   SetData to Firebase and then create a new instance of User class
   This function only execute once when the app open
@@ -403,6 +405,7 @@ class DashboardState extends State<Dashboard> {
     try {
       final auth = AuthProvider.of(context);
       await auth.SignOut();
+      setUserLastAccess();
       //Destroy all navigation stacks
       Navigator.of(context)
           .pushNamedAndRemoveUntil(MyApp.id, (Route<dynamic> route) => false);
@@ -420,7 +423,7 @@ class DashboardState extends State<Dashboard> {
       // 1) check if user exists in users collection in database (according to their id)
       if (!user.isAnonymous && CurrentUser == null) {
         DocumentSnapshot doc = await usersRef.document(user.uid).get();
-
+        //setUserOnline();
         //Check if user already exists in firebase
         if (!doc.exists) {
           //Change profile picture quality when fetching from Google or Facebook
@@ -468,6 +471,7 @@ class DashboardState extends State<Dashboard> {
             'lastPosted': Timestamp.now(),
             'lastPointReset': Timestamp.now(),
             'dateCreated': Timestamp.now(),
+            'last access': 'online',
           });
           if (selectedTopics.isEmpty) {
             showEditTopicMenu(user);
@@ -475,6 +479,7 @@ class DashboardState extends State<Dashboard> {
         }
 
         CurrentUser = UserClass.User.fromDocument(doc);
+        setUserOnline();
         //If the user logged in with email for the first time then
         //prompt topics selection
       } else if (!user.isEmailVerified &&
@@ -502,7 +507,7 @@ class DashboardState extends State<Dashboard> {
     return _userCreated;
   }
 
-  //Async function so that pulling information does not block other processes
+//Async function so that pulling information does not block other processes
   Future<bool> getPosts(String topicName) async {
     //Create local list
     List<questions> postInfo = new List();
@@ -937,7 +942,6 @@ class DashboardState extends State<Dashboard> {
 
     //Placeholder for the horizontal scrollview of topics
     Container topicsList;
-
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -1110,7 +1114,7 @@ class DashboardState extends State<Dashboard> {
     }
   }
 
-  /*
+/*
   This widget build a single column of Topic
   Contain topic's name and photo
    */

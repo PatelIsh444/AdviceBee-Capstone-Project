@@ -8,16 +8,6 @@ import '../newProfile.dart';
 class searchUser extends SearchDelegate<String> {
   List<DocumentSnapshot> suggestions = [];
 
-  getUserData(s) async {
-    await Firestore.instance
-        .collection("users")
-        .where("displayId", whereIn: s)
-        .getDocuments()
-        .then((docs) {
-      print(docs);
-    });
-  }
-
   @override
   List<Widget> buildActions(BuildContext context) {
     return <Widget>[
