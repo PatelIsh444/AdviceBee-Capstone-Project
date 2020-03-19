@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:v0/MyPosts.dart';
+import '../pages/FullPhoto.dart';
 import './validator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,6 @@ import '../QuestionPage.dart';
 import '../MoreMenu.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:auto_size_text/auto_size_text.dart';
-import './HeroPhotoViewWrapper.dart';
 import 'package:flushbar/flushbar.dart';
 
 import 'commonFunctions.dart';
@@ -144,11 +144,11 @@ class _editPost extends State<editPost> {
     else {
       return GestureDetector(
         onTap: () {
-          Navigator.push(context,MaterialPageRoute(
-              builder: (context) => HeroPhotoViewWrapper(
-                imageProvider: CachedNetworkImageProvider(imageURL),
-              )
-          ));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      FullPhoto(url: imageURL)));
         },
         child: Hero(
           tag: "image",
