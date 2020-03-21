@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import 'QuestionPage.dart';
 import 'User.dart';
 import './utils/displayQuestionCard.dart';
@@ -41,6 +43,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
   String tempUserID;
   int numberOfFollowers = 0;
   int numberOfFollowing = 0;
+  String lastAccess = " ";
   List<questions> userQuestions;
   List<String> userQuestionGroupIDs = [];
   List<String> topicOrGroup = [];
@@ -114,7 +117,16 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
       userInfo.bio = doc["bio"];
       userInfo.dailyPoints = doc["dailyPoints"];
       userInfo.earnedPoints = doc["earnedPoints"];
-
+      if (doc['last access'] != null) {
+        if (doc['last access'].toString() == "online") {
+          lastAccess = "Online";
+        } else {
+          lastAccess = "Last access: " +
+              DateFormat('dd MMM kk:mm').format(
+                  DateTime.fromMillisecondsSinceEpoch(
+                      int.parse(doc['last access'])));
+        }
+      }
       setState(() {
         if (doc["title"] != null) {
           title = doc["title"];
@@ -455,6 +467,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
             buildStatContainer(),
             buildDate(context),
             aboutUser(deviceWidth),
+            userOnlineStatus(),
             buildSeparator(deviceWidth),
             SizedBox(height: 10.0),
             CurrentUser.isNotGuest && CurrentUser.userID != widget.userID
@@ -590,6 +603,38 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
         userInformation.displayName,
         style: nameTextStyle,
         maxLines: 1,
+      ),
+    );
+  }
+
+  Widget userOnlineStatus() {
+    TextStyle bioTextStyle = TextStyle(
+      fontFamily: 'Spectral',
+      fontWeight: FontWeight.bold, //try changing weight to w500 if not thin
+      fontSize: 16.0,
+    );
+    return Center(
+      child: Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        padding: EdgeInsets.all(8.0),
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                lastAccess,
+                textAlign: TextAlign.center,
+                style: bioTextStyle,
+              ),
+              lastAccess == "Online"
+                  ? CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      radius: 10.0,
+                      backgroundImage: AssetImage('assets/onlineGreenDot.jpg'))
+                  : Container(),
+            ],
+          ),
+        ),
       ),
     );
   }
