@@ -18,6 +18,7 @@ import 'FollowerPage.dart';
 import 'Leaderboard.dart';
 import 'landing.dart';
 
+
 Future<void> _SignOut(BuildContext context) async {
   try {
     final auth = AuthProvider.of(context);
@@ -32,6 +33,7 @@ Future<void> _SignOut(BuildContext context) async {
   }
   CurrentUser = null;
 }
+
 
 void onShow(GlobalKey btnKey, BuildContext context) {
   PopupMenu.context = context;

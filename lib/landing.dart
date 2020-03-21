@@ -108,6 +108,9 @@ class _MyAppState extends State<MyApp> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                SizedBox(
+                  height: 80,
+                ),
                 CircleAvatar(
                   backgroundColor: Colors.transparent,
                   radius: 50.0,

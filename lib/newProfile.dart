@@ -1,6 +1,7 @@
+import 'package:intl/intl.dart';
+
 import 'QuestionPage.dart';
 import 'User.dart';
-import './utils/HeroPhotoViewWrapper.dart';
 import './utils/displayQuestionCard.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -16,6 +17,7 @@ import 'Profile.dart' as cProfile;
 import 'OtherUserPosts.dart';
 import 'OtherUserFollowerPage.dart';
 import './utils/commonFunctions.dart';
+import 'pages/FullPhoto.dart';
 import 'pages/NewChat.dart';
 
 class UserDetailsPage extends StatefulWidget {
@@ -42,6 +44,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
   String tempUserID;
   int numberOfFollowers = 0;
   int numberOfFollowing = 0;
+  String lastAccess = " ";
   List<questions> userQuestions;
   List<String> userQuestionGroupIDs = [];
   List<String> topicOrGroup = [];
@@ -116,14 +119,25 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
       userInfo.bio = doc["bio"];
       userInfo.dailyPoints = doc["dailyPoints"];
       userInfo.earnedPoints = doc["earnedPoints"];
+      if (doc['last access'] != null) {
+        if (doc['last access'].toString() == "online") {
+          lastAccess = "Online";
+        } else {
+          lastAccess = "Last access: " +
+              DateFormat('dd MMM kk:mm').format(
+                  DateTime.fromMillisecondsSinceEpoch(
+                      int.parse(doc['last access'])));
+        }
+      }
       userInfo.blocked = doc["blocked"];
       setState(() {
         if (doc["title"] != null) {
           title = doc["title"];
         }
-        if (doc["dateCreated"]!=null){
-          DateTime timeStampSplit= (doc["dateCreated"]).toDate();
-          dateJoined = cProfile.getMonth(timeStampSplit.month) + timeStampSplit.year.toString();
+        if (doc["dateCreated"] != null) {
+          DateTime timeStampSplit = (doc["dateCreated"]).toDate();
+          dateJoined = cProfile.getMonth(timeStampSplit.month) +
+              timeStampSplit.year.toString();
           print(dateJoined);
         }
         scores = (userInfo.dailyPoints + userInfo.earnedPoints).toString();
@@ -141,12 +155,12 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     return userInfo;
   }
 
-  Stream getUserInformationStream(String passedUserID){
-    return Firestore.instance.collection('users')
+  Stream getUserInformationStream(String passedUserID) {
+    return Firestore.instance
+        .collection('users')
         .document(passedUserID)
         .snapshots();
   }
-
 
   //Function maps snapshot data to User class
   void createUserClass(AsyncSnapshot snapshot) {
@@ -179,9 +193,11 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                 doc["topicName"] == null ? null : doc["topicName"],
                 doc["likes"],
                 doc["views"],
-                  doc["reports"],
+                doc["reports"],
                 doc["anonymous"],
-                doc["multipleResponses"] == null ? false : doc["multipleResponses"],
+                doc["multipleResponses"] == null
+                    ? false
+                    : doc["multipleResponses"],
                 doc["imageURL"] == null ? null : doc["imageURL"],
               ));
               break;
@@ -201,9 +217,11 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                 doc["topicName"] == null ? null : doc["topicName"],
                 doc["likes"],
                 doc["views"],
-                  doc["reports"],
+                doc["reports"],
                 doc["anonymous"],
-                doc["multipleResponses"] == null ? false : doc["multipleResponses"],
+                doc["multipleResponses"] == null
+                    ? false
+                    : doc["multipleResponses"],
                 doc["imageURL"] == null ? null : doc["imageURL"],
               ));
               break;
@@ -211,20 +229,22 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
           case 2:
             {
               postInfo.add(new NumberValueQuestion(
-                  doc.documentID,
-                  doc["question"],
-                  doc["description"],
-                  doc["createdBy"],
-                  doc["userDisplayName"],
-                  doc["dateCreated"],
-                  doc["numOfResponses"],
-                  doc["questionType"],
-                  doc["topicName"] == null ? null : doc["topicName"],
-                  doc["likes"],
-                  doc["views"],
-                  doc["reports"],
-                  doc["anonymous"],
-                doc["multipleResponses"] == null ? false : doc["multipleResponses"],
+                doc.documentID,
+                doc["question"],
+                doc["description"],
+                doc["createdBy"],
+                doc["userDisplayName"],
+                doc["dateCreated"],
+                doc["numOfResponses"],
+                doc["questionType"],
+                doc["topicName"] == null ? null : doc["topicName"],
+                doc["likes"],
+                doc["views"],
+                doc["reports"],
+                doc["anonymous"],
+                doc["multipleResponses"] == null
+                    ? false
+                    : doc["multipleResponses"],
                 doc["imageURL"] == null ? null : doc["imageURL"],
               ));
               break;
@@ -237,39 +257,36 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    if(userInformation != null) {
-        return StreamBuilder(
-          stream: getUserInformationStream(userInformation.userID),
-          builder: (BuildContext context, AsyncSnapshot snapshot)
-          {
-                if (snapshot.hasData) {
-                  createUserClass(snapshot);
-                  //Create the user class from the snapshot
-                  isFollowed = currentUserFollowingProfile();
-                  //Build the UI
-                  return buildUserProfile();
-                } else {
-                  //Otherwise show a progress indicator for loading
-                  return loadingScaffold(3, context, key, false, "middleButtonHold9");
-                }
-          },
-        );
-      }
-    else{
+    if (userInformation != null) {
+      return StreamBuilder(
+        stream: getUserInformationStream(userInformation.userID),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            createUserClass(snapshot);
+            //Create the user class from the snapshot
+            isFollowed = currentUserFollowingProfile();
+            //Build the UI
+            return buildUserProfile();
+          } else {
+            //Otherwise show a progress indicator for loading
+            return loadingScaffold(3, context, key, false, "middleButtonHold9");
+          }
+        },
+      );
+    } else {
       return StreamBuilder(
         stream: getUserInformationStream(widget.userID),
-        builder: (BuildContext context, AsyncSnapshot snapshot)
-        {
-              if (snapshot.hasData) {
-                createUserClass(snapshot);
-                //Create the user class from the snapshot
-                isFollowed = currentUserFollowingProfile();
-                //Build the UI
-                return buildUserProfile();
-              } else {
-                //Otherwise show a progress indicator for loading
-                return loadingScaffold(3, context, key, false, "middleButtonHold6");
-              }
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            createUserClass(snapshot);
+            //Create the user class from the snapshot
+            isFollowed = currentUserFollowingProfile();
+            //Build the UI
+            return buildUserProfile();
+          } else {
+            //Otherwise show a progress indicator for loading
+            return loadingScaffold(3, context, key, false, "middleButtonHold6");
+          }
         },
       );
     }
@@ -367,50 +384,48 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
 
     Size screenSize = MediaQuery.of(context).size;
     return InkWell(
-        onTap: (){
-      if (label == "Points") {
-        showDialog(context: context, builder: (BuildContext context) {
-          return cProfile.rankInformationMessage(context);
-        });
-      }
-      else if (label == "Followers"){
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) {
-              return new OtherUserFollowingFollowersPage(0, userInformation.userID);
+        onTap: () {
+          if (label == "Points") {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return cProfile.rankInformationMessage(context);
+                });
+          } else if (label == "Followers") {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return new OtherUserFollowingFollowersPage(
+                  0, userInformation.userID);
             }));
-      }
-      else if (label == "Following"){
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) {
-              return new OtherUserFollowingFollowersPage(1, userInformation.userID);
+          } else if (label == "Following") {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return new OtherUserFollowingFollowersPage(
+                  1, userInformation.userID);
             }));
-      }
-      else if (label == "Posts"){
-        print(userInformation.userID);
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) {
-              return new OtherUserPostPage(userInformation.userID, userInformation.myPosts);
+          } else if (label == "Posts") {
+            print(userInformation.userID);
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return new OtherUserPostPage(
+                  userInformation.userID, userInformation.myPosts);
             }));
-      }
-      else{
-        print("Unknown Statbar button click");
-      }
-    },
-    child: Container(
-        width: screenSize.width / 4,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              count,
-              style: statCountTextStyle,
-            ),
-            Text(
-              label,
-              style: statLabelTextStyle,
-            ),
-          ],
-        )));
+          } else {
+            print("Unknown Statbar button click");
+          }
+        },
+        child: Container(
+            width: screenSize.width / 4,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  count,
+                  style: statCountTextStyle,
+                ),
+                Text(
+                  label,
+                  style: statLabelTextStyle,
+                ),
+              ],
+            )));
   }
 
   Widget buildUserProfile() {
@@ -421,16 +436,15 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
         centerTitle: true,
         title: Text("Profile"),
       ),
-      floatingActionButton:
-      FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (CurrentUser.isNotGuest) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => postQuestion(null, null) //AddPost(),
-                ));
-          } else{
+                    ));
+          } else {
             guestUserSignInMessage(context);
           }
         },
@@ -456,11 +470,16 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
             buildStatContainer(),
             buildDate(context),
             aboutUser(deviceWidth),
+            userOnlineStatus(),
             buildSeparator(deviceWidth),
             SizedBox(height: 10.0),
-            CurrentUser.isNotGuest && CurrentUser.userID != widget.userID ? getFollowButton() : Container(),
+            CurrentUser.isNotGuest && CurrentUser.userID != widget.userID
+                ? getFollowButton()
+                : Container(),
             SizedBox(height: 10.0),
-            CurrentUser.isNotGuest && CurrentUser.userID != widget.userID ? getChatButton() : Container(),
+            CurrentUser.isNotGuest && CurrentUser.userID != widget.userID
+                ? getChatButton()
+                : Container(),
             SizedBox(height: 30.0),
             //userPosts(deviceWidth),
             //SizedBox(height: 30,)
@@ -485,7 +504,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
   Widget userPosts(double deviceWidth) {
     //Get myPosts information for this user's profile
     Future<List<questions>> getProfilePostsFuture =
-    getProfilePosts(userInformation.myPosts);
+        getProfilePosts(userInformation.myPosts);
 
     return FutureBuilder<List<questions>>(
       future: getProfilePostsFuture,
@@ -539,7 +558,8 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
               );
             } else {
               //Otherwise show a progress indicator for loading
-              return loadingScaffold(3, context, key, false, "middleButtonHold10");
+              return loadingScaffold(
+                  3, context, key, false, "middleButtonHold10");
             }
         }
         return null; //Unreachable
@@ -590,16 +610,47 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     );
   }
 
+  Widget userOnlineStatus() {
+    TextStyle bioTextStyle = TextStyle(
+      fontFamily: 'Spectral',
+      fontWeight: FontWeight.bold, //try changing weight to w500 if not thin
+      fontSize: 16.0,
+    );
+    return Center(
+      child: Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        padding: EdgeInsets.all(8.0),
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                lastAccess,
+                textAlign: TextAlign.center,
+                style: bioTextStyle,
+              ),
+              lastAccess == "Online"
+                  ? CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      radius: 10.0,
+                      backgroundImage: AssetImage('assets/onlineGreenDot.jpg'))
+                  : Container(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget userImage(double deviceWidth) {
     return Center(
       child: GestureDetector(
         onTap: () {
-          Navigator.push(context,
+          Navigator.push(
+              context,
               MaterialPageRoute(
-                  builder: (context) => HeroPhotoViewWrapper(
-                    imageProvider: CachedNetworkImageProvider(userInformation.profilePicURL),
-                  ))
-          );
+                  builder: (context) =>
+                      FullPhoto(url: userInformation.profilePicURL)));
         },
         child: Hero(
           tag: "image",
@@ -608,7 +659,8 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
             height: 160.0,
             decoration: BoxDecoration(
               image: new DecorationImage(
-                image: new CachedNetworkImageProvider(userInformation.profilePicURL),
+                image: new CachedNetworkImageProvider(
+                    userInformation.profilePicURL),
                 fit: BoxFit.cover,
               ),
               borderRadius: BorderRadius.circular(80.0),
@@ -686,19 +738,21 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
   Widget buildDate(BuildContext context) {
     TextStyle bioTextStyle = TextStyle(
       fontFamily: 'Spectral',
-      fontWeight: FontWeight.bold,//try changing weight to w500 if not thin
+      fontWeight: FontWeight.bold, //try changing weight to w500 if not thin
       fontSize: 16.0,
     );
 
-    return Center(child: Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      padding: EdgeInsets.all(8.0),
-      child: Text(
-        "Member Since $dateJoined",
-        textAlign: TextAlign.center,
-        style: bioTextStyle,
+    return Center(
+      child: Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          "Member Since $dateJoined",
+          textAlign: TextAlign.center,
+          style: bioTextStyle,
+        ),
       ),
-    ),);
+    );
   }
 
   Widget aboutUser(double deviceWidth) {
@@ -737,6 +791,9 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
             groupChatId = "$peerIdLocal-$currentUserId";
           }
 
+          Firestore.instance.collection('chats').document(groupChatId).setData({
+
+
            if (blocked.contains(currentUser.userID)) {
              print("you are blocked");
            return;
@@ -754,8 +811,11 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
             'approved': false,
           });
           Navigator.push(
-              context,
-              MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,)),
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => NewChatScreen(
+                      currentUserId: CurrentUser.userID,
+                    )),
           );
         },
         child: Padding(
@@ -789,8 +849,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
   Widget getFollowButton() {
     if (isFollowed) {
       buttonText = "Unfollow";
-    }
-    else{
+    } else {
       buttonText = "Follow";
     }
 
@@ -798,15 +857,13 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
       child: InkResponse(
         onTap: () {
           updateFollowers();
-
         },
         child: Padding(
           padding: EdgeInsets.only(left: 30, right: 30),
           child: Container(
             height: 40.0,
             decoration: BoxDecoration(
-                color: Colors.teal,
-                borderRadius: BorderRadius.circular(20.0)),
+                color: Colors.teal, borderRadius: BorderRadius.circular(20.0)),
             child: Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -826,15 +883,15 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
         ),
       ),
     );
-    }
+  }
 
   Future<void> updateFollowers() async {
     DocumentReference currentUserRef =
-    Firestore.instance.collection('users').document(CurrentUser.userID);
+        Firestore.instance.collection('users').document(CurrentUser.userID);
     DocumentReference currentProfileRef =
-    Firestore.instance.collection('users').document(userInformation.userID);
+        Firestore.instance.collection('users').document(userInformation.userID);
 
-    if(isFollowed) {
+    if (isFollowed) {
       await currentUserRef.updateData({
         'following': FieldValue.arrayRemove([userInformation.userID]),
       });
@@ -848,8 +905,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
 
         //this.userInformation = userInformation;
       });
-    }
-    else{
+    } else {
       await currentUserRef.updateData({
         'following': FieldValue.arrayUnion([userInformation.userID]),
       });
@@ -864,6 +920,4 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
       });
     }
   }
-
-
 }
