@@ -124,7 +124,7 @@ class _NotificationFeedState extends State<NotificationFeed> {
         tooltip: 'Increment',
         child: Icon(
           Icons.delete_forever,
-          size: 42,
+          size: 30,
         ),
         heroTag: "notificationHero",
       ),
@@ -169,10 +169,11 @@ class _NotificationFeedState extends State<NotificationFeed> {
                       alignment: AlignmentDirectional.centerStart,
                       color: Colors.red,
                       child: Padding(
-                        padding: EdgeInsets.fromLTRB(5.0, 0, 0, 0),
+                        padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
                         child: Icon(
                           Icons.delete,
                           color: Colors.white,
+                          size: 5,
                         ),
                       ),
                     ),

@@ -45,7 +45,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
   List<questions> userQuestions;
   List<String> userQuestionGroupIDs = [];
   List<String> topicOrGroup = [];
-  List<String> blocked = [];
+  List<User> blocked = [];
   String rankImage =
       "https://firebasestorage.googleapis.com/v0/b/advicebee-9f277."
       "appspot.com/o/rankIcons%2FLarvae.png?alt=media&token=9afeb4c7-dbaf-"
@@ -116,7 +116,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
       userInfo.bio = doc["bio"];
       userInfo.dailyPoints = doc["dailyPoints"];
       userInfo.earnedPoints = doc["earnedPoints"];
-      blocked = doc["blocked"];
+      userInfo.blocked = doc["blocked"];
       setState(() {
         if (doc["title"] != null) {
           title = doc["title"];
@@ -737,9 +737,10 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
             groupChatId = "$peerIdLocal-$currentUserId";
           }
 
-//            if (blocked.contains(currentUserId)) {
-//           return;
-//         }
+           if (blocked.contains(currentUser.userID)) {
+             print("you are blocked");
+           return;
+       }
           Firestore.instance.collection('chats').document(groupChatId)
               .setData({
             'id': currentUserId,
