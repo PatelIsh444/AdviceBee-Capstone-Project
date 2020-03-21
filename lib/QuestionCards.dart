@@ -58,6 +58,7 @@ class _QuestionCardsState extends State<QuestionCards> {
 
   final bool PostSource;
   var thumbnailURLS = new List();
+
   @override
   void initState() {
     super.initState();
@@ -91,7 +92,7 @@ class _QuestionCardsState extends State<QuestionCards> {
       child: AutoSizeText(
         "Not Answered ",
         style: TextStyle(
-            fontSize: 10, color: Colors.black45, fontWeight: FontWeight.w500),
+            fontSize: 10, color: Colors.black, fontWeight: FontWeight.w500),
       ),
     );
   }
@@ -313,8 +314,16 @@ class _QuestionCardsState extends State<QuestionCards> {
     Any modifications shall be within this Expanded
      */
     return Expanded(
-        child: SizedBox(
-            height: 200.0,
+        child: Container(
+            decoration: const BoxDecoration(
+              border: Border(
+                top: BorderSide(width: 2.0, color: Colors.black),
+             //   left: BorderSide(width: 2.0, color: Colors.black),
+             //   right: BorderSide(width: 2.0, color: Colors.black),
+               // bottom: BorderSide(width: 2.0, color: Colors.black),
+              ),
+            ),
+            height: 150.0,
             child: ListView.builder(
               addAutomaticKeepAlives: true,
               cacheExtent: 10,
@@ -586,8 +595,10 @@ class _QuestionCardsState extends State<QuestionCards> {
                                                       child: new Icon(
                                                         Icons.question_answer,
                                                         size: 20,
-                                                        color:
-                                                        Color(0xFFCBD7D0),
+
+                                                        //Color(0xFFCBD7D0),
+                                                        color: Colors.green
+
                                                         //Colors.grey,
                                                       )),
                                                   new Positioned(
@@ -619,11 +630,10 @@ class _QuestionCardsState extends State<QuestionCards> {
                                                         ].contains(widget.postList[index].numOfResponses) ? "0" : "${widget.postList[index].numOfResponses}"} ",
                                                         style:
                                                         TextStyle(
-                                                          color:
-                                                          Color(0xFFCBD7D0),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 11,
+                                                          color: Colors.black,
+//                                                          fontWeight:
+//                                                              FontWeight.bold,
+                                                          fontSize:5,
                                                         ),
                                                         textAlign:
                                                             TextAlign.center,
@@ -642,7 +652,9 @@ class _QuestionCardsState extends State<QuestionCards> {
                                                       child: new Icon(
                                                         Icons.remove_red_eye,
                                                         size: 20,
-                                                        color: Color(0xFFCBD7D0),
+                                                        color:
+                                                        //Color(0xFFE9A215),
+                                                        Colors.green,
                                                       )),
                                                   new Positioned(
                                                     left: 30,
@@ -669,10 +681,10 @@ class _QuestionCardsState extends State<QuestionCards> {
                                                       child: AutoSizeText(
                                                         "${widget.postList[index].views != null ? widget.postList[index].views.length : 0}",
                                                         style: TextStyle(
-                                                          color: Color(0xFFCBD7D0),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 11,
+                                                          color: Colors.black,
+//                                                          fontWeight:
+//                                                              FontWeight.bold,
+                                                          fontSize: 5,
                                                         ),
                                                         textAlign:
                                                             TextAlign.center,
@@ -709,8 +721,7 @@ class _QuestionCardsState extends State<QuestionCards> {
                                                                     : Icons
                                                                         .favorite_border,
                                                                 size: 20,
-                                                                color:
-                                                                Color(0xFFCBD7D0)
+                                                                color: Colors.green,
                                                                 //Colors.teal,
                                                                 //Color(0xFFB83330),
                                                               )),
@@ -734,7 +745,7 @@ class _QuestionCardsState extends State<QuestionCards> {
                                                                       //color: Color(0xFFFD60A3),
                                                                       border: Border.all(
                                                                           color:
-                                                                              //Color(0xFFB83330)
+                                                                          //Color(0xFFB83330)
                                                                         Colors.transparent,
                                                                       ),
                                                                       borderRadius:
@@ -754,13 +765,13 @@ class _QuestionCardsState extends State<QuestionCards> {
                                                                       style:
                                                                           TextStyle(
                                                                         color:
-                                                                        Color(0xFFCBD7D0),
+                                                                        Colors.black,
                                                                         //Colors.teal,
                                                                         //Color(0xFFB83330),
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
+//                                                                        fontWeight:
+//                                                                            FontWeight.bold,
                                                                         fontSize:
-                                                                            11,
+                                                                            5,
                                                                       ),
                                                                       textAlign:
                                                                           TextAlign
@@ -772,16 +783,15 @@ class _QuestionCardsState extends State<QuestionCards> {
                                                         ],
                                                       )
 
-                                                    //END===============
 
-                                                    : Container(
+                                                : Container(
                                                         width: 46,
                                                         height: 31,
-                                                        child: Icon(
+                                                  child: Icon(
                                                           Icons.favorite_border,
-                                                          size: 20,
-                                                          color:
-                                                          Color(0xFFCBD7D0)
+                                                          size: 24,
+                                                         // color: Colors.black
+                                                          color: Colors.green,
                                                           //Colors.teal,
 
                                                               //Color(0xFFB83330),
@@ -812,16 +822,16 @@ class _QuestionCardsState extends State<QuestionCards> {
                                                               : Icons
                                                                   .star_border,
                                                           size: 24.0,
-                                                          //color: Color(0xFFE9A215),
-                                                          color: Color(0xFFCBD7D0),
-                                                          //Color(0xFFD5B690),
+                                                          color: Colors.green,
+                                                        //  color: Color(0xFFCBD7D0),
+                                                          //color:Color(0xFFD5B690),
                                                           //Colors.amber,
                                                         )
                                                       : Icon(
                                                           Icons.star_border,
                                                           size: 24.0,
-                                                          //color: Color(0xFFE9A215),
-                                                          color: Color(0xFFCBD7D0),
+                                                          color: Colors.green,
+                                                          //color: Color(0xFFCBD7D0),
                                                           //Color(0xFFD5B690),
                                                           //Colors.amber,
                                                         ),
@@ -860,15 +870,17 @@ class _QuestionCardsState extends State<QuestionCards> {
                                                                   .error_outline,
                                                           size: 22,
                                                           //color: Color(0xFFE9A215),0xFF004369
-                                                          color: Color(0xFFCBD7D0),
+                                                          //color: Color(0xFFCBD7D0),
+                                                    color: Colors.green,
                                                           //Color(0xFFCBD7D0),
                                                         )
                                                       : Container(
                                                           child: Icon(
                                                             Icons.error_outline,
                                                             size: 22,
-                                                            color: Color(0xFFCBD7D0),
+                                                            //color: Colors.black,
                                                             //Color(0xFFCBD7D0),
+                                                            color: Colors.green,
                                                           ),
                                                         ),
                                                 ),
@@ -893,7 +905,8 @@ class _QuestionCardsState extends State<QuestionCards> {
                                           child: Icon(
                                             Icons.favorite,
                                             size: 20.0,
-                                            color: Color(0xFFCBD7D0),
+                                           // color: Colors.black,
+                                            color: Color(0xFFE9A215),
                                           ),
                                         ),
                                       )
@@ -908,7 +921,9 @@ class _QuestionCardsState extends State<QuestionCards> {
                                           scale: anim.value,
                                           child: Icon(Icons.star,
                                               size: 20.0,
-                                              color: Color(0xFFCBD7D0),),
+                                            color: Color(0xFFE9A215),
+                                             // color: Color(0xFFCBD7D0),
+                                          ),
                                         ),
                                       )
                                     : Text(""),
@@ -1215,27 +1230,24 @@ class _QuestionCardsState extends State<QuestionCards> {
   }
 
   void AddPostToReport(int index) async{
-    //This method is to retrieve name for user that signed up with email
-    //user.displayName is null
+    questions post = widget.postList[index];
+    DocumentReference reportedPostRef = reportRef.document(post.postID);
 
-    // add a notification to the postOwner's activity feed
-    reportRef
-        .document(widget.postList[index].postID)
-        .collection("ReportedUsers")
-        .document(widget.postList[index].createdBy)
-        .setData({
+    reportedPostRef.setData({
+      "postId": post.postID,
+      "postTitle": post.question,
+      "postCreatedBy": post.createdBy,
+      "postLocation": widget.groups_or_topics,
+      "postLocationId": widget.groups_or_topics == "topics" ? post.topic : widget.groupID,
+    });
+    
+    reportedPostRef.collection("ReportedUsers").document(CurrentUser.userID).setData({
+      "reportedPostId": post.postID,
       "reasons": selectedReportList,
-      "status": "new",
-      "reportedBy": widget.CurrentUser.displayName,
-      "userId": widget.CurrentUser.userID,
+      "reportedBy": widget.CurrentUser.userID,
+      "userDisplayName": widget.CurrentUser.displayName,
       "userProfileImg": widget.CurrentUser.profilePicURL,
-      "postId": widget.postList[index].postID,
-      "postName": widget.postList[index].question,
-      "timestamp": timestamp,
-      "groups_or_topics": widget.groups_or_topics,
-      "groupOrTopicID": widget.groups_or_topics == "topics"
-          ? widget.postList[index].topic
-          : widget.groupID,
+      "dateReported": timestamp,
     });
 
     print("Added post to Report");
@@ -1246,7 +1258,7 @@ class _QuestionCardsState extends State<QuestionCards> {
     reportRef
         .document(widget.postList[index].postID)
         .collection("ReportedUsers")
-        .document(widget.postList[index].createdBy)
+        .document(CurrentUser.userID)
         .get()
         .then((doc) {
       if (doc.exists) {

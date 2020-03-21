@@ -16,6 +16,7 @@ class User {
   List<dynamic> likedPosts;
   List<dynamic> myTopics;
   List<dynamic> myResponses;
+  List<dynamic>blocked;
   int dailyPoints;
   int earnedPoints;
   bool isNotGuest=false;
@@ -40,6 +41,7 @@ class User {
     this.earnedPoints,
     this.isNotGuest,
     this.myTopics,
+    this.blocked,
   });
 
   User.searchInfo(
@@ -59,6 +61,7 @@ class User {
       this.joinedGroups = doc["joinedGroups"];
       this.followers = doc["followers"];
       this.following = doc["following"];
+      this.blocked = doc["blocked"];
       this.likedPosts = doc["likedPosts"];
       this.myResponses = doc["myResponses"];
       this.bio = doc["bio"];
@@ -79,6 +82,7 @@ class User {
       joinedGroups: doc["joinedGroups"],
       followers: doc["followers"],
       following: doc["following"],
+      blocked: doc["blocked"],
       likedPosts: doc["likedPosts"],
       myResponses: doc["myResponses"],
       bio: doc["bio"],

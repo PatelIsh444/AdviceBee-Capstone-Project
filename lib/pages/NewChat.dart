@@ -50,6 +50,8 @@ class NewChatScreenState extends State<NewChatScreen> {
 
   bool isLoading = false;
 
+  int get currentTab => null;
+
   @override
   void initState() {
     super.initState();
@@ -197,8 +199,8 @@ class NewChatScreenState extends State<NewChatScreen> {
           ),
         ],
       ),
-      body: WillPopScope(
-        child: ListView(
+
+        body: ListView(
           children: <Widget>[
             Stack(
               children: <Widget>[
@@ -269,8 +271,7 @@ class NewChatScreenState extends State<NewChatScreen> {
             ),
           ],
         ),
-        onWillPop: () {},
-      ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (CurrentUser.isNotGuest) {
@@ -289,11 +290,11 @@ class NewChatScreenState extends State<NewChatScreen> {
           child: Image.asset(
             'images/addPostIcon4.png',
           ),
-          maxRadius: 18,
+          maxRadius: 12,
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: globalNavigationBar(3, context, key, false),
+ bottomNavigationBar: globalNavigationBar(currentTab, context, key, false),
     );
   }
 
@@ -456,9 +457,9 @@ class NewChatScreenState extends State<NewChatScreen> {
                     ListTile(
                       leading: Material(
                         child: Icon(
-                          Icons.comment,
-                          size: 50.0,
-                          color: Colors.grey,
+                          Icons.chat,
+                          size: 30.0,
+                          color: Colors.redAccent,
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(25.0)),
                         clipBehavior: Clip.hardEdge,

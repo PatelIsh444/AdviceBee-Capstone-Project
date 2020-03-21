@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:v0/blocked.dart';
 
 import 'AboutUs.dart';
 import 'ContactUs.dart';
@@ -19,6 +20,7 @@ import 'MoreMenu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
 import 'Dashboard.dart';
+import 'blocked.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -839,10 +841,6 @@ class ProfilePageState extends State<ProfilePage> {
   Widget _buildIconTile(IconData icon, Color color, String title, String link) {
     //These selection for responding to onTap on each menu
     MaterialPageRoute route;
-//    if (link == "profile") {
-//      route = MaterialPageRoute(
-//          builder: (BuildContext context) => EditProfilePage());
-//    }
      if (link == "mypost") {
       route =
           MaterialPageRoute(builder: (BuildContext context) => MyPostPage());
@@ -857,25 +855,16 @@ class ProfilePageState extends State<ProfilePage> {
       route = MaterialPageRoute(
           builder: (BuildContext context) => FollowingFollowersPage(0));
     }
-//    else if (link == "chat") {
-//      route = MaterialPageRoute(
-//          builder: (BuildContext context) => NewChatScreen(
-//                currentUserId: CurrentUser.userID,
-//              ));
-//    }
     else if (link == "buyquestions") {
       route = MaterialPageRoute(
           builder: (BuildContext context) => BuyMoreQuestions());
-    } else if (link == "aboutus") {
-      route =
-          MaterialPageRoute(builder: (BuildContext context) => AboutUsPage());
-    } else if (link == "rateus") {
-      route =
-          MaterialPageRoute(builder: (BuildContext context) => ContactUsPage());
-    } else if (link == "topbees") {
-      route = MaterialPageRoute(
-          builder: (BuildContext context) => LeaderboardPage());
     }
+    else if (link == "chat") {
+      route = MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,));
+    }
+    else if (link == "blocked") {
+       route = MaterialPageRoute(builder: (BuildContext context) => blockedView());
+     }
 
     //Building menu card container
     return GestureDetector(
@@ -926,34 +915,22 @@ class ProfilePageState extends State<ProfilePage> {
         borderRadius: BorderRadius.circular(8.0),
         shadowColor: Colors.white,
         child: Container(
-          height: 432.0,
+          height: 360.0,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: Column(
             children: <Widget>[
-              _buildIconTile(
-                  LineIcons.star, Colors.blue, 'Favorite Posts', 'favorite'),
+              _buildIconTile(LineIcons.star, Colors.green, 'Favorite Posts', 'favorite'),
               hr,
-              _buildIconTile(LineIcons.tags, Colors.black, 'Topics', 'topic'),
+              _buildIconTile(LineIcons.tags, Colors.green, 'Topics', 'topic'),
               hr,
-//              _buildIconTile(LineIcons.cog, Colors.black.withOpacity(0.6),
-//                  'Help', 'profile'),
-//              hr,
-//              _buildIconTile(Icons.chat, Colors.black, 'Chats', 'chat'),
-//              hr,
-              _buildIconTile(Icons.card_giftcard, Colors.yellow,
-                  'Buy More Questions', 'buyquestions'),
+              _buildIconTile(LineIcons.shopping_cart, Colors.green, 'Buy More Questions', 'buyquestions'),
               hr,
-              _buildIconTile(
-                  LineIcons.info, Colors.black, 'About US', 'aboutus'),
+              _buildIconTile(LineIcons.wechat, Colors.green, 'Private Chat', 'chat'),
               hr,
-              _buildIconTile(
-                  LineIcons.paper_plane, Colors.black, 'Rate US', 'rateus'),
-              hr,
-              _buildIconTile(
-                  LineIcons.trophy, Colors.black, 'Top Bees', 'topbees'),
+              _buildIconTile(LineIcons.lock, Colors.green,'Block List', 'blocked'),
               hr,
             ],
           ),
@@ -1014,7 +991,7 @@ class ProfilePageState extends State<ProfilePage> {
           child: Image.asset(
             'images/addPostIcon4.png',
           ),
-          maxRadius: 18,
+          maxRadius: 12,
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

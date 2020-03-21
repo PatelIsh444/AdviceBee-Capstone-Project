@@ -6,7 +6,7 @@ import 'newProfile.dart';
 import './utils/commonFunctions.dart' as common;
 import 'Dashboard.dart';
 import 'MoreMenu.dart';
-import 'Dashboard.dart';
+//import 'Dashboard.dart';
 import './utils/commonFunctions.dart';
 import 'QuestionPage.dart';
 
@@ -61,7 +61,8 @@ class _FollowingFollowersPageState extends State<FollowingFollowersPage>
     );
     setState(() {
       userFollowing = following;
-    });
+    }
+    );
   }
 
   @override
@@ -73,7 +74,6 @@ class _FollowingFollowersPageState extends State<FollowingFollowersPage>
         bottom: TabBar(
           controller: _tabController,
           tabs: followerTabs,
-
         ),
       ),
       floatingActionButton:
@@ -253,9 +253,7 @@ class FollowingView extends StatefulWidget {
   _FollowingViewState createState() => _FollowingViewState();
 }
 
-class _FollowingViewState extends State<FollowingView> {
-  //Variables
-  List<String> userFollowingIDs;
+class _FollowingViewState extends State<FollowingView>{
   List<User> userFollowing;
   Future<List<User>> userFollowingFuture;
 

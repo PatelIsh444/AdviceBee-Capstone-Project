@@ -10,9 +10,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flushbar/flushbar.dart';
 
 /*
- *  This class displays user's own posts
- *  User should be able to edit and delete a post on this page
+  * This class displays user's own posts
+  * User should be able to edit and delete a post on this page
  */
+
 
 class MyPostPage extends StatefulWidget {
   @override
@@ -44,11 +45,8 @@ class MyPostPageState extends State<MyPostPage> {
   }
 
   Future<List<questions>> getPosts() async {
-    //Create local list
     List<questions> postInfo = new List();
-    await userDataDocumentRef
-        .get()
-        .then((DocumentSnapshot ds) {
+    await userDataDocumentRef.get().then((DocumentSnapshot ds) {
       setState(() {
         if (ds.data["myPosts"]!=null) {
           CurrentUser.myPosts=ds.data["myPosts"];
@@ -146,7 +144,6 @@ class MyPostPageState extends State<MyPostPage> {
           itemCount: postInfoList.length,
           itemBuilder: (context, index) {
             var questionObj = postInfoList[index];
-
             if (questionObj is basicQuestionInfo) {
               return Card(
                 key: Key(questionObj.postID),
@@ -254,12 +251,14 @@ class MyPostPageState extends State<MyPostPage> {
         builder: (BuildContext context, AsyncSnapshot<List<questions>> snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
-              return loadingScaffold(currentTab, context, key, true, "middleButtonHold1");
+              return loadingScaffold(
+                  currentTab, context, key, true, "middleButtonHold1");
             case ConnectionState.active:
             case ConnectionState.waiting:
-              return loadingScaffold(currentTab, context, key, true, "middleButtonHold2");
+              return loadingScaffold(
+                  currentTab, context, key, true, "middleButtonHold2");
             case ConnectionState.done:
-              if (snapshot.hasData  && snapshot.data.isNotEmpty) {
+              if (snapshot.hasData && snapshot.data.isNotEmpty) {
                 postInfoList = snapshot.data;
                 return Scaffold(
                   resizeToAvoidBottomInset: false,
@@ -280,9 +279,10 @@ class MyPostPageState extends State<MyPostPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => postQuestion(null, null) //AddPost(),
+                                builder: (context) =>
+                                    postQuestion(null, null) //AddPost(),
                             ));
-                      } else{
+                      } else {
                         guestUserSignInMessage(context);
                       }
                     },
@@ -295,8 +295,10 @@ class MyPostPageState extends State<MyPostPage> {
                       maxRadius: 18,
                     ),
                   ),
-                  floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-                  bottomNavigationBar: globalNavigationBar(currentTab, context, key, false),
+                  floatingActionButtonLocation: FloatingActionButtonLocation
+                      .centerDocked,
+                  bottomNavigationBar: globalNavigationBar(
+                      currentTab, context, key, false),
                 );
               } else {
                 return Scaffold(
@@ -314,9 +316,10 @@ class MyPostPageState extends State<MyPostPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => postQuestion(null, null) //AddPost(),
+                                builder: (context) =>
+                                    postQuestion(null, null) //AddPost(),
                             ));
-                      } else{
+                      } else {
                         guestUserSignInMessage(context);
                       }
                     },
@@ -329,13 +332,16 @@ class MyPostPageState extends State<MyPostPage> {
                       maxRadius: 18,
                     ),
                   ),
-                  floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-                  bottomNavigationBar: globalNavigationBar(currentTab, context, key, false),
+                  floatingActionButtonLocation: FloatingActionButtonLocation
+                      .centerDocked,
+                  bottomNavigationBar: globalNavigationBar(
+                      currentTab, context, key, false),
                 );
               }
           }
           return null;
-        });
+        }
+        );
   }
 
   Widget _getImageByType(String type){
