@@ -444,7 +444,7 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
             qualityPhoto =
                 "https://firebasestorage.googleapis.com/v0/b/advicebee-9f277.appspot.com/o/noPicture.png?alt=media&token=111de0ef-ae68-422c-850d-8272b48904ab";
             qualityPhotoThumbnail =
-                "https://firebasestorage.googleapis.com/v0/b/advicebee-9f277.appspot.com/o/noPictureThumbnail.png?alt=media&token=b7189670-8770-4f85-a51d-936a39b597a1";
+               "https://firebasestorage.googleapis.com/v0/b/advicebee-9f277.appspot.com/o/noPictureThumbnail.png?alt=media&token=b7189670-8770-4f85-a51d-936a39b597a1";
           }
 
           //This method is to retrieve name for user that signed up with email
@@ -947,30 +947,25 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
           automaticallyImplyLeading: false,
           centerTitle: true,
           title: Text('Dashboard'),
-          leading: MaterialButton(
+          leading:MaterialButton(
             key: key,
             minWidth: MediaQuery.of(context).size.width / 5,
             onPressed: () {
-             // onShow(key, context);
+              onShow(key, context);
               if (CurrentUser.isNotGuest) {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            NewChatScreen(currentUserId: CurrentUser.userID,)
-              ));
               } else {
                 guestUserSignInMessage(context);
               }
             },
             child: Icon(
-              Icons.chat,
+              Icons.menu,
               color: Colors.white,
+              size: 30,
             ),
           ),
           actions: <Widget>[
             PopupMenuButton<String>(
-              icon: Icon(Icons.sort),
+              icon: Icon(Icons.sort, size: 30,),
               onSelected: selectSortType,
               itemBuilder: (BuildContext context) {
                 return choices.map((SortValues choice) {
@@ -988,7 +983,7 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
               },
             ),
             IconButton(
-              icon: Icon(Icons.search),
+              icon: Icon(Icons.search,size: 30,),
               onPressed: () async {
                 await showSearch(
                     context: context, delegate: TestSearch(getSearchBarData()));
@@ -1013,7 +1008,8 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
           child: Image.asset(
             'images/addPostIcon4.png',
           ),
-          maxRadius: 18,
+          maxRadius: 12
+          ,
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -1053,15 +1049,15 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                       : Center(
                           child: CircularProgressIndicator(),
                         );
-
                   topicsList = Container(
-                    margin: EdgeInsets.only(top: 2.0),
+                    margin: EdgeInsets.only(top: 4.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         SizedBox(
-                          height: 2.0,
+                          height: 1.0,
                         ),
+
                         listOfTopics
                       ],
                     ),
@@ -1070,7 +1066,7 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                 //If the post list has nothing in it return some empty space.
                 if (postList == null || postList.isEmpty) {
                   return Padding(
-                      padding: EdgeInsets.all(20),
+                      padding: EdgeInsets.all(10),
                       child: Center(
                           child: Text(
                         " ",
@@ -1080,7 +1076,9 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                 }
                 //Build the topics and the question cards onto the page.
                 return Column(
+
                   children: <Widget>[
+
                     topicsList,
                     QuestionCards.QuestionCards(
                         CurrentUser, highlightTopic, postList, true, "topics"),

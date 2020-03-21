@@ -859,15 +859,8 @@ class ProfilePageState extends State<ProfilePage> {
       route = MaterialPageRoute(
           builder: (BuildContext context) => BuyMoreQuestions());
     }
-    else if (link == "aboutus") {
-      route = MaterialPageRoute(builder: (BuildContext context) => AboutUsPage());
-    }
-    else if (link == "rateus") {
-      route =
-          MaterialPageRoute(builder: (BuildContext context) => ContactUsPage());
-    } else if (link == "topbees") {
-      route = MaterialPageRoute(
-          builder: (BuildContext context) => LeaderboardPage());
+    else if (link == "chat") {
+      route = MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,));
     }
     else if (link == "blocked") {
        route = MaterialPageRoute(builder: (BuildContext context) => blockedView());
@@ -922,26 +915,22 @@ class ProfilePageState extends State<ProfilePage> {
         borderRadius: BorderRadius.circular(8.0),
         shadowColor: Colors.white,
         child: Container(
-          height: 504.0,
+          height: 360.0,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: Column(
             children: <Widget>[
-              _buildIconTile(LineIcons.star, Colors.blue, 'Favorite Posts', 'favorite'),
+              _buildIconTile(LineIcons.star, Colors.green, 'Favorite Posts', 'favorite'),
               hr,
-              _buildIconTile(LineIcons.tags, Colors.black, 'Topics', 'topic'),
+              _buildIconTile(LineIcons.tags, Colors.green, 'Topics', 'topic'),
               hr,
-              _buildIconTile(Icons.card_giftcard, Colors.yellow, 'Buy More Questions', 'buyquestions'),
+              _buildIconTile(LineIcons.shopping_cart, Colors.green, 'Buy More Questions', 'buyquestions'),
               hr,
-              _buildIconTile(LineIcons.info, Colors.black, 'About US', 'aboutus'),
+              _buildIconTile(LineIcons.wechat, Colors.green, 'Private Chat', 'chat'),
               hr,
-              _buildIconTile(LineIcons.paper_plane, Colors.black, 'Rate US', 'rateus'),
-              hr,
-              _buildIconTile(LineIcons.trophy, Colors.black, 'Top Bees', 'topbees'),
-              hr,
-              _buildIconTile(LineIcons.lock, Colors.black, 'Block List', 'blocked'),
+              _buildIconTile(LineIcons.lock, Colors.green,'Block List', 'blocked'),
               hr,
             ],
           ),
@@ -1002,7 +991,7 @@ class ProfilePageState extends State<ProfilePage> {
           child: Image.asset(
             'images/addPostIcon4.png',
           ),
-          maxRadius: 18,
+          maxRadius: 12,
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

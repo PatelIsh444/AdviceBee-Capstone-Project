@@ -144,12 +144,12 @@ class _blockedViewState extends State<blockedView> {
     ),
       Padding(
         padding: EdgeInsets.only(
-          top: 70.0,
+          top: 5.0,
           left: 30.0,
           right: 30.0,
           bottom: 30.0,),
         child: Text(
-          "You have not blocked anyone",
+          "You have not blocked anyone.",
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.black,
