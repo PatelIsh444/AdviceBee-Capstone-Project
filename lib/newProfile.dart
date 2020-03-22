@@ -776,7 +776,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     );
   }
 
-  dget getChatButton() {
+  Widget getChatButton() {
     return Center(
       child: InkResponse(
         onTap: () {
