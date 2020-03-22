@@ -56,7 +56,7 @@ class _BlockedViewState extends State<BlockedView> {
             case ConnectionState.waiting:
               return Scaffold(body: Center(child: CircularProgressIndicator()));
             case ConnectionState.done:
-              if (snapshot.hasData) {
+              if (snapshot.hasData && snapshot.data.isNotEmpty) {
                 userblocked = snapshot.data;
                 return Scaffold(
                   // resizeToAvoidBottomInset: false,
