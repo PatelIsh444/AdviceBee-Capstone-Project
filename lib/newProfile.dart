@@ -721,7 +721,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
       ),
     );
   }
-
+// Please review.
   Widget getChatButton() {
     return Center(
       child: InkResponse(
