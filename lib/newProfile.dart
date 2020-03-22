@@ -776,7 +776,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     );
   }
 
-  Widget getChatButton() {
+  dget getChatButton() {
     return Center(
       child: InkResponse(
         onTap: () {
@@ -791,13 +791,10 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
             groupChatId = "$peerIdLocal-$currentUserId";
           }
 
-          Firestore.instance.collection('chats').document(groupChatId).setData({
-
-
-           if (blocked.contains(currentUser.userID)) {
-             print("you are blocked");
-           return;
-       }
+          if (blocked.contains(currentUser.userID)) {
+            print("you are blocked");
+            return;
+          }
           Firestore.instance.collection('chats').document(groupChatId)
               .setData({
             'id': currentUserId,
@@ -812,10 +809,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
           });
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => NewChatScreen(
-                      currentUserId: CurrentUser.userID,
-                    )),
+            MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,)),
           );
         },
         child: Padding(
@@ -845,7 +839,6 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
       ),
     );
   }
-
   Widget getFollowButton() {
     if (isFollowed) {
       buttonText = "Unfollow";
