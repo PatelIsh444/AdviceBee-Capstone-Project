@@ -863,7 +863,7 @@ class ProfilePageState extends State<ProfilePage> {
       route = MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,));
     }
     else if (link == "blocked") {
-       route = MaterialPageRoute(builder: (BuildContext context) => blockedView());
+       route = MaterialPageRoute(builder: (BuildContext context) => BlockedView());
      }
 
     //Building menu card container
