@@ -292,7 +292,7 @@ class MyPostPageState extends State<MyPostPage> {
                       child: Image.asset(
                         'images/addPostIcon4.png',
                       ),
-                      maxRadius: 18,
+                      maxRadius: 12,
                     ),
                   ),
                   floatingActionButtonLocation: FloatingActionButtonLocation
@@ -329,7 +329,7 @@ class MyPostPageState extends State<MyPostPage> {
                       child: Image.asset(
                         'images/addPostIcon4.png',
                       ),
-                      maxRadius: 18,
+                      maxRadius: 12,
                     ),
                   ),
                   floatingActionButtonLocation: FloatingActionButtonLocation
