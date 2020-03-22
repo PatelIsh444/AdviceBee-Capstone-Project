@@ -317,10 +317,7 @@ class _QuestionCardsState extends State<QuestionCards> {
         child: Container(
             decoration: const BoxDecoration(
               border: Border(
-                top: BorderSide(width: 2.0, color: Colors.black),
-             //   left: BorderSide(width: 2.0, color: Colors.black),
-             //   right: BorderSide(width: 2.0, color: Colors.black),
-               // bottom: BorderSide(width: 2.0, color: Colors.black),
+                top: BorderSide(width: 1.0, color: Colors.black),
               ),
             ),
             height: 150.0,
@@ -363,7 +360,7 @@ class _QuestionCardsState extends State<QuestionCards> {
                                     children: <Widget>[
                                       Padding(
                                         padding: const EdgeInsets.fromLTRB(
-                                            0.0, 0.0, 0.0, 1.0),
+                                            3.0, 3.0, 3.0, 3.0),
                                         //navigate user to the post page
                                         child: InkWell(
                                           onTap: () {

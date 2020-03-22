@@ -247,7 +247,7 @@ class FavoritePageState extends State<FavoritePage> {
                     child: Image.asset(
                       'images/addPostIcon4.png',
                     ),
-                    maxRadius: 18,
+                    maxRadius: 12,
                   ),
                 ),
                 floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -269,7 +269,7 @@ class FavoritePageState extends State<FavoritePage> {
                     child: Image.asset(
                       'images/addPostIcon4.png',
                     ),
-                    maxRadius: 18,
+                    maxRadius: 12,
                   ),
                 ),
                 floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -311,7 +311,7 @@ class FavoritePageState extends State<FavoritePage> {
                       child: Image.asset(
                         'images/addPostIcon4.png',
                       ),
-                      maxRadius: 18,
+                      maxRadius: 12,
                     ),
                   ),
                   floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

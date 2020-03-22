@@ -244,7 +244,7 @@ Widget globalNavigationBar(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Icon(
-                        LineIcons.bell,
+                        Icons.notifications,
                         color: currentTab == 3 ? Colors.redAccent : Colors.black,
                         size: 30,
                       ),
