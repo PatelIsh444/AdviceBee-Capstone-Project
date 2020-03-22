@@ -26,18 +26,20 @@ class editPost extends StatefulWidget {
   String groupsOrTopics;
   questions questionObject;
   List<dynamic> choices;
-  editPost( this.questionObject, this.groupsOrTopics, this.groupID,this.choices);
+
+  editPost(
+      this.questionObject, this.groupsOrTopics, this.groupID, this.choices);
 
   @override
   _editPost createState() => _editPost();
 }
 
 class _editPost extends State<editPost> {
-
   String groupID;
   List<dynamic> answers;
-  List<MultipleChoiceEntry> choices=[];
-  String groupsOrTopics;  //it stores the value "topic" or "groups" depending on the collection
+  List<MultipleChoiceEntry> choices = [];
+  String
+      groupsOrTopics; //it stores the value "topic" or "groups" depending on the collection
   questions questionObject;
   GlobalKey key = GlobalKey();
   File image;
@@ -53,24 +55,25 @@ class _editPost extends State<editPost> {
   void initState() {
     super.initState();
     groupID = widget.groupID;
-    answers= widget.choices;
-    imageURL=widget.questionObject.imageURL;
+    answers = widget.choices;
+    imageURL = widget.questionObject.imageURL;
     groupsOrTopics = widget.groupsOrTopics;
     questionObject = widget.questionObject;
-    newDescriptionController.value = TextEditingValue(text:questionObject.questionDescription);
-    newTitleController.value = TextEditingValue(text:questionObject.question);
-    if (answers!=null) {
+    newDescriptionController.value =
+        TextEditingValue(text: questionObject.questionDescription);
+    newTitleController.value = TextEditingValue(text: questionObject.question);
+    if (answers != null) {
       int index = 0;
       answers.forEach((choice) {
         choices.add(MultipleChoiceEntry());
         print(choice);
         newChoicesController.add(TextEditingController());
-        newChoicesController
-            .elementAt(index++)
-            .value = TextEditingValue(text: choice.toString());
+        newChoicesController.elementAt(index++).value =
+            TextEditingValue(text: choice.toString());
       });
     }
   }
+
   void dispose() {
     newDescriptionController.dispose();
     newTitleController.dispose();
@@ -86,50 +89,52 @@ class _editPost extends State<editPost> {
   Widget buildQuestionCard(var questionObject) {
     Size screenSize = MediaQuery.of(context).size;
     String questionDescription;
-    if (questionObject.questionDescription.length>40){
-      questionDescription = questionObject.questionDescription.substring(0, 40) + "...";
-    }else{
-      questionDescription=questionObject.questionDescription;
+    if (questionObject.questionDescription.length > 40) {
+      questionDescription =
+          questionObject.questionDescription.substring(0, 40) + "...";
+    } else {
+      questionDescription = questionObject.questionDescription;
     }
     return Card(
         child: Column(
+      children: <Widget>[
+        Row(
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                Flexible(
-                  child: ListTile(
-                    title: Text(
-                      questionObject.question,
-                      style: TextStyle( fontWeight: FontWeight.bold, fontSize: 20.0,),
-                    ),
-                    subtitle: Text(
-                      questionDescription,
-                      style: TextStyle( fontWeight: FontWeight.w400, fontSize: 16.0),
-                    ),
+            Flexible(
+              child: ListTile(
+                title: Text(
+                  questionObject.question,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
                   ),
                 ),
-                addImage(questionObject.imageURL),
-              ],
-            ),
-            Container(
-                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 17),
-                width: screenSize.width,
-                child: InkWell(
-                  child: AutoSizeText(
-                    "Posted " +timeago.format(questionObject.datePosted.toDate()),
-                    textAlign: TextAlign.left,
-                    maxLines: 1,
-                    style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14.0,
-                    color: Colors.grey,
-                  ),
+                subtitle: Text(
+                  questionDescription,
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16.0),
                 ),
-              )
+              ),
             ),
+            addImage(questionObject.imageURL),
           ],
-        )
-    );
+        ),
+        Container(
+            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 17),
+            width: screenSize.width,
+            child: InkWell(
+              child: AutoSizeText(
+                "Posted " + timeago.format(questionObject.datePosted.toDate()),
+                textAlign: TextAlign.left,
+                maxLines: 1,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.0,
+                  color: Colors.grey,
+                ),
+              ),
+            )),
+      ],
+    ));
   }
 
   ///
@@ -147,20 +152,18 @@ class _editPost extends State<editPost> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      FullPhoto(url: imageURL)));
+                  builder: (context) => FullPhoto(url: imageURL)));
         },
         child: Hero(
           tag: "image",
           child: Container(
               child: Padding(
-                padding: EdgeInsets.only(top: 10, right: 15),
-                child: CircleAvatar(
-                  backgroundImage: CachedNetworkImageProvider(imageURL),
-                  radius: 50,
-                ),
-              )
-          ),
+            padding: EdgeInsets.only(top: 10, right: 15),
+            child: CircleAvatar(
+              backgroundImage: CachedNetworkImageProvider(imageURL),
+              radius: 50,
+            ),
+          )),
         ),
       );
     }
@@ -180,9 +183,9 @@ class _editPost extends State<editPost> {
           children: <Widget>[
             description("New Title"),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 20.0, vertical: 0.0),
-              child:  TextFormField(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+              child: TextFormField(
                 controller: newTitleController,
                 autovalidate: false,
                 onSaved: (value) => newTitleController.text = value,
@@ -192,15 +195,15 @@ class _editPost extends State<editPost> {
             ),
             description("New Dscription"),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 20.0, vertical: 0.0),
-                child:  TextFormField(
-                  controller: newDescriptionController,
-                  autovalidate: false,
-                  onSaved: (value) => newDescriptionController.text = value,
-                  maxLength: 250,
-                  validator: Validator.responseValidator,
-                ),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+              child: TextFormField(
+                controller: newDescriptionController,
+                autovalidate: false,
+                onSaved: (value) => newDescriptionController.text = value,
+                maxLength: 250,
+                validator: Validator.responseValidator,
+              ),
             ),
             buildMultipleChoiceView(),
             showNewImage(),
@@ -215,10 +218,14 @@ class _editPost extends State<editPost> {
   /// show new image
   ///
   Widget showNewImage() {
-    if (image==null) {
+    if (image == null) {
       return Container();
-    }else{
-      return Image.file(image);
+    } else {
+      return SizedBox(
+        child: Image.file(image),
+        width: 250.0,
+        height: 250.0,
+      );
     }
   }
 
@@ -226,32 +233,32 @@ class _editPost extends State<editPost> {
   /// if the question is multiple choice
   /// this function will display all the choices
   ///
-  Widget buildMultipleChoiceView(){
-    if(questionObject.questionType!=1) {
+  Widget buildMultipleChoiceView() {
+    if (questionObject.questionType != 1) {
       return Container();
     }
     if (choices.length == 0) {
       return Container();
     } else {
-      return  showOptions();
+      return showOptions();
     }
   }
 
   ///
   /// Show the different choices
   ///
-  Widget showOptions(){
+  Widget showOptions() {
     if (choices.length == 1) {
       newChoicesController.add(TextEditingController());
       choices.add(MultipleChoiceEntry());
     }
-    return Column (
+    return Column(
       children: <Widget>[
         description("Choices"),
         ColumnBuilder(
             itemCount: choices.length,
-            itemBuilder: (context,index){
-              var choice=   choices[index];
+            itemBuilder: (context, index) {
+              var choice = choices[index];
               return Dismissible(
                 key: Key(choices[index].key.toString()),
                 background: Container(color: Colors.red),
@@ -260,11 +267,11 @@ class _editPost extends State<editPost> {
                     choices.removeAt(index);
                     newChoicesController.removeAt(index);
                   });
-                  },
-                child: choice.buildMultipleChoiceEntry(newChoicesController[index]),
+                },
+                child: choice
+                    .buildMultipleChoiceEntry(newChoicesController[index]),
               );
-            }
-            ),
+            }),
         Padding(
             padding: EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 10),
             child: new Row(
@@ -287,13 +294,13 @@ class _editPost extends State<editPost> {
         child: GestureDetector(
           onTap: () {
             setState(() {});
-            newChoicesController.add( TextEditingController());
+            newChoicesController.add(TextEditingController());
             choices.add(MultipleChoiceEntry());
           },
           child: Container(
             height: 40.0,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all( Radius.circular(20.0)),
+              borderRadius: BorderRadius.all(Radius.circular(20.0)),
               color: Colors.teal,
             ),
             child: Center(
@@ -325,15 +332,16 @@ class _editPost extends State<editPost> {
   Future<void> uploadImageToDatabase(String documentID) async {
     if (image != null) {
       if (image.existsSync()) {
-        final StorageReference pictureNameInStorage = FirebaseStorage().ref()
+        final StorageReference pictureNameInStorage = FirebaseStorage()
+            .ref()
             .child("postPictures/" + documentID + "postPicture");
-        final StorageUploadTask uploadTask = pictureNameInStorage.putFile(image);
+        final StorageUploadTask uploadTask =
+            pictureNameInStorage.putFile(image);
         await uploadTask.onComplete;
         imageURL = await pictureNameInStorage.getDownloadURL() as String;
       }
     }
   }
-
 
   ///
   /// create attach image bottom
@@ -372,7 +380,6 @@ class _editPost extends State<editPost> {
     );
   }
 
-
   Future getImageMenu() async {
     return showDialog(
         context: context,
@@ -381,22 +388,20 @@ class _editPost extends State<editPost> {
               title: Text("Snap or Choose a Photo?"),
               content: SingleChildScrollView(
                   child: ListBody(children: <Widget>[
-                    GestureDetector(
-                      child: Text("Camera"),
-                      onTap: () {
-                        getCameraImage();
-                      },
-                    ),
-                    Padding(padding: EdgeInsets.all(7)),
-                    GestureDetector(
-                      child: Text("Gallery"),
-                      onTap: () {
-                        getGalleryImage();
-                      },
-                    ),
-                  ])
-              )
-          );
+                GestureDetector(
+                  child: Text("Camera"),
+                  onTap: () {
+                    getCameraImage();
+                  },
+                ),
+                Padding(padding: EdgeInsets.all(7)),
+                GestureDetector(
+                  child: Text("Gallery"),
+                  onTap: () {
+                    getGalleryImage();
+                  },
+                ),
+              ])));
         });
   }
 
@@ -424,8 +429,7 @@ class _editPost extends State<editPost> {
                     color: Colors.black,
                   ),
                 ),
-              )
-          ),
+              )),
         )
       ],
     );
@@ -508,28 +512,25 @@ class _editPost extends State<editPost> {
         child: Icon(Icons.check),
         onPressed: () {
           updatePost();
-          },
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: globalNavigationBar(2, context, key, false),
       body: Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom
-        ),
-        child: ListView(
-        shrinkWrap: true,
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                buildQuestionCard(questionObject),
-                Form(
-                  key: _formKey,
-                  child: buildQuestionSpecific(), //Builds body of post response page, determines appropriate body type
-                ),
-              ],
-            ),
-          ]
-      ),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: ListView(shrinkWrap: true, children: <Widget>[
+          Column(
+            children: <Widget>[
+              buildQuestionCard(questionObject),
+              Form(
+                key: _formKey,
+                child:
+                    buildQuestionSpecific(), //Builds body of post response page, determines appropriate body type
+              ),
+            ],
+          ),
+        ]),
       ),
     );
   }
@@ -550,9 +551,9 @@ class _editPost extends State<editPost> {
       firstCollection = "groups";
     }
     var data;
-    if(questionObject.questionType==1) {
-      List<String> newChoices= [];
-      for(int i =0;i<choices.length;i++){
+    if (questionObject.questionType == 1) {
+      List<String> newChoices = [];
+      for (int i = 0; i < choices.length; i++) {
         newChoices.add(newChoicesController[i].text);
         print(newChoices[i]);
       }
@@ -561,9 +562,9 @@ class _editPost extends State<editPost> {
         'description': newDescriptionController.text.toString(),
         'question': newTitleController.text.toString(),
         'imageURL': imageURL,
-        'choices':  newChoices,
+        'choices': newChoices,
       };
-    }else{
+    } else {
       data = {
         'datePosted': Timestamp.now(),
         'description': newDescriptionController.text.toString(),
@@ -577,27 +578,27 @@ class _editPost extends State<editPost> {
         .document(groupID)
         .collection(questionCollection)
         .document(questionObject.postID)
-        .updateData(data).then((onValue){
-            //go back to the "My post page"
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) {
-                  return  MyPostPage();
-                }));
-            //display success message
-            Flushbar(
-              title: "Success",
-              message: "Post edit successful",
-              duration: Duration(seconds: 8),
-              backgroundColor: Colors.teal,
-            ).show(context);
-        }).catchError((onError) {
-              print("failed"+onError);
-              Flushbar(
-                title: "Error",
-                message: "Could not edit the post: "+onError,
-                duration: Duration(seconds: 8),
-                backgroundColor: Colors.teal,
-              ).show(context);
-        });
+        .updateData(data)
+        .then((onValue) {
+      //go back to the "My post page"
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return MyPostPage();
+      }));
+      //display success message
+      Flushbar(
+        title: "Success",
+        message: "Post edit successful",
+        duration: Duration(seconds: 8),
+        backgroundColor: Colors.teal,
+      ).show(context);
+    }).catchError((onError) {
+      print("failed" + onError);
+      Flushbar(
+        title: "Error",
+        message: "Could not edit the post: " + onError,
+        duration: Duration(seconds: 8),
+        backgroundColor: Colors.teal,
+      ).show(context);
+    });
   }
 }

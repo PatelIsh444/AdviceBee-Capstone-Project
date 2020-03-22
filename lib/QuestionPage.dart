@@ -208,15 +208,10 @@ class Responses {
   final String createdBy;
   final Map likes;
   String displayName;
+  String imageURL;
 
-  Responses(
-    this.responseID,
-    this.answer,
-    this.datePosted,
-    this.createdBy,
-    this.displayName,
-    this.likes,
-  );
+  Responses(this.responseID, this.answer, this.datePosted, this.createdBy,
+      this.displayName, this.likes, this.imageURL);
 }
 
 enum questionTypes { SHORT_ANSWER, MULTIPLE_CHOICE, NUMBER_VALUE }
@@ -240,6 +235,7 @@ class PostPage extends StatefulWidget {
 //State page for PostPage
 class _PostPageState extends State<PostPage> {
   GlobalKey key = GlobalKey();
+
   //Variables
   Future<questions> postInfoFuture;
   Future<QuerySnapshot> responseInfoListFuture;
@@ -468,13 +464,13 @@ class _PostPageState extends State<PostPage> {
 
     query.data.documents.forEach((doc) {
       infoList.add(new Responses(
-        doc.documentID,
-        doc.data["answer"].toString(),
-        doc.data["datePosted"],
-        doc.data["createdBy"],
-        doc.data["userDisplayName"],
-        doc.data["likes"],
-      ));
+          doc.documentID,
+          doc.data["answer"].toString(),
+          doc.data["datePosted"],
+          doc.data["createdBy"],
+          doc.data["userDisplayName"],
+          doc.data["likes"],
+          doc.data["imageURL"]));
     });
 
     return infoList;
@@ -1059,14 +1055,14 @@ class _PostPageState extends State<PostPage> {
                   return Container();
                 }
               }
-              return Scaffold(floatingActionButton: FloatingActionButton(
-                heroTag: "qqpheroo2",
-                child: Icon(Icons.comment),
-                onPressed: () {
-                },
-              ),
+              return Scaffold(
+                  floatingActionButton: FloatingActionButton(
+                    heroTag: "qqpheroo2",
+                    child: Icon(Icons.comment),
+                    onPressed: () {},
+                  ),
                   floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked,
+                      FloatingActionButtonLocation.centerDocked,
                   bottomNavigationBar: globalNavigationBar(
                       groups_or_topics == "topics" ? 0 : 1,
                       context,
@@ -1080,16 +1076,12 @@ class _PostPageState extends State<PostPage> {
             floatingActionButton: FloatingActionButton(
               heroTag: "qpheroo3",
               child: Icon(Icons.comment),
-              onPressed: () {
-              },
+              onPressed: () {},
             ),
             floatingActionButtonLocation:
-            FloatingActionButtonLocation.centerDocked,
+                FloatingActionButtonLocation.centerDocked,
             bottomNavigationBar: globalNavigationBar(
-                groups_or_topics == "topics" ? 0 : 1,
-                context,
-                key,
-                false),
+                groups_or_topics == "topics" ? 0 : 1, context, key, false),
             body: Center(
               child: CircularProgressIndicator(),
             ),
@@ -1109,6 +1101,8 @@ class _PostPageState extends State<PostPage> {
           itemCount: responseInfoList.length,
           shrinkWrap: true,
           itemBuilder: (context, index) {
+            print("the answer for basic question");
+            print(responseInfoList[index].answer);
             return Column(
               children: <Widget>[
                 //_buildIconTile(responseInfoList[index].answer)
@@ -1184,6 +1178,18 @@ class _PostPageState extends State<PostPage> {
                           ),
                   ),
                 ),
+                responseInfoList[index].imageURL == null
+                    ? Container()
+                    : GestureDetector(
+                        child: showNewImage(responseInfoList[index].imageURL),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FullPhoto(
+                                      url: responseInfoList[index].imageURL)));
+                        },
+                      ),
                 Divider(),
                 index == responseInfoList.length - 1
                     ? SizedBox(height: 40)
@@ -1195,6 +1201,18 @@ class _PostPageState extends State<PostPage> {
       ),
     );
   } //End of Responses
+
+  Widget showNewImage(String image) {
+    if (image == null) {
+      return Container();
+    } else {
+      return SizedBox(
+        child: Image.network(image),
+        width: 250.0,
+        height: 250.0,
+      );
+    }
+  }
 
   Widget userAlreadyRespondedMessage(BuildContext context) {
     return Flushbar(
@@ -1632,15 +1650,15 @@ class _PostQuestionState extends State<postQuestion> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(left: 30.0, right: 30.0),
-                      child:  Container(
+                      child: Container(
                         height: 125.0,
-                       child: SingleChildScrollView(
+                        child: SingleChildScrollView(
                           child: MultiSelectChipUser(advisorsList, advisorIDs,
                               onSelectionChanged: (selectedList) {
-                                setState(() {
-                                  advisorIDs = selectedList;
-                                });
-                              }),
+                            setState(() {
+                              advisorIDs = selectedList;
+                            });
+                          }),
                         ),
                       ),
                     ),
@@ -1664,8 +1682,8 @@ class _PostQuestionState extends State<postQuestion> {
                             ),
                             child: Text(
                               "Send",
-                              style:
-                              TextStyle(color: Colors.white, fontSize: 20.0),
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 20.0),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -1673,13 +1691,11 @@ class _PostQuestionState extends State<postQuestion> {
                         SizedBox(
                           width: 3.0,
                         ),
-
                         InkWell(
                           onTap: () {
                             uploadQuestionToDatabase(false);
                             Navigator.pop(context);
                             Navigator.pop(context);
-
                           },
                           child: Container(
                             width: 138.0,
@@ -1687,13 +1703,13 @@ class _PostQuestionState extends State<postQuestion> {
                             decoration: BoxDecoration(
                               color: Colors.amber,
                               borderRadius: BorderRadius.only(
-                                // bottomLeft: Radius.circular(32.0),
+                                  // bottomLeft: Radius.circular(32.0),
                                   bottomRight: Radius.circular(32.0)),
                             ),
                             child: Text(
                               "Not Now",
-                              style:
-                              TextStyle(color: Colors.white, fontSize: 20.0),
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 20.0),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -2013,6 +2029,18 @@ class _PostQuestionState extends State<postQuestion> {
     }
   }
 
+  Widget showNewImage(String image) {
+    if (image == null) {
+      return Container();
+    } else {
+      return SizedBox(
+        child: Image.network(image),
+        width: 250.0,
+        height: 250.0,
+      );
+    }
+  }
+
   /*Button action calls this function, this function displays the options
   the user has, they can choose Camera or Gallery*/
   Future getImageMenu() async {
@@ -2117,7 +2145,7 @@ class _PostQuestionState extends State<postQuestion> {
     }
 
     //If the user is out of points, do not post the question
-    if(!outOfPoints) {
+    if (!outOfPoints) {
       //Start by uploading the image to the database, if there is one.
       await uploadImageToDatabase(newPost.documentID);
 
@@ -2185,7 +2213,7 @@ class _PostQuestionState extends State<postQuestion> {
           }
       }
       Navigator.pop(context);
-      }
+    }
   }
 }
 
