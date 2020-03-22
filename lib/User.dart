@@ -82,7 +82,7 @@ class User {
       joinedGroups: doc["joinedGroups"],
       followers: doc["followers"],
       following: doc["following"],
-      blocked: doc["blocked"],
+      blocked: doc["blocked"]==null?[]:doc["blocked"],
       likedPosts: doc["likedPosts"],
       myResponses: doc["myResponses"],
       bio: doc["bio"],

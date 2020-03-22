@@ -233,23 +233,24 @@ class _blockedViewState extends State<blockedView> {
     );
   }
   Future<void> _deletePost(int index) async {
+
+    Navigator.pop(context);
+    setState(() {
+      userblocked.removeAt(index);
+      CurrentUser.blocked.removeAt(index);
+    });
     await Firestore.instance
         .collection("users")
         .document(CurrentUser.userID)
         .updateData({
       'blocked': FieldValue.arrayRemove([CurrentUser.blocked.removeAt(index)])
     });
-    Navigator.pop(context);
     Flushbar(
       title: "Success",
       message: "You have just unblocked the user.",
       duration: Duration(seconds: 5),
       backgroundColor: Colors.teal,
     ).show(context);
-    setState(() {
-       userblocked.removeAt(index);
-      CurrentUser.blocked.removeAt(index);
-    });
   }
 
 }
