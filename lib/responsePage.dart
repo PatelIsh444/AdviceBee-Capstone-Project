@@ -488,7 +488,7 @@ class _PostResponseState extends State<postResponse> {
         .collection(questionCollection)
         .document(questionID)
         .collection('responses')
-        .document()
+        .document();
 
     switch (widget.questionType) {
       case questionTypes.SHORT_ANSWER:
