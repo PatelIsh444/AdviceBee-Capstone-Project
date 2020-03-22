@@ -1,22 +1,23 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:v0/Profile.dart';
-import 'User.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+
 import './utils/commonFunctions.dart' as common;
-import 'MoreMenu.dart';
-import 'Dashboard.dart';
 import './utils/commonFunctions.dart';
+import 'Dashboard.dart';
+import 'MoreMenu.dart';
 import 'QuestionPage.dart';
+import 'User.dart';
 
 
-class blockedView extends StatefulWidget {
+class BlockedView extends StatefulWidget {
   @override
-  _blockedViewState createState() => _blockedViewState();
+  _BlockedViewState createState() => _BlockedViewState();
 }
-class _blockedViewState extends State<blockedView> {
+class _BlockedViewState extends State<BlockedView> {
   GlobalKey key = GlobalKey();
 
   List<User> userblocked = [];
@@ -55,7 +56,7 @@ class _blockedViewState extends State<blockedView> {
             case ConnectionState.waiting:
               return Scaffold(body: Center(child: CircularProgressIndicator()));
             case ConnectionState.done:
-              if (CurrentUser.blocked.isNotEmpty) {
+              if (snapshot.hasData) {
                 userblocked = snapshot.data;
                 return Scaffold(
                   // resizeToAvoidBottomInset: false,
