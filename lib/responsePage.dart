@@ -8,7 +8,8 @@ import 'package:flutter/services.dart';
 import 'MoreMenu.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:auto_size_text/auto_size_text.dart';
-import './utils/HeroPhotoViewWrapper.dart';
+
+import 'pages/FullPhoto.dart';
 
 class postResponse extends StatefulWidget {
   String questionID;
@@ -21,8 +22,13 @@ class postResponse extends StatefulWidget {
   postResponse(this.questionID, this.groupOrTopicID, this.questionType,
       this.groups_or_topics, this.questionObject);
 
-  postResponse.withChoices(this.questionID, this.groupOrTopicID,
-      this.questionType, this.choices, this.groups_or_topics, this.questionObject);
+  postResponse.withChoices(
+      this.questionID,
+      this.groupOrTopicID,
+      this.questionType,
+      this.choices,
+      this.groups_or_topics,
+      this.questionObject);
 
   @override
   _PostResponseState createState() => _PostResponseState();
@@ -104,8 +110,8 @@ class _PostResponseState extends State<postResponse> {
       var datePosted,
       var imageURL) {
     Size screenSize = MediaQuery.of(context).size;
-    if (questionDescription.length>40){
-      questionDescription=questionDescription.substring(0, 40) + "...";
+    if (questionDescription.length > 40) {
+      questionDescription = questionDescription.substring(0, 40) + "...";
     }
     return Card(
         child: Column(
@@ -171,9 +177,8 @@ class _PostResponseState extends State<postResponse> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => HeroPhotoViewWrapper(
-                        imageProvider: CachedNetworkImageProvider(imageURL),
-                      )));
+                  builder: (context) => FullPhoto(url: imageURL)));
+//
         },
         child: Hero(
           tag: "image",
@@ -231,27 +236,27 @@ class _PostResponseState extends State<postResponse> {
       case questionTypes.MULTIPLE_CHOICE:
         {
           return //Column(
-            //children: <Widget>[
+              //children: <Widget>[
               //Build out list of responses
               Expanded(
-                child: ListView.builder(
-                    itemCount: widget.choices.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(widget.choices[index].toString()),
-                        leading: Radio(
-                            value: widget.choices[index],
-                            groupValue: selectedValue,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedValue = value;
-                              });
-                            }),
-                      );
-                    }),
-              );
-            //],
-         // );
+            child: ListView.builder(
+                itemCount: widget.choices.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(widget.choices[index].toString()),
+                    leading: Radio(
+                        value: widget.choices[index],
+                        groupValue: selectedValue,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedValue = value;
+                          });
+                        }),
+                  );
+                }),
+          );
+          //],
+          // );
         }
       case questionTypes.NUMBER_VALUE:
         {
@@ -328,12 +333,21 @@ class _PostResponseState extends State<postResponse> {
       bottomNavigationBar: globalNavigationBar(1, context, key, false),
       body: Column(
         children: <Widget>[
-                  buildQuestionCard(widget.questionObject.question, widget.questionObject.questionDescription, widget.questionObject.userDisplayName, widget.questionObject.createdBy, widget.questionObject.anonymous, widget.questionObject.datePosted, widget.questionObject.imageURL == null ? null : widget.questionObject.imageURL ),
-                  Form(
-                    key: _formKey,
-                    child:
-                        buildQuestionSpecific(), //Builds body of post response page, determines appropriate body type
-                  ),
+          buildQuestionCard(
+              widget.questionObject.question,
+              widget.questionObject.questionDescription,
+              widget.questionObject.userDisplayName,
+              widget.questionObject.createdBy,
+              widget.questionObject.anonymous,
+              widget.questionObject.datePosted,
+              widget.questionObject.imageURL == null
+                  ? null
+                  : widget.questionObject.imageURL),
+          Form(
+            key: _formKey,
+            child:
+                buildQuestionSpecific(), //Builds body of post response page, determines appropriate body type
+          ),
         ],
       ),
     );

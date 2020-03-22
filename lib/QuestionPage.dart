@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'Dashboard.dart';
 import 'DashboardAdvisors.dart';
-import './utils/HeroPhotoViewWrapper.dart';
 import './utils/commonFunctions.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -14,6 +13,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'User.dart';
+import 'pages/FullPhoto.dart';
 import 'responsePage.dart';
 import 'MoreMenu.dart';
 import 'newProfile.dart' as profile;
@@ -519,10 +519,8 @@ class _PostPageState extends State<PostPage> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => HeroPhotoViewWrapper(
-                        imageProvider:
-                            CachedNetworkImageProvider(postInfo.imageURL),
-                      )));
+                  builder: (context) => FullPhoto(url: postInfo.imageURL)));
+//
         },
         child: Hero(
           tag: "image",
