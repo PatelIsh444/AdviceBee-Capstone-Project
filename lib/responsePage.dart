@@ -1,8 +1,15 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+
 import 'Dashboard.dart';
 import './utils/validator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'Dashboard.dart';
 import 'QuestionPage.dart';
 import 'package:flutter/services.dart';
 import 'MoreMenu.dart';
@@ -10,6 +17,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'pages/FullPhoto.dart';
+import 'utils/commonFunctions.dart';
 
 class postResponse extends StatefulWidget {
   String questionID;
@@ -39,11 +47,25 @@ class _PostResponseState extends State<postResponse> {
   String questionID;
   String groupOrTopicID;
   GlobalKey key = GlobalKey();
+  File image;
+  String imageURL;
 
   var selectedValue;
   final responseController = TextEditingController();
 
   var _formKey = GlobalKey<FormState>();
+
+  Widget showNewImage() {
+    if (image == null) {
+      return Container();
+    } else {
+      return SizedBox(
+        child: Image.file(image),
+        width: 250.0,
+        height: 250.0,
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -55,50 +77,6 @@ class _PostResponseState extends State<postResponse> {
     widget.choices != null
         ? selectedValue = widget.choices[0]
         : selectedValue = null;
-  }
-
-  Widget buildSubmitButton() {
-    return Padding(
-      padding: EdgeInsets.only(left: 10, top: 8, bottom: 30, right: 10),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: GestureDetector(
-              onTap: () => setState(() {
-                //First, check if the question type is multiple choice
-                if (widget.questionType != questionTypes.MULTIPLE_CHOICE) {
-                  //If it isn't, validate the response then upload.
-                  if (_formKey.currentState.validate()) {
-                    uploadResponseToDatabase();
-                    Navigator.pop(context);
-                  }
-                } else {
-                  //Otherwise, just upload the response
-                  uploadResponseToDatabase();
-                  Navigator.pop(context);
-                }
-              }),
-              child: Container(
-                height: 40.0,
-                decoration: BoxDecoration(
-                  borderRadius: new BorderRadius.all(new Radius.circular(20.0)),
-                  color: Color(0xFF009688),
-                ),
-                child: Center(
-                  child: Text(
-                    "Submit",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget buildQuestionCard(
@@ -200,45 +178,49 @@ class _PostResponseState extends State<postResponse> {
     switch (widget.questionType) {
       case questionTypes.SHORT_ANSWER:
         {
-          return Center(
-            child: Container(
-              decoration: BoxDecoration(),
-              width: MediaQuery.of(context).size.width,
-              child: new Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  new Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+          return Expanded(
+            child: ListView(
+              children: <Widget>[
+                Container(
+                  decoration: BoxDecoration(),
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(top: 8.0, bottom: 2.0),
+                          )
+                        ],
+                      ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 8.0, bottom: 2.0),
-                      )
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 0.0),
+                        child: new TextFormField(
+                          controller: responseController,
+                          decoration:
+                              new InputDecoration(labelText: 'Enter Response!'),
+                          autovalidate: false,
+                          onSaved: (value) => responseController.text = value,
+                          maxLength: 60,
+                          validator: Validator.responseValidator,
+                        ),
+                      ),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0, vertical: 0.0),
-                    child: new TextFormField(
-                      controller: responseController,
-                      decoration:
-                          new InputDecoration(labelText: 'Enter Response!'),
-                      autovalidate: false,
-                      onSaved: (value) => responseController.text = value,
-                      maxLength: 60,
-                      validator: Validator.responseValidator,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                buildAttachImageButton(),
+                showNewImage(),
+              ],
             ),
           );
         }
       case questionTypes.MULTIPLE_CHOICE:
         {
-          return //Column(
-              //children: <Widget>[
-              //Build out list of responses
-              Expanded(
+          return Expanded(
             child: ListView.builder(
                 itemCount: widget.choices.length,
                 itemBuilder: (context, index) {
@@ -255,8 +237,6 @@ class _PostResponseState extends State<postResponse> {
                   );
                 }),
           );
-          //],
-          // );
         }
       case questionTypes.NUMBER_VALUE:
         {
@@ -313,17 +293,17 @@ class _PostResponseState extends State<postResponse> {
         heroTag: "responseHero",
         child: Icon(Icons.check),
         onPressed: () {
-          setState(() {
+          setState(() async {
             //First, check if the question type is multiple choice
             if (widget.questionType != questionTypes.MULTIPLE_CHOICE) {
               //If it isn't, validate the response then upload.
               if (_formKey.currentState.validate()) {
-                uploadResponseToDatabase();
+                await uploadResponseToDatabase();
                 Navigator.pop(context);
               }
             } else {
               //Otherwise, just upload the response
-              uploadResponseToDatabase();
+              await uploadResponseToDatabase();
               Navigator.pop(context);
             }
           });
@@ -353,8 +333,144 @@ class _PostResponseState extends State<postResponse> {
     );
   }
 
+  Future<void> uploadImageToDatabase(String documentID) async {
+    if (image != null) {
+      if (image.existsSync()) {
+        final StorageReference pictureNameInStorage = FirebaseStorage()
+            .ref()
+            .child("postPictures/" + documentID + "postPicture");
+        final StorageUploadTask uploadTask =
+            pictureNameInStorage.putFile(image);
+        await uploadTask.onComplete;
+        imageURL = await pictureNameInStorage.getDownloadURL() as String;
+      }
+    }
+  }
+
+  Widget buildAttachImageButton() {
+    return Padding(
+      padding: EdgeInsets.only(left: 10, top: 8, bottom: 30),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                getImageMenu();
+              },
+              child: Container(
+                height: 40.0,
+                decoration: BoxDecoration(
+                  borderRadius: new BorderRadius.all(new Radius.circular(20.0)),
+                  color: Color(0xFF009688),
+                ),
+                child: Center(
+                  child: Text(
+                    "Attach Image",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 10.0),
+        ],
+      ),
+    );
+  }
+
+  Future getImageMenu() async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: Text("Snap or Choose a Photo?"),
+              content: SingleChildScrollView(
+                  child: ListBody(children: <Widget>[
+                GestureDetector(
+                  child: Text("Camera"),
+                  onTap: () {
+                    getCameraImage();
+                  },
+                ),
+                Padding(padding: EdgeInsets.all(7)),
+                GestureDetector(
+                  child: Text("Gallery"),
+                  onTap: () {
+                    getGalleryImage();
+                  },
+                ),
+              ])));
+        });
+  }
+
+  getCameraImage() async {
+    //Select Image from camera
+    Navigator.pop(context);
+    var newImage = await ImagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 65);
+
+    File croppedImage = await ImageCropper.cropImage(
+      sourcePath: newImage.path,
+      cropStyle: CropStyle.circle,
+      androidUiSettings: AndroidUiSettings(
+          toolbarTitle: 'Cropper',
+          toolbarColor: Colors.teal,
+          toolbarWidgetColor: Colors.white,
+          hideBottomControls: true,
+          initAspectRatio: CropAspectRatioPreset.square,
+          lockAspectRatio: true),
+      iosUiSettings: IOSUiSettings(
+        minimumAspectRatio: 1.0,
+      ),
+    );
+
+    setState(() {
+      image = croppedImage ?? image;
+    });
+    if (image.existsSync()) {
+      imageUpdatedMessage(context);
+    } else {
+      imageFailedToUpdateMessage(context);
+    }
+  }
+
+  getGalleryImage() async {
+    //Select Image from gallery
+    Navigator.pop(context);
+    var newImage = await ImagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 65);
+
+    File croppedImage = await ImageCropper.cropImage(
+      sourcePath: newImage.path,
+      cropStyle: CropStyle.circle,
+      androidUiSettings: AndroidUiSettings(
+          toolbarTitle: 'Cropper',
+          toolbarColor: Colors.teal,
+          toolbarWidgetColor: Colors.white,
+          hideBottomControls: true,
+          initAspectRatio: CropAspectRatioPreset.square,
+          lockAspectRatio: true),
+      iosUiSettings: IOSUiSettings(
+        minimumAspectRatio: 1.0,
+      ),
+    );
+
+    setState(() {
+      image = croppedImage ?? image;
+    });
+
+    if (image.existsSync()) {
+      imageUpdatedMessage(context);
+    } else {
+      imageFailedToUpdateMessage(context);
+    }
+  }
+
   //Function to upload the response to the database
-  void uploadResponseToDatabase() {
+  Future<void> uploadResponseToDatabase() async {
     String questionCollection;
     String firstCollection;
     if (widget.groups_or_topics == "topics") {
@@ -365,7 +481,7 @@ class _PostResponseState extends State<postResponse> {
       questionCollection = "groupQuestions";
       firstCollection = "groups";
     }
-
+    await uploadImageToDatabase(CurrentUser.userID +DateTime.now().millisecondsSinceEpoch.toString());
     DocumentReference newResponse = Firestore.instance
         .collection(firstCollection)
         .document(groupOrTopicID)
@@ -382,6 +498,7 @@ class _PostResponseState extends State<postResponse> {
           'datePosted': Timestamp.now(),
           'likes': {},
           'userDisplayName': CurrentUser.displayName,
+          'imageURL': imageURL,
         });
         break;
       case questionTypes.MULTIPLE_CHOICE:
@@ -399,7 +516,7 @@ class _PostResponseState extends State<postResponse> {
           'createdBy': CurrentUser.userID,
           'datePosted': Timestamp.now(),
           'likes': {},
-          'userDisplayName': CurrentUser.displayName
+          'userDisplayName': CurrentUser.displayName,
         });
         break;
     }

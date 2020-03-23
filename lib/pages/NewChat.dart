@@ -363,7 +363,7 @@ class NewChatScreenState extends State<NewChatScreen> {
             lastAccess = "Online";
           }
           else {
-            lastAccess = "Last Access: "+ DateFormat('dd MMM kk:mm')
+            lastAccess = "Last Access: "+ DateFormat.yMd().add_jm()
                 .format(DateTime.fromMillisecondsSinceEpoch(int.parse(idDoc['last access']))).toString();
             print(lastAccess);
           }
