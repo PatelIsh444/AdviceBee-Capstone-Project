@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'Dashboard.dart';
+import 'EmailVerification.dart';
 import 'landing.dart';
 import './services/AuthProvider.dart';
 import './services/auth.dart';
@@ -27,6 +30,11 @@ class ActMainApp extends StatelessWidget {
           if (user == null ) {
             return MyApp();
           }
+
+          if(!user.emailVerified){
+            return EmailVerification();
+          }
+
           //Update a users points when they first open the app.
           checkDailyPoints();
 
