@@ -79,8 +79,8 @@ class Chat extends StatelessWidget {
                             list.add(peerId);
                             CurrentUser.blocked.add(peerId);
                             Firestore.instance.collection('chats').document(chatId).delete();
-                            Firestore.instance.collection('users').document(userId).updateData({"blocked": FieldValue.arrayUnion(list)});
-                            Firestore.instance.collection('users').document(userId).updateData({'chattingWith': null});
+                            Firestore.instance.collection('messages').document(chatId).delete();
+                            Firestore.instance.collection('users').document(userId).updateData({'chattingWith': null,"blocked": FieldValue.arrayUnion(list)});
                             Navigator.pop(context);
                             Navigator.pop(context);
                           },

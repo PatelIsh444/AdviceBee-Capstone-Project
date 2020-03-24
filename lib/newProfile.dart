@@ -477,7 +477,8 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                 ? getFollowButton()
                 : Container(),
             SizedBox(height: 10.0),
-            CurrentUser.isNotGuest && CurrentUser.userID != widget.userID
+            CurrentUser.isNotGuest && CurrentUser.userID != widget.userID &&
+          !userInformation.blocked.contains(CurrentUser.userID)
                 ? getChatButton()
                 : Container(),
             SizedBox(height: 30.0),
@@ -789,11 +790,6 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
             groupChatId = "$currentUserId-$peerIdLocal";
           } else {
             groupChatId = "$peerIdLocal-$currentUserId";
-          }
-
-          if (blocked.contains(currentUser.userID)) {
-            print("you are blocked");
-            return;
           }
           Firestore.instance.collection('chats').document(groupChatId)
               .setData({
