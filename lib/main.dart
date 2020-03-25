@@ -1,3 +1,6 @@
+import 'package:v0/IntroSlider.dart';
+import 'package:v0/OtherUserFollowerPage.dart';
+
 import 'Dashboard.dart';
 import 'ForgotPassword.dart';
 import 'NewLogin.dart';
@@ -11,15 +14,13 @@ import 'SignUp.dart';
 import 'package:flutter/material.dart';
 import './utils/commonFunctions.dart';
 
-void main() => runApp(Advicebee());
+void main() => runApp(IntroSlider());
 
 class Advicebee extends StatefulWidget{
 
   @override
   AdvicebeeState createState() => AdvicebeeState();
-
 }
-
 class AdvicebeeState extends State<Advicebee> with WidgetsBindingObserver {
 
   @override
