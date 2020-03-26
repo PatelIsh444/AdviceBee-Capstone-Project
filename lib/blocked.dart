@@ -12,11 +12,11 @@ import 'MoreMenu.dart';
 import 'QuestionPage.dart';
 import 'User.dart';
 
-
 class BlockedView extends StatefulWidget {
   @override
   _BlockedViewState createState() => _BlockedViewState();
 }
+
 class _BlockedViewState extends State<BlockedView> {
   GlobalKey key = GlobalKey();
 
@@ -30,13 +30,12 @@ class _BlockedViewState extends State<BlockedView> {
     super.initState();
     userBlockedFuture = getBlockedUsers();
   }
-  Future<List<User>> getBlockedUsers()async
-  {
+
+  Future<List<User>> getBlockedUsers() async {
     List<String> blockedList = new List.from(CurrentUser.blocked);
     if (blockedList == null) {
-      return buildEmptyBlockList();
-    }
-    else {
+      return List();
+    } else {
       for (String blockedID in blockedList) {
         User blockedInfo = await common.getUserInformation(blockedID);
         userblocked.add(blockedInfo);
@@ -44,6 +43,7 @@ class _BlockedViewState extends State<BlockedView> {
     }
     return userblocked;
   }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<User>>(
@@ -56,99 +56,109 @@ class _BlockedViewState extends State<BlockedView> {
             case ConnectionState.waiting:
               return Scaffold(body: Center(child: CircularProgressIndicator()));
             case ConnectionState.done:
-              if (snapshot.hasData) {
+              if (snapshot.hasData ) {
                 userblocked = snapshot.data;
-                return Scaffold(
-                  // resizeToAvoidBottomInset: false,
-                  appBar: AppBar(
-                    title: Text("Blocked List"),
-                    centerTitle: true,
-                  ),
-                  body: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        blockedUserCards(),
-                      ]),
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: () {
-                      if (CurrentUser.isNotGuest) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    postQuestion(null, null) //AddPost(),
-                            ));
-                      } else {
-                        guestUserSignInMessage(context);
-                      }
-                    },
-                    heroTag: "my2PostsHero",
-                    tooltip: 'Increment',
-                    child: CircleAvatar(
-                      child: Image.asset(
-                        'images/addPostIcon4.png',
-                      ),
-                      maxRadius: 18,
+                if (userblocked.isNotEmpty) {
+                  return Scaffold(
+                    // resizeToAvoidBottomInset: false,
+                    appBar: AppBar(
+                      title: Text("Blocked List"),
+                      centerTitle: true,
                     ),
-                  ),
-                  floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked,
-                  bottomNavigationBar:
-                  globalNavigationBar(currentTab, context, key, false),
-                );
-              }
-              else {
-                return Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  appBar: AppBar(
-                    title: Text("Block List"),
-                    centerTitle: true,
-                  ),
-                  body: ListView(
-                    children: buildEmptyBlockList(),
-                  ),
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: () {
-                      if (CurrentUser.isNotGuest) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    postQuestion(null, null) //AddPost(),
-                            ));
-                      } else {
-                        guestUserSignInMessage(context);
-                      }
-                    },
-                    heroTag: "my1PostsHero",
-                    tooltip: 'Increment',
-                    child: CircleAvatar(
-                      child: Image.asset(
-                        'images/addPostIcon4.png',
+                    body: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          blockedUserCards(),
+                        ]),
+                    floatingActionButton: FloatingActionButton(
+                      onPressed: () {
+                        if (CurrentUser.isNotGuest) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      postQuestion(null, null) //AddPost(),
+                                  ));
+                        } else {
+                          guestUserSignInMessage(context);
+                        }
+                      },
+                      heroTag: "my2PostsHero",
+                      tooltip: 'Increment',
+                      child: CircleAvatar(
+                        child: Image.asset(
+                          'images/addPostIcon4.png',
+                        ),
+                        maxRadius: 18,
                       ),
-                      maxRadius: 18,
                     ),
-                  ),
-                  floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked,
-                  bottomNavigationBar:
-                  globalNavigationBar(currentTab, context, key, false),
-                );
+                    floatingActionButtonLocation:
+                        FloatingActionButtonLocation.centerDocked,
+                    bottomNavigationBar:
+                        globalNavigationBar(currentTab, context, key, false),
+                  );
+                }else{
+                  return emptyBlockedPage();
+                }
+              } else {
+                return emptyBlockedPage();
               }
           }
           return null;
         });
   }
+
+  emptyBlockedPage(){
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: Text("Block List"),
+        centerTitle: true,
+      ),
+      body: ListView(
+        children: buildEmptyBlockList(),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          if (CurrentUser.isNotGuest) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        postQuestion(null, null) //AddPost(),
+                ));
+          } else {
+            guestUserSignInMessage(context);
+          }
+        },
+        heroTag: "my1PostsHero",
+        tooltip: 'Increment',
+        child: CircleAvatar(
+          child: Image.asset(
+            'images/addPostIcon4.png',
+          ),
+          maxRadius: 18,
+        ),
+      ),
+      floatingActionButtonLocation:
+      FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar:
+      globalNavigationBar(currentTab, context, key, false),
+    );
+  }
+
   buildEmptyBlockList() {
-    return <Widget>[SizedBox(
-      height: 40.0,
-    ),
+    return <Widget>[
+      SizedBox(
+        height: 40.0,
+      ),
       Padding(
         padding: EdgeInsets.only(
           top: 5.0,
           left: 30.0,
           right: 30.0,
-          bottom: 30.0,),
+          bottom: 30.0,
+        ),
         child: Text(
           "You have not blocked anyone.",
           textAlign: TextAlign.center,
@@ -186,14 +196,13 @@ class _BlockedViewState extends State<BlockedView> {
           child: new InkWell(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    ProfilePage(),
+                builder: (BuildContext context) => ProfilePage(),
               ));
             },
             child: ListTile(
               leading: CircleAvatar(
                   backgroundImage:
-                  CachedNetworkImageProvider(userObj.profilePicURL)),
+                      CachedNetworkImageProvider(userObj.profilePicURL)),
               title: Text(userObj.displayName),
               subtitle: Text(userObj.bio),
             ),
@@ -215,26 +224,26 @@ class _BlockedViewState extends State<BlockedView> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-            title: Text("Are you sure you want to block this User?"),
-            actions: <Widget>[
-              FlatButton(
-                  child: Text("Yes"),
-                  onPressed: (){
-                    setState(() {
-                      _deletePost(index);
-                    });
-                  },
-              ),
-              FlatButton(
-                child: Text("No"),
-                onPressed: () => Navigator.pop(context),
-              )
-            ],
+        title: Text("Are you sure you want to block this User?"),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("Yes"),
+            onPressed: () {
+              setState(() {
+                _unblockUser(index);
+              });
+            },
           ),
+          FlatButton(
+            child: Text("No"),
+            onPressed: () => Navigator.pop(context),
+          )
+        ],
+      ),
     );
   }
-  Future<void> _deletePost(int index) async {
 
+  Future<void> _unblockUser(int index) async {
     Navigator.pop(context);
     setState(() {
       userblocked.removeAt(index);
@@ -253,6 +262,4 @@ class _BlockedViewState extends State<BlockedView> {
       backgroundColor: Colors.teal,
     ).show(context);
   }
-
 }
-

@@ -1,4 +1,4 @@
-import 'Dashboard.dart';
+import 'EmailVerification.dart';
 import 'NewLogin.dart';
 import './services/AuthProvider.dart';
 import 'package:flutter/material.dart';
@@ -236,7 +236,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => Dashboard(),
+              builder: (context) => EmailVerification(),
             )
         );
       } catch (e) {

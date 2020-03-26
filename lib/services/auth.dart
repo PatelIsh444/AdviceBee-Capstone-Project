@@ -7,11 +7,14 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:meta/meta.dart';
 import 'package:v0/utils/commonFunctions.dart';
 
+import '../googleSignin.dart';
+
 final DateTime timestamp = DateTime.now();
 
 class User {
-  User({@required this.uid});
+  User({@required this.uid, @required this.emailVerified});
   final String uid;
+  bool emailVerified;
 
 }
 
@@ -38,7 +41,7 @@ class Auth implements AuthBase {
       return null;
     }
 
-    return User(uid: user.uid);
+    return User(uid: user.uid, emailVerified: user.isEmailVerified);
   }
 
   //Stream get called by actmain.dart
