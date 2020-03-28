@@ -218,6 +218,7 @@ class _FollowersViewState extends State<FollowersView> {
   }
 
   Widget generateUserCards() {
+    int lastAccess;
     return Expanded(
       child: SizedBox(
         height: 200.0,
@@ -225,6 +226,13 @@ class _FollowersViewState extends State<FollowersView> {
             itemCount: userFollower.length,
             itemBuilder: (context, index) {
               var userObj = userFollower[index];
+              if (userObj.lastAccess != null) {
+                if (userObj.lastAccess.toString() == "online") {
+                  lastAccess = 0;
+                } else {
+                  lastAccess = 1;
+                }
+              }
               return Card(
                 key: Key(userObj.userID),
                 elevation: 5,
@@ -235,11 +243,17 @@ class _FollowersViewState extends State<FollowersView> {
                           UserDetailsPage(userFollower[index].userID),
                     ));
                   },
+                  //We are checking the user's offline and online check. According to the result we show corresponding circle indicator.
                   child:ListTile(
                     leading: CircleAvatar(backgroundImage: CachedNetworkImageProvider(userObj.profilePicURL),),
                     title: Text(userObj.displayName),
                     subtitle: Text(userObj.bio),
-                  ),
+                    trailing: (userObj.lastAccess != null && userObj.lastAccess.toString() == "online") ? CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        radius: 10.0,
+                        backgroundImage: AssetImage('assets/onlineGreenDot.jpg')) : CircleAvatar(
+                        backgroundColor: Colors.grey,
+                        radius: 10.0,),),
                 ),
               );
             }),
