@@ -1,5 +1,4 @@
 import 'Dashboard.dart';
-import 'IntroSlider.dart';
 import 'landing.dart';
 import './services/AuthProvider.dart';
 import './utils/messageHandler.dart';
@@ -82,11 +81,7 @@ class _EmailVerificationState extends State<EmailVerification> {
           borderRadius: BorderRadius.circular(24),
         ),
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => IntroSlider(),
-              ));
+          Navigator.pushNamed(context, Dashboard.id);
         },
         padding: EdgeInsets.all(12),
         color: Theme.of(context).primaryColor,
@@ -109,12 +104,13 @@ class _EmailVerificationState extends State<EmailVerification> {
           auth.SignOut();
           Navigator.pushReplacementNamed(context, MyApp.id);
           Navigator.of(context).pushNamedAndRemoveUntil(MyApp.id, (Route<dynamic> route) => false);
-
         } catch (e) {
           print(e.toString());
         }
       },
     );
+
+
 
     Widget swapWidget;
     if (_UserVerified) {
@@ -122,6 +118,7 @@ class _EmailVerificationState extends State<EmailVerification> {
     } else {
       swapWidget = confirmEmailButton;
     }
+
 
     return Scaffold(
       backgroundColor: Colors.white,
