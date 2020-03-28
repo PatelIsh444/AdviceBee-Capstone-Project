@@ -4,7 +4,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:v0/IntroSlider.dart';
 import 'package:v0/pages/NewChat.dart';
 import 'EmailVerification.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -474,7 +473,6 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
             'dateCreated': Timestamp.now(),
             'last access': 'online',
           });
-
           if (selectedTopics.isEmpty) {
             showEditTopicMenu(user);
           }
@@ -489,6 +487,7 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
           user.photoUrl == null) {
         //user logged with Facebook email is null but email is verified
         //Bypassed email confirmation for Facebook User
+
         Navigator.push(
             context,
             MaterialPageRoute(

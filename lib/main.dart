@@ -14,7 +14,7 @@ import 'SignUp.dart';
 import 'package:flutter/material.dart';
 import './utils/commonFunctions.dart';
 
-void main() => runApp(Advicebee());
+void main() => runApp(IntroSlider());
 
 class Advicebee extends StatefulWidget{
 

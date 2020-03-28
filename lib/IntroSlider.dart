@@ -76,7 +76,7 @@ class IntroSliderState extends State<IntroSlider>with WidgetsBindingObserver {
       ),
     ),
     PageViewModel(
-      pageColor: const Color(0xff9fa8da),
+      pageColor: const Color(0xffdcedc8),
       body: Text(
         'Welcome to AdviceBee,\n'
             ' A leading Advice getting Softwere.'
@@ -151,7 +151,7 @@ class IntroSliderState extends State<IntroSlider>with WidgetsBindingObserver {
                   Colors.black;
                   Navigator.push(context,
                       MaterialPageRoute(
-                        builder: (context) => Dashboard(),
+                        builder: (context) => Advicebee(),
                       ));
                 },
                 pageButtonTextStyles: TextStyle(
