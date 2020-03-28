@@ -11,7 +11,7 @@ description: A flutter project for AdviceBee.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 3.5.3
 
 environment:
   sdk: ">=2.2.0 <3.0.0"
@@ -46,6 +46,7 @@ dependencies:
   firebase_messaging: ^6.0.9
   flutter_local_notifications: ^1.1.5+1
   flutter_slidable: "^0.5.4"
+  stripe_payment:
 
 
   #Charts
@@ -58,7 +59,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
-  intro_views_flutter: '^2.8.0'
+  introduction_screen: ^1.0.7
 
 flutter_icons:
   android: "ic_launcher"
