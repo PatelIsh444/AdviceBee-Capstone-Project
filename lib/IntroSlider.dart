@@ -1,33 +1,18 @@
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intro_views_flutter/Models/page_view_model.dart';
-import 'package:intro_views_flutter/intro_views_flutter.dart';
-import 'package:v0/main.dart';
+import 'package:introduction_screen/introduction_screen.dart';
 import 'package:v0/utils/commonFunctions.dart';
 import 'Dashboard.dart';
-import 'ForgotPassword.dart';
-import 'NewLogin.dart';
-import 'Notification.dart';
-import 'PickTopics.dart';
-import 'SignUp.dart';
-import 'User.dart';
-import 'actmain.dart';
-import 'landing.dart';
-
 class IntroSlider extends StatefulWidget{
   @override
   IntroSliderState createState() => IntroSliderState();
 }
-
 class IntroSliderState extends State<IntroSlider>with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     print('state = $state');
@@ -40,101 +25,76 @@ class IntroSliderState extends State<IntroSlider>with WidgetsBindingObserver {
       setUserLastAccess();
     }
   }
-
-
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     setUserLastAccess();
     super.dispose();
   }
-
   final pages = [
     PageViewModel(
-      pageColor: const Color(0XFFAFD6A7),
       //bubble: Image.asset('assets/newlogo.png'),
-      body: Text(
-        'Dr. Seyed Ziae Mousavi Mojab,\n'
+      body: 'Dr. Seyed Ziae Mousavi Mojab,\n'
             'Is a Co-founder of this software, he has a great vision to help students in solving their problems in all type of field by connecting them to best experts in all field through a software.\n'
             'ADVICEBEE CAN DO THIS!',
-      ),
-      title: Text('WelCome',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 40.0,
+      title: 'WelCome',
+      decoration: const PageDecoration(
+        titleTextStyle: TextStyle(fontSize: 50.0,
           fontStyle: FontStyle.italic,
           fontWeight: FontWeight.bold,
-          color: Colors.black,),),
-      textStyle: TextStyle(fontSize: 17.0,
-        fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.bold,
-        color: Colors.black,),
-      mainImage: Image.asset(
-        'images/logoTeal.png',
-        height: 285.0,
-        width: 285.0,
-        alignment: Alignment.center,
+          color: Colors.black,),
+        bodyTextStyle: TextStyle(fontSize: 20.0,
+          fontStyle: FontStyle.italic,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,),
+        pageColor: const Color(0XFFAFD6A7),
       ),
-    ),
+      image: Center(child: Image.asset("images/logoTeal.png", height: 270.0)),
+      ),
     PageViewModel(
-      pageColor: const Color(0xff9fa8da),
-      body: Text(
+      body:
         'Welcome to AdviceBee,\n'
             ' A leading Advice getting Softwere.'
             'AdviceBee is designed for the students of Wayne State University'
             'This Software will help students to solve their difficulties in any subject'
             'by connecting best experts to the students.',
-      ),
-      title: Text('Advice Bee',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 40.0,
-          fontStyle: FontStyle.italic,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,),),
-      textStyle: TextStyle(fontSize: 17.0,
-        fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.bold,
-        color: Colors.black,),
-      mainImage: Image.asset(
-        'images/logoTeal.png',
-        height: 285.0,
-        width: 285.0,
-        alignment: Alignment.center,
-      ),
-    ),
-    PageViewModel(
-      pageColor: const Color(0xff80cbc4),
-
-
-      title: Text(
-        "Rank System",
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 40.0,
+      title:'Advice Bee',
+      decoration: const PageDecoration(
+        titleTextStyle: TextStyle(fontSize: 50.0,
           fontStyle: FontStyle.italic,
           fontWeight: FontWeight.bold,
           color: Colors.black,),
-      ),
-      body: Text(
-          "Larvae: 0-499 Points\n"
+        bodyTextStyle: TextStyle(fontSize: 20.0,
+          fontStyle: FontStyle.italic,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,),
+      pageColor: const Color(0xff9fa8da),
+  ),
+      image: Center(child: Image.asset("images/logoTeal.png", height: 270.0)),
+    ),
+    PageViewModel(
+      title: "Rank System",
+      body: "Larvae: 0-499 Points\n"
               "Worker Bee: 500-999 Points\n"
               "Queen Bee: 1000+ Points\n"
               "You get 100 points per day when you open AdviceBee. Asking "
               "a question costs 10 points, while answering questions and, recieving each likes "
-              "reward 10 points."
+              "reward 10 points.",
+      decoration: const PageDecoration(
+        titleTextStyle: TextStyle(fontSize: 50.0,
+          fontStyle: FontStyle.italic,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,),
+        bodyTextStyle: TextStyle(fontSize: 20.0,
+          fontStyle: FontStyle.italic,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,),
+        pageColor: const Color(0xff80cbc4),
       ),
-      textStyle: TextStyle(fontSize: 17.0,
-        fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.bold,
-        color: Colors.black,),
-      mainImage: Image.asset(
-        'images/logoTeal.png',
-        height: 285.0,
-        width: 285.0,
-        alignment: Alignment.center,
-      ),
+      image: Center(child: Image.asset("images/logoTeal.png", height: 270.0)),
 
     )
   ];
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -143,23 +103,37 @@ class IntroSliderState extends State<IntroSlider>with WidgetsBindingObserver {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Builder(
-        builder: (context) =>
-            IntroViewsFlutter(
-                pages,
-                onTapDoneButton: () {
-                  Colors.black;
-                  Navigator.push(context,
-                      MaterialPageRoute(
-                        builder: (context) => Dashboard(),
-                      ));
-                },
-                pageButtonTextStyles: TextStyle(
-                  color: Colors.black,
-                  fontSize: 12,
+           home: IntroductionScreen(
+            pages: pages,
+            onDone: () {
+             Navigator.push(
+                 context,
+                 MaterialPageRoute(
+                   builder: (context) => Dashboard(),               )
+            );
+            },
+            onSkip: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Dashboard(),
+                  )
+              );
+            },
+            showSkipButton: true,
+             skip: const Text("Skip", style: TextStyle(fontWeight: FontWeight.w600)),
+            next: const Icon(Icons.navigate_next),
+            done: const Text("Done", style: TextStyle(fontWeight: FontWeight.w600)),
+            dotsDecorator: DotsDecorator(
+                size: const Size.square(12.0),
+                activeSize: const Size(20.0, 10.0),
+                color: Colors.black,
+                spacing: const EdgeInsets.symmetric(horizontal: 3.0),
+                activeShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25.0)
                 )
-            ),
       ),
-    );
+    ),
+        );
   }
 }
