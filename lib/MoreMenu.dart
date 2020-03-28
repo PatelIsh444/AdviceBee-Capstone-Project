@@ -1,3 +1,10 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:popup_menu/popup_menu.dart';
 import 'package:v0/pages/NewChat.dart';
 import 'package:v0/services/AuthProvider.dart';
@@ -137,9 +144,66 @@ void moreButtonAction(String choice, BuildContext context) {
   }
 }
 
+final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+new FlutterLocalNotificationsPlugin();
+
+void registerNotification() {
+  firebaseMessaging.requestNotificationPermissions();
+  firebaseMessaging.configure(onMessage: (Map<String, dynamic> message) {
+    print('onMessage: $message');
+    return;
+  }, onResume: (Map<String, dynamic> message) {
+    print('onResume: $message');
+    return;
+  }, onLaunch: (Map<String, dynamic> message) {
+    print('onLaunch: $message');
+    return;
+  });
+
+  firebaseMessaging.getToken().then((token) {
+    Firestore.instance
+        .collection('users')
+        .document(CurrentUser.userID)
+        .updateData({'pushToken': token, 'last access': 'online'});
+  }).catchError((err) {
+    Fluttertoast.showToast(msg: err.message.toString());
+  });
+}
+
+void iOS_Permission() {
+  firebaseMessaging.requestNotificationPermissions(
+      IosNotificationSettings(sound: true, badge: true, alert: true));
+  firebaseMessaging.onIosSettingsRegistered
+      .listen((IosNotificationSettings settings) {
+    print("Settings registered: $settings");
+  });
+}
+
+void configLocalNotification() {
+  var initializationSettingsAndroid =
+  new AndroidInitializationSettings('icon.png');
+  var initializationSettingsIOS = new IOSInitializationSettings();
+  var initializationSettings = new InitializationSettings(
+      initializationSettingsAndroid, initializationSettingsIOS);
+  flutterLocalNotificationsPlugin.initialize(initializationSettings);
+}
+
+Future onSelectNotification(String payload) async {
+  if (payload != null) {
+    debugPrint('notification payload: ' + payload);
+  }
+}
+
 Widget globalNavigationBar(
     int currentTab, BuildContext context, GlobalKey key, bool isFirstPage) {
   Size screenSize = MediaQuery.of(context).size;
+  registerNotification();
+  configLocalNotification();
+
+  if (Platform.isIOS) {
+    iOS_Permission();
+  }
   return BottomAppBar(
     shape: CircularNotchedRectangle(),
     notchMargin: 10,

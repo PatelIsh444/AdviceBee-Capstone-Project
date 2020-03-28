@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:bottom_navigation_badge/bottom_navigation_badge.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -90,6 +91,13 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
   final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       new FlutterLocalNotificationsPlugin();
+
+  BottomNavigationBadge badger = new BottomNavigationBadge(
+      backgroundColor: Colors.red,
+      badgeShape: BottomNavigationBadgeShape.circle,
+      textColor: Colors.white,
+      position: BottomNavigationBadgePosition.topRight,
+      textSize: 8);
 
   @override
   void initState() {

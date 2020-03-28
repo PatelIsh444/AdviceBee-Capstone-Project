@@ -458,7 +458,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: globalNavigationBar(3, context, key, false),
+      bottomNavigationBar: globalNavigationBar(0, context, key, false),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -635,7 +635,9 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                       backgroundColor: Colors.transparent,
                       radius: 10.0,
                       backgroundImage: AssetImage('assets/onlineGreenDot.jpg'))
-                  : Container(),
+                  : CircleAvatar(
+                backgroundColor: Colors.grey,
+                radius: 10.0,),
             ],
           ),
         ),

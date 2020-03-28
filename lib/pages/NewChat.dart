@@ -215,9 +215,6 @@ class NewChatScreenState extends State<NewChatScreen> {
                               .collection('chats')
                               .snapshots(),
                           builder: (context, snapshot) {
-                            chatsSet.clear();
-                            waitingFromSet.clear();
-                            waitingToSet.clear();
                             if (!snapshot.hasData) {
                               return Center(
                                 child: CircularProgressIndicator(
