@@ -1,3 +1,5 @@
+import 'package:v0/IntroSlider.dart';
+
 import './services/AuthProvider.dart';
 import 'SignUp.dart';
 import 'NewLogin.dart';
@@ -6,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'Dashboard.dart';
+
 
 class MyApp extends StatefulWidget {
   static String id = 'landing_page';
@@ -32,7 +34,7 @@ class _MyAppState extends State<MyApp> {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Dashboard(),
+            builder: (context) => IntroSlider(),
           ));
       //print('${authResult.user.uid}');
 
@@ -57,7 +59,11 @@ class _MyAppState extends State<MyApp> {
       _isLoading = true;
 
       await auth.signInWithGoogle(context);
-      Navigator.pushNamed(context, Dashboard.id);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => IntroSlider(),
+          ));
     } catch (e) {
       print(e.toString());
     } finally {
@@ -76,7 +82,7 @@ class _MyAppState extends State<MyApp> {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Dashboard(),
+            builder: (context) => IntroSlider(),
           ));
     } catch (e) {
       print(e.toString());
