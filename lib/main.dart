@@ -58,7 +58,6 @@ class AdvicebeeState extends State<Advicebee> with WidgetsBindingObserver {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-
             primarySwatch: Colors.teal
         ),
         initialRoute: ActMainApp.id ,

@@ -1475,30 +1475,39 @@ class _PostQuestionState extends State<postQuestion> {
     if (topics != null && topics.contains("All")) {
       topics.remove("All");
     }
-
-    return Center(
-      child: DropdownButton<String>(
-        hint: new Text("Select a topic               ",
-            style: TextStyle(color: Colors.black)),
-        value: selectedTopic,
-        items: topics.map((String tempValue) {
-          return new DropdownMenuItem<String>(
-            value: tempValue,
-            child: new Text(tempValue),
-          );
-        }).toList(),
-        onChanged: (String tempValue) {
-          setState(() {
-            selectedTopic = tempValue;
-            print(selectedTopic);
-          });
-        },
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        Icon(Icons.list),
+        Center(
+          child: DropdownButton<String>(
+            hint: new Text("Select a topic               ",
+                style: TextStyle(color: Colors.black)),
+            value: selectedTopic,
+            items: topics.map((String tempValue) {
+              return new DropdownMenuItem<String>(
+                value: tempValue,
+                child: new Text(tempValue),
+              );
+            }).toList(),
+            onChanged: (String tempValue) {
+              setState(() {
+                selectedTopic = tempValue;
+                print(selectedTopic);
+              });
+            },
+          ),
+        ),
+      ],
     );
   }
 
   Widget buildDropdownQuestionSelect() {
-    return Center(
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+        Icon(Icons.list),
+      Center(
       child: DropdownButton<questionTypes>(
         hint: new Text("Select a question type"),
         value: questionType,
@@ -1522,6 +1531,8 @@ class _PostQuestionState extends State<postQuestion> {
           ),
         ],
       ),
+    ),
+    ]
     );
   }
 
@@ -1747,6 +1758,7 @@ class _PostQuestionState extends State<postQuestion> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20.0, vertical: 0.0),
                     child: new TextFormField(
+                      maxLines: 2,
                       controller: questionController,
                       decoration: new InputDecoration(labelText: 'Question'),
                       //autovalidate: true,
@@ -1766,6 +1778,7 @@ class _PostQuestionState extends State<postQuestion> {
                         horizontal: 20.0, vertical: 0.0),
                     child: new TextFormField(
                       controller: questionDescriptionController,
+                      maxLines: 6,
                       decoration: new InputDecoration(labelText: 'Description'),
                       //autovalidate: true,
                       maxLength: 250,
@@ -1804,6 +1817,7 @@ class _PostQuestionState extends State<postQuestion> {
                 const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
             child: new TextFormField(
               controller: questionController,
+              maxLines: 3,
               decoration: new InputDecoration(labelText: 'Question'),
               //autovalidate: true,
               maxLength: 100,
@@ -1822,6 +1836,7 @@ class _PostQuestionState extends State<postQuestion> {
                 const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
             child: new TextFormField(
               controller: questionDescriptionController,
+              maxLines: 6,
               decoration: new InputDecoration(labelText: 'Description'),
               //autovalidate: true,
               maxLength: 250,
@@ -1847,6 +1862,7 @@ class _PostQuestionState extends State<postQuestion> {
                 const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
             child: new TextFormField(
               controller: questionController,
+              maxLines: 3,
               decoration: new InputDecoration(labelText: 'Question'),
               //autovalidate: true,
               maxLength: 100,
@@ -1865,6 +1881,7 @@ class _PostQuestionState extends State<postQuestion> {
                 const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
             child: new TextFormField(
               controller: questionDescriptionController,
+              maxLines: 6,
               decoration: new InputDecoration(labelText: 'Description'),
               //autovalidate: true,
               maxLength: 250,
