@@ -20,7 +20,7 @@ class User {
   int dailyPoints;
   int earnedPoints;
   bool isNotGuest=false;
-
+  String lastAccess;
 
   User();
 
@@ -42,6 +42,7 @@ class User {
     this.isNotGuest,
     this.myTopics,
     this.blocked,
+    this.lastAccess
   });
 
   User.searchInfo(
@@ -68,6 +69,7 @@ class User {
       this.dailyPoints = doc["dailyPoints"];
       this.earnedPoints = doc["earnedPoints"];
       this.isNotGuest = true;
+      this.lastAccess = doc['last access'];
     });
   }
 
@@ -90,6 +92,7 @@ class User {
       earnedPoints: doc["earnedPoints"],
       myTopics: doc["myTopics"],
       isNotGuest: true,
+      lastAccess: doc['last access'],
     );
   }
 
