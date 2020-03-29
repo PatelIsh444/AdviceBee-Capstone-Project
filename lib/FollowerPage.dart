@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 import 'User.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -240,9 +238,7 @@ class _FollowersViewState extends State<FollowersView> {
                   child:ListTile(
                     leading: CircleAvatar(backgroundImage: CachedNetworkImageProvider(userObj.profilePicURL),),
                     title: Text(userObj.displayName),
-                    subtitle: Text(userObj.lastAccess!=null ? "Last Access: "+ DateFormat.yMd().add_jm()
-                        .format(DateTime.fromMillisecondsSinceEpoch(int.parse(userObj.lastAccess))).toString():userObj.bio),
-
+                    subtitle: Text(userObj.bio),
                   ),
                 ),
               );
@@ -375,8 +371,7 @@ class _FollowingViewState extends State<FollowingView>{
                   child:ListTile(
                     leading: CircleAvatar(backgroundImage: CachedNetworkImageProvider(userObj.profilePicURL),),
                     title: Text(userObj.displayName),
-                    subtitle: Text(userObj.lastAccess!=null ? "Last Access: "+ DateFormat.yMd().add_jm()
-                        .format(DateTime.fromMillisecondsSinceEpoch(int.parse(userObj.lastAccess))).toString():userObj.bio),
+                    subtitle: Text(userObj.bio),
                   ),
                 ),
               );
