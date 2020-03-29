@@ -280,32 +280,38 @@ exports.sendNewChatMessageNotification = functions.firestore
     return null
   })
 
-exports.setInitialIncrementNumberOnReportDocCreate = functions.firestore
-	.document('reports/{reportedPostId}')
-	.onCreate(async (snap, context) => {
-		const reportedPostId = context.params.reportedPostId
-		await admin.firestore().collection('reports').doc(reportedPostId)
-			.set({ numberOfReports: 0 }, { merge: true })
-			.catch(error => { console.log("Error: " + error) })
-		return null
-	})
-
 exports.incrementNumberOfReportersPerReport = functions.firestore
   	.document('reports/{reportedPostId}/ReportedUsers/{userIdWhoReportedPost}')
   	.onCreate(async (snap, context) => {
 		const reportedPostId = context.params.reportedPostId
-		await admin.firestore().collection('reports').doc(reportedPostId)
-			.update({ numberOfReports: FieldValue.increment(1) })
-			.catch(error => { console.log("Error: " + error) })
-			return null
+		const reportRef = admin.firestore().collection('reports').doc(reportedPostId)
+		const reportedUsersRef = admin.firestore().collection('reports').doc(reportedPostId).collection('ReportedUsers')
+
+		admin.firestore().runTransaction(async transaction => {
+			const reportedUsersRefQuery = await transaction.get(reportedUsersRef);
+			const numberOfReports = reportedUsersRefQuery.size;
+			return transaction.update(reportRef, {
+				numberOfReports: numberOfReports
+			});
+		})
+
+		return null;
 	})
 	  
 exports.decrementNumberOfReportersPerReport = functions.firestore
   	.document('reports/{reportedPostId}/ReportedUsers/{userIdWhoReportedPost}')
   	.onDelete(async (snap, context) => {
 		const reportedPostId = context.params.reportedPostId
-		await admin.firestore().collection('reports').doc(reportedPostId)
-			.update({ numberOfReports: FieldValue.increment(-1) })
-			.catch(error => { console.log("Error: " + error) })
-			return null
+		const reportRef = admin.firestore().collection('reports').doc(reportedPostId)
+		const reportedUsersRef = admin.firestore().collection('reports').doc(reportedPostId).collection('ReportedUsers')
+
+		admin.firestore().runTransaction(async transaction => {
+			const reportedUsersRefQuery = await transaction.get(reportedUsersRef);
+			const numberOfReports = reportedUsersRefQuery.size;
+			return transaction.update(reportRef, {
+				numberOfReports: numberOfReports
+			});
+		})
+
+		return null;
 	})
