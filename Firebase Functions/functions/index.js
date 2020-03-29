@@ -278,6 +278,18 @@ exports.sendNewChatMessageNotification = functions.firestore
     return null
   })
 
+exports.setInitialIncrementNumberOnReportDocCreate = functions.firestore
+	.document('reports/{reportedPostId}')
+	.onCreate((snap, context) => {
+		const reportedPostId = context.params.reportedPostId
+		admin.firestore().collection('reports').doc(reportedPostId).set({
+			numberOfReports: 0
+		})
+		.catch(error => {
+			console.log("Error: " + error);
+		})
+	})
+
 exports.incrementNumberOfReportersPerReport = functions.firestore
   	.document('reports/{reportedPostId}/ReportedUsers/{userIdWhoReportedPost}')
   	.onCreate((snap, context) => {
