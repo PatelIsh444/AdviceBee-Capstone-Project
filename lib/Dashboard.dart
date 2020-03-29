@@ -405,6 +405,7 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
 
 /*
   This function establish user to Firebase after the first login
+
   SetData to Firebase and then create a new instance of User class
   This function only execute once when the app open
   Pull all user information and store locally
@@ -513,7 +514,7 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
       ///all the users created before version 3.5 don't have it
       ///so we check and create the field on the database
       if(CurrentUser.blocked.isEmpty){
-        Firestore.instance.collection('users').document(CurrentUser.userID).setData({'blocked':new List()});
+        Firestore.instance.collection('users').document(CurrentUser.userID).updateData({'blocked':new List()});
       }
       _userCreated = true;
       getTopicsFuture = getTopics();
