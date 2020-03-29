@@ -280,39 +280,30 @@ exports.sendNewChatMessageNotification = functions.firestore
 
 exports.setInitialIncrementNumberOnReportDocCreate = functions.firestore
 	.document('reports/{reportedPostId}')
-	.onCreate((snap, context) => {
+	.onCreate(async (snap, context) => {
 		const reportedPostId = context.params.reportedPostId
-		admin.firestore().collection('reports').doc(reportedPostId)
+		await admin.firestore().collection('reports').doc(reportedPostId)
 			.set({ numberOfReports: 0 }, { merge: true })
 			.catch(error => { console.log("Error: " + error) })
-		
-		return null
+			.finally(() => { return null })
 	})
 
 exports.incrementNumberOfReportersPerReport = functions.firestore
   	.document('reports/{reportedPostId}/ReportedUsers/{userIdWhoReportedPost}')
-  	.onCreate((snap, context) => {
+  	.onCreate(async (snap, context) => {
 		const reportedPostId = context.params.reportedPostId
-		admin.firestore().collection('reports').doc(reportedPostId).update({
-			numberOfReports: FieldValue.increment(1)
-		})
-		.catch(error => {
-			console.log("Error: " + error);
-		})
-
-		return null
+		await admin.firestore().collection('reports').doc(reportedPostId)
+			.update({ numberOfReports: FieldValue.increment(1) })
+			.catch(error => { console.log("Error: " + error) })
+			.finally(() => { return null })
 	})
 	  
 exports.decrementNumberOfReportersPerReport = functions.firestore
   	.document('reports/{reportedPostId}/ReportedUsers/{userIdWhoReportedPost}')
-  	.onDelete((snap, context) => {
+  	.onDelete(async (snap, context) => {
 		const reportedPostId = context.params.reportedPostId
-		admin.firestore().collection('reports').doc(reportedPostId).update({
-			numberOfReports: FieldValue.increment(-1)
-		})
-		.catch(error => {
-			console.log("Error: " + error);
-		})
-
-		return null
-	})
+		await admin.firestore().collection('reports').doc(reportedPostId)
+			.update({ numberOfReports: FieldValue.increment(-1) })
+			.catch(error => { console.log("Error: " + error) })
+			.finally(() => { return null })
+})
