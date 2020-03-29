@@ -284,6 +284,8 @@ exports.setInitialIncrementNumberOnReportDocCreate = functions.firestore
 		snap.ref
 			.set({ numberOfReports: 0 }, { merge: true })
 			.catch(error => { console.log("Error: " + error) })
+		
+		return null
 	})
 
 exports.incrementNumberOfReportersPerReport = functions.firestore
@@ -296,6 +298,8 @@ exports.incrementNumberOfReportersPerReport = functions.firestore
 		.catch(error => {
 			console.log("Error: " + error);
 		})
+
+		return null
 	})
 	  
 exports.decrementNumberOfReportersPerReport = functions.firestore
@@ -308,4 +312,6 @@ exports.decrementNumberOfReportersPerReport = functions.firestore
 		.catch(error => {
 			console.log("Error: " + error);
 		})
+
+		return null
 	})
