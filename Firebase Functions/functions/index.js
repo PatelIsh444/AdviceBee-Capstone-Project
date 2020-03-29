@@ -281,7 +281,8 @@ exports.sendNewChatMessageNotification = functions.firestore
 exports.setInitialIncrementNumberOnReportDocCreate = functions.firestore
 	.document('reports/{reportedPostId}')
 	.onCreate((snap, context) => {
-		snap.ref
+		const reportedPostId = context.params.reportedPostId
+		admin.firestore().collection('reports').doc(reportedPostId)
 			.set({ numberOfReports: 0 }, { merge: true })
 			.catch(error => { console.log("Error: " + error) })
 		
