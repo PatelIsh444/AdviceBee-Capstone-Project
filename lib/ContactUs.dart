@@ -284,31 +284,6 @@ class _MyReviewPageState extends State<ContactUsPage>
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-    appBar: AppBar(
-    title: Text("Rate Us"),
-    centerTitle: true,
-      leading:MaterialButton(
-        key: key,
-        minWidth: MediaQuery.of(context).size.width / 5,
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Dashboard(),
-              )
-          );
-          if (CurrentUser.isNotGuest) {
-          } else {
-            guestUserSignInMessage(context);
-          }
-        },
-        child: Icon(
-          Icons.arrow_back,
-          color: Colors.white,
-          size: 30,
-        ),
-      ),
-    ),
       body: Container(
         margin: MediaQuery.of(context).padding,
         child: SingleChildScrollView(
