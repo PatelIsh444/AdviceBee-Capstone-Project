@@ -278,7 +278,7 @@ exports.sendNewChatMessageNotification = functions.firestore
     return null
   })
 
-exports.updateNumberOfReportersPerReport = functions.firestore
+exports.incrementNumberOfReportersPerReport = functions.firestore
   	.document('reports/{reportedPostId}/ReportedUsers/{userIdWhoReportedPost}')
   	.onCreate((snap, context) => {
 		const reportedPostId = context.params.reportedPostId
@@ -288,7 +288,10 @@ exports.updateNumberOfReportersPerReport = functions.firestore
 		.catch(error => {
 			console.log("Error: " + error);
 		})
-  	})
+	})
+	  
+exports.decrementNumberOfReportersPerReport = functions.firestore
+  	.document('reports/{reportedPostId}/ReportedUsers/{userIdWhoReportedPost}')
   	.onDelete((snap, context) => {
 		const reportedPostId = context.params.reportedPostId
 		admin.firestore().collection('reports').doc(reportedPostId).update({
