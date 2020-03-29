@@ -55,111 +55,6 @@ class NewChatScreenState extends State<NewChatScreen> {
   @override
   void initState() {
     super.initState();
-    registerNotification();
-    configLocalNotification();
-    if (Platform.isIOS) {
-      iOS_Permission();
-    }
-  }
-
-  void registerNotification() {
-    firebaseMessaging.requestNotificationPermissions();
-    firebaseMessaging.configure(onMessage: (Map<String, dynamic> message) {
-      print('onMessage: $message');
-      showNotification(message['notification']);
-      return;
-    }, onResume: (Map<String, dynamic> message) {
-      print('onResume: $message');
-      return;
-    }, onLaunch: (Map<String, dynamic> message) {
-      print('onLaunch: $message');
-      return;
-    });
-
-    firebaseMessaging.getToken().then((token) {
-      print('token: $token');
-      Firestore.instance
-          .collection('users')
-          .document(currentUserId)
-          .updateData({'pushToken': token});
-    }).catchError((err) {
-      Fluttertoast.showToast(msg: err.message.toString());
-    });
-  }
-
-  void iOS_Permission() {
-    firebaseMessaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true));
-    firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
-      print("Settings registered: $settings");
-    });
-  }
-
-  void configLocalNotification() {
-    var initializationSettingsAndroid =
-    new AndroidInitializationSettings('app_icon');
-    var initializationSettingsIOS = new IOSInitializationSettings();
-    var initializationSettings = new InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  }
-
-  void showNotification(message) async {
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    new FlutterLocalNotificationsPlugin();
-    var initializationSettingsAndroid =
-    new AndroidInitializationSettings('app_icon');
-    var initializationSettingsIOS = new IOSInitializationSettings(
-        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-    var initializationSettings = new InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: onSelectNotification);
-    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-      Platform.isAndroid ? 'com.mojab.advicebee.v0' : 'com.mojab.advicebee.v0',
-      'Flutter chat demo',
-      'your channel description',
-      playSound: true,
-      enableVibration: true,
-      channelShowBadge: true,
-      importance: Importance.Max,
-      priority: Priority.High,
-    );
-    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-    var platformChannelSpecifics = new NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(0, message['title'].toString(),
-        message['body'].toString(), platformChannelSpecifics,
-        payload: json.encode(message));
-  }
-
-  Future onSelectNotification(String payload) async {
-    if (payload != null) {
-      debugPrint('notification payload: ' + payload);
-    }
-  }
-
-  Future onDidReceiveLocalNotification(int id, String title, String body,
-      String payload) async {
-    // display a dialog with the notification details, tap ok to go to another page
-    showDialog(
-      context: context,
-      builder: (BuildContext context) =>
-      new CupertinoAlertDialog(
-        title: new Text(title),
-        content: new Text(body),
-        actions: [
-          CupertinoDialogAction(
-            isDefaultAction: true,
-            child: new Text('Ok'),
-            onPressed: () async {
-              Navigator.of(context, rootNavigator: true).pop();
-            },
-          )
-        ],
-      ),
-    );
   }
 
   Set chatsSet = new Set<Widget>();
@@ -200,74 +95,77 @@ class NewChatScreenState extends State<NewChatScreen> {
         ],
       ),
 
-        body: ListView(
-          children: <Widget>[
-            Stack(
-              children: <Widget>[
-                // List
-                Container(
-                  child: StreamBuilder(
-                      stream:
-                      Firestore.instance.collection('users').snapshots(),
-                      builder: (context, snap) {
-                        return StreamBuilder(
-                          stream: Firestore.instance
-                              .collection('chats')
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return Center(
-                                child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.teal),
-                                ),
-                              );
-                            } else {
-                              for (int index = 0;
-                              index < snapshot.data.documents.length;
-                              index++) {
-                                List<DocumentSnapshot> id = snap.data.documents
-                                    .where((doc) =>
-                                doc.documentID ==
-                                    snapshot.data.documents[index]['id'])
-                                    .toList();
-                                List<DocumentSnapshot> peerId = snap
-                                    .data.documents
-                                    .where((doc) =>
-                                doc.documentID ==
-                                    snapshot.data.documents[index]
-                                    ['peerId'])
-                                    .toList();
-                                buildItem(
-                                    context,
-                                    snapshot.data.documents[index],
-                                    id.elementAt(0),
-                                    peerId.elementAt(0));
-                              }
-                              return ListView(
-                                shrinkWrap: true,
-                                padding: EdgeInsets.all(5.0),
-                                children: <Widget>[
-                                  Column(
-                                    children: waitingFromSet.toList(),
-                                  ),
-                                  Column(
-                                    children: chatsSet.toList(),
-                                  ),
-                                  Column(
-                                    children: waitingToSet.toList(),
-                                  ),
-                                ],
-                              );
+      body: ListView(
+        children: <Widget>[
+          Stack(
+            children: <Widget>[
+              // List
+              Container(
+                child: StreamBuilder(
+                    stream:
+                    Firestore.instance.collection('users').snapshots(),
+                    builder: (context, snap) {
+                      return StreamBuilder(
+                        stream: Firestore.instance
+                            .collection('chats')
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          chatsSet.clear();
+                          waitingFromSet.clear();
+                          waitingToSet.clear();
+                          if (!snapshot.hasData) {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.teal),
+                              ),
+                            );
+                          } else {
+                            for (int index = 0;
+                            index < snapshot.data.documents.length;
+                            index++) {
+                              List<DocumentSnapshot> id = snap.data.documents
+                                  .where((doc) =>
+                              doc.documentID ==
+                                  snapshot.data.documents[index]['id'])
+                                  .toList();
+                              List<DocumentSnapshot> peerId = snap
+                                  .data.documents
+                                  .where((doc) =>
+                              doc.documentID ==
+                                  snapshot.data.documents[index]
+                                  ['peerId'])
+                                  .toList();
+                              buildItem(
+                                  context,
+                                  snapshot.data.documents[index],
+                                  id.elementAt(0),
+                                  peerId.elementAt(0));
                             }
-                          },
-                        );
-                      }),
-                ),
-              ],
-            ),
-          ],
-        ),
+                            return ListView(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.all(5.0),
+                              children: <Widget>[
+                                Column(
+                                  children: waitingFromSet.toList(),
+                                ),
+                                Column(
+                                  children: chatsSet.toList(),
+                                ),
+                                Column(
+                                  children: waitingToSet.toList(),
+                                ),
+                              ],
+                            );
+                          }
+                        },
+                      );
+                    }),
+              ),
+            ],
+          ),
+        ],
+      ),
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -291,7 +189,7 @@ class NewChatScreenState extends State<NewChatScreen> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
- bottomNavigationBar: globalNavigationBar(currentTab, context, key, false),
+      bottomNavigationBar: globalNavigationBar(currentTab, context, key, false),
     );
   }
 
@@ -352,8 +250,6 @@ class NewChatScreenState extends State<NewChatScreen> {
           ),
         ));
       } else if (document['approved'] == true) {
-        print("i am peer");
-        print(peerDoc['displayName']);
         String lastAccess = " ";
         if (idDoc['last access'] != null) {
           if (idDoc['last access'].toString() == "online") {
@@ -475,8 +371,6 @@ class NewChatScreenState extends State<NewChatScreen> {
               ),
             )));
       } else if (document['approved'] == true) {
-        print("i am id");
-        print(idDoc['displayName']);
 
         String lastAccess= " ";
         if (peerDoc['last access'] != null) {

@@ -99,9 +99,9 @@ class IntroSliderState extends State<IntroSlider>with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Intro',
+      title: 'AdviceBee',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.teal,
       ),
            home: IntroductionScreen(
             pages: pages,

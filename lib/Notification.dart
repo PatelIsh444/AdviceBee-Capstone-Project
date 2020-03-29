@@ -1,3 +1,5 @@
+import 'package:flutter_slidable/flutter_slidable.dart';
+
 import 'GroupPage.dart';
 import 'GroupProfile.dart';
 import 'QuestionPage.dart';
@@ -43,7 +45,9 @@ class _NotificationFeedState extends State<NotificationFeed> {
     ),
   );
   final notificationText = Text(
-    CurrentUser.isNotGuest ? "You currently do not have any unread notifications." : "Guests don't receive notifications!!!",
+    CurrentUser.isNotGuest
+        ? "You currently do not have any unread notifications."
+        : "Guests don't receive notifications!!!",
     style: TextStyle(
       fontWeight: FontWeight.w600,
       fontSize: 18.0,
@@ -60,33 +64,33 @@ class _NotificationFeedState extends State<NotificationFeed> {
               title: Text("Delete all notifications?"),
               content: SingleChildScrollView(
                   child: ListBody(children: <Widget>[
-                GestureDetector(
-                  child: Text("Yes"),
-                  onTap: () {
-                    for (NotificationItems notification
+                    GestureDetector(
+                      child: Text("Yes"),
+                      onTap: () {
+                        for (NotificationItems notification
                         in notificationItemList) {
-                      Firestore.instance
-                          .collection('Notification')
-                          .document(CurrentUser.userID)
-                          .collection("NotificationItems")
-                          .document(notification.docID)
-                          .delete();
-                    }
+                          Firestore.instance
+                              .collection('Notification')
+                              .document(CurrentUser.userID)
+                              .collection("NotificationItems")
+                              .document(notification.docID)
+                              .delete();
+                        }
 
-                    Navigator.pop(context);
-                    setState(() {
-                      notificationItemList = new List();
-                    });
-                  },
-                ),
-                Padding(padding: EdgeInsets.all(7)),
-                GestureDetector(
-                  child: Text("No"),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ])));
+                        Navigator.pop(context);
+                        setState(() {
+                          notificationItemList = new List();
+                        });
+                      },
+                    ),
+                    Padding(padding: EdgeInsets.all(7)),
+                    GestureDetector(
+                      child: Text("No"),
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ])));
         });
   }
 
@@ -120,7 +124,7 @@ class _NotificationFeedState extends State<NotificationFeed> {
         centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: CurrentUser.isNotGuest ? getDeleteMenu :  null,
+        onPressed: CurrentUser.isNotGuest ? getDeleteMenu : null,
         tooltip: 'Increment',
         child: Icon(
           Icons.delete_forever,
@@ -128,70 +132,64 @@ class _NotificationFeedState extends State<NotificationFeed> {
         ),
         heroTag: "notificationHero",
       ),
-      floatingActionButtonLocation:
-      FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: globalNavigationBar(3, context, key, false),
       body: Container(
           child: StreamBuilder(
-        stream: GetNotification(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data.documents.length == 0) {
-              return buildNoNotification();
-            } else {
-              if (notificationItemList.length == 0) {
-                for (DocumentSnapshot doc in snapshot.data.documents) {
-                  if (doc['type'] == 'like' ||
-                      doc['type'] == 'follow' ||
-                      doc['type'] == 'responded') {
-                    notificationItemList
-                        .add(NotificationItemsUser.fromDocument(doc));
-                  } else if (doc['type'] == 'advisor' ||
-                      doc['type'] == 'moderator') {
-                    notificationItemList
-                        .add(NotificationItemsGroup.fromDocument(doc));
-                  } else if (doc['type'] == 'advisorHelp') {
-                    notificationItemList
-                        .add(NotificationItemsPost.fromDocument(doc));
-                  } else if (doc['type'] == 'groupAccept' ||
-                      doc['type'] == 'groupDecline')
-                    notificationItemList
-                        .add(NotificationItemsJoin.fromDocument(doc));
+            stream: GetNotification(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                if (snapshot.data.documents.length == 0) {
+                  return buildNoNotification();
+                } else {
+                  if (notificationItemList.length == 0) {
+                    for (DocumentSnapshot doc in snapshot.data.documents) {
+                      if (doc['type'] == 'like' ||
+                          doc['type'] == 'follow' ||
+                          doc['type'] == 'responded') {
+                        notificationItemList
+                            .add(NotificationItemsUser.fromDocument(doc));
+                      } else if (doc['type'] == 'advisor' ||
+                          doc['type'] == 'moderator') {
+                        notificationItemList
+                            .add(NotificationItemsGroup.fromDocument(doc));
+                      } else if (doc['type'] == 'advisorHelp') {
+                        notificationItemList
+                            .add(NotificationItemsPost.fromDocument(doc));
+                      } else if (doc['type'] == 'groupAccept' ||
+                          doc['type'] == 'groupDecline')
+                        notificationItemList
+                            .add(NotificationItemsJoin.fromDocument(doc));
+                    }
+                  }
                 }
+                return ListView.builder(
+                    itemCount: notificationItemList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Slidable(
+                        actionPane: SlidableDrawerActionPane(),
+                        actionExtentRatio: 0.25,
+                        secondaryActions: <Widget>[
+                          IconSlideAction(
+                              caption: 'Delete',
+                              color: Colors.red,
+                              icon: Icons.delete,
+                              onTap: () {
+                                notificationItemList[index].removeNotification();
+                                notificationItemList.removeAt(index);
+                              }),
+                        ],
+                        child: notificationItemList[index],
+                      );
+                    });
               }
-            }
-            return ListView.builder(
-                itemCount: notificationItemList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Dismissible(
-                    key: Key(notificationItemList[index].docID),
-                    background: Container(
-                      alignment: AlignmentDirectional.centerStart,
-                      color: Colors.red,
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
-                        child: Icon(
-                          Icons.delete,
-                          color: Colors.white,
-                          size: 5,
-                        ),
-                      ),
-                    ),
-                    onDismissed: (direction) {
-                      notificationItemList[index].removeNotification();
-                      notificationItemList.removeAt(index);
-                    },
-                    child: notificationItemList[index],
-                  );
-                });
-          }
-          return Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        },
-      )),
+              return Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            },
+          )),
     );
   }
 }
@@ -270,11 +268,11 @@ class NotificationItemsJoin extends StatelessWidget
             onTap: () {
               (wasAccepted)
                   ? Navigator.push(context,
-                      MaterialPageRoute(builder: (context) {
-                      return new GroupProfile.withID(
-                        groupID,
-                      );
-                    }))
+                  MaterialPageRoute(builder: (context) {
+                    return new GroupProfile.withID(
+                      groupID,
+                    );
+                  }))
                   : Container();
             },
             child: RichText(
@@ -300,11 +298,11 @@ class NotificationItemsJoin extends StatelessWidget
             onTap: () {
               (wasAccepted)
                   ? Navigator.push(context,
-                      MaterialPageRoute(builder: (context) {
-                      return new GroupProfile.withID(
-                        groupID,
-                      );
-                    }))
+                  MaterialPageRoute(builder: (context) {
+                    return new GroupProfile.withID(
+                      groupID,
+                    );
+                  }))
                   : Container();
               removeNotification();
             },
@@ -610,10 +608,10 @@ class NotificationItemsGroup extends StatelessWidget
   void configNotificationItem() {
     if (type == 'advisor') {
       NotificationItemText =
-          'You have been invited to be an advisor at $groupName!';
+      'You have been invited to be an advisor at $groupName!';
     } else if (type == 'moderator') {
       NotificationItemText =
-          'You have been invited to be a moderator at $groupName!';
+      'You have been invited to be a moderator at $groupName!';
     } else {
       NotificationItemText = "An error has occured.";
     }
