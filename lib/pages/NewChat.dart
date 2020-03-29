@@ -226,6 +226,7 @@ class NewChatScreenState extends State<NewChatScreen> {
                                 ),
                               );
                             } else {
+                              print(snapshot.data.documents.length);
                               for (int index = 0;
                               index < snapshot.data.documents.length;
                               index++) {
@@ -241,6 +242,8 @@ class NewChatScreenState extends State<NewChatScreen> {
                                     snapshot.data.documents[index]
                                     ['peerId'])
                                     .toList();
+                                if(id.length==0|| peerId.length==0)
+                                  continue;
                                 buildItem(
                                     context,
                                     snapshot.data.documents[index],
