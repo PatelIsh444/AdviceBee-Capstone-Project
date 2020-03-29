@@ -811,7 +811,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
               MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,)),
             );
           }else{
-            if(doc['approved']=="false"){
+            if(doc['approved'] == false){
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,)),
