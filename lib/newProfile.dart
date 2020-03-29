@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:v0/pages/Chat.dart';
 
 import 'QuestionPage.dart';
 import 'User.dart';
@@ -782,7 +783,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
   Widget getChatButton() {
     return Center(
       child: InkResponse(
-        onTap: () {
+        onTap: () async{
           String groupChatId = '';
           String peerIdLocal = userInformation.userID;
           User peerLocal = userInformation;
@@ -793,22 +794,44 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
           } else {
             groupChatId = "$peerIdLocal-$currentUserId";
           }
-          Firestore.instance.collection('chats').document(groupChatId)
-              .setData({
-            'id': currentUserId,
-            'displayName': currentUser.displayName,
-            'profilePicURL': currentUser.profilePicURL,
-            'bio': currentUser.bio,
-            'peerBio': peerLocal.bio,
-            'peerNickname': peerLocal.displayName,
-            'peerPhotoUrl': peerLocal.profilePicURL,
-            'peerId': peerLocal.userID,
-            'approved': false,
-          });
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,)),
-          );
+          DocumentSnapshot doc= await Firestore.instance.collection('chats').document(groupChatId).get();
+          if(doc==null || !doc.exists){
+            Firestore.instance.collection('chats').document(groupChatId)
+                .setData({
+              'id': currentUserId,
+              'displayName': currentUser.displayName,
+              'profilePicURL': currentUser.profilePicURL,
+              'bio': currentUser.bio,
+              'peerBio': peerLocal.bio,
+              'peerNickname': peerLocal.displayName,
+              'peerPhotoUrl': peerLocal.profilePicURL,
+              'peerId': peerLocal.userID,
+              'approved': false,
+            });
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,)),
+            );
+          }else{
+            if(doc['approved'] == false){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,)),
+              );
+            }else{
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Chat(
+                            userId: currentUserId,
+                            chatId: groupChatId,
+                            peerId: userInformation.userID,
+                            peerAvatar: userInformation.profilePicURL,
+                            peerName: userInformation.displayName,
+                          )));
+            }
+          }
         },
         child: Padding(
           padding: EdgeInsets.only(left: 30, right: 30),

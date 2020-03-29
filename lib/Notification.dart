@@ -1,8 +1,9 @@
-import 'GroupPage.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+
 import 'GroupProfile.dart';
 import 'QuestionPage.dart';
 import 'newProfile.dart';
-import './utils/commonFunctions.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
@@ -43,7 +44,9 @@ class _NotificationFeedState extends State<NotificationFeed> {
     ),
   );
   final notificationText = Text(
-    CurrentUser.isNotGuest ? "You currently do not have any unread notifications." : "Guests don't receive notifications!!!",
+    CurrentUser.isNotGuest
+        ? "You currently do not have any unread notifications."
+        : "Guests don't receive notifications!!!",
     style: TextStyle(
       fontWeight: FontWeight.w600,
       fontSize: 18.0,
@@ -120,7 +123,7 @@ class _NotificationFeedState extends State<NotificationFeed> {
         centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: CurrentUser.isNotGuest ? getDeleteMenu :  null,
+        onPressed: CurrentUser.isNotGuest ? getDeleteMenu : null,
         tooltip: 'Increment',
         child: Icon(
           Icons.delete_forever,
@@ -128,8 +131,7 @@ class _NotificationFeedState extends State<NotificationFeed> {
         ),
         heroTag: "notificationHero",
       ),
-      floatingActionButtonLocation:
-      FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: globalNavigationBar(3, context, key, false),
       body: Container(
           child: StreamBuilder(
@@ -163,24 +165,19 @@ class _NotificationFeedState extends State<NotificationFeed> {
             return ListView.builder(
                 itemCount: notificationItemList.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return Dismissible(
-                    key: Key(notificationItemList[index].docID),
-                    background: Container(
-                      alignment: AlignmentDirectional.centerStart,
-                      color: Colors.red,
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
-                        child: Icon(
-                          Icons.delete,
-                          color: Colors.white,
-                          size: 5,
-                        ),
-                      ),
-                    ),
-                    onDismissed: (direction) {
-                      notificationItemList[index].removeNotification();
-                      notificationItemList.removeAt(index);
-                    },
+                  return Slidable(
+                    actionPane: SlidableDrawerActionPane(),
+                    actionExtentRatio: 0.25,
+                    secondaryActions: <Widget>[
+                      IconSlideAction(
+                          caption: 'Delete',
+                          color: Colors.red,
+                          icon: Icons.delete,
+                          onTap: () {
+                            notificationItemList[index].removeNotification();
+                            notificationItemList.removeAt(index);
+                          }),
+                    ],
                     child: notificationItemList[index],
                   );
                 });
