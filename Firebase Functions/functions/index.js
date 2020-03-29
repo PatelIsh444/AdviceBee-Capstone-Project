@@ -285,7 +285,7 @@ exports.setInitialIncrementNumberOnReportDocCreate = functions.firestore
 		await admin.firestore().collection('reports').doc(reportedPostId)
 			.set({ numberOfReports: 0 }, { merge: true })
 			.catch(error => { console.log("Error: " + error) })
-			.finally(() => { return null })
+		return null
 	})
 
 exports.incrementNumberOfReportersPerReport = functions.firestore
@@ -295,7 +295,7 @@ exports.incrementNumberOfReportersPerReport = functions.firestore
 		await admin.firestore().collection('reports').doc(reportedPostId)
 			.update({ numberOfReports: FieldValue.increment(1) })
 			.catch(error => { console.log("Error: " + error) })
-			.finally(() => { return null })
+			return null
 	})
 	  
 exports.decrementNumberOfReportersPerReport = functions.firestore
@@ -305,5 +305,5 @@ exports.decrementNumberOfReportersPerReport = functions.firestore
 		await admin.firestore().collection('reports').doc(reportedPostId)
 			.update({ numberOfReports: FieldValue.increment(-1) })
 			.catch(error => { console.log("Error: " + error) })
-			.finally(() => { return null })
-})
+			return null
+	})
