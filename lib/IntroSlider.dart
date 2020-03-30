@@ -99,14 +99,18 @@ class IntroSliderState extends State<IntroSlider>with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-           home: IntroductionScreen(
+      title: 'AdviceBee',
+      theme: ThemeData(
+        primarySwatch: Colors.teal,
+      ),
+      home: IntroductionScreen(
             pages: pages,
             onDone: () {
              Navigator.push(
                  context,
                  MaterialPageRoute(
                    builder: (context) => Dashboard(),               )
-            );
+              );
             },
             onSkip: () {
               Navigator.push(
