@@ -32,7 +32,9 @@ class ActMainApp extends StatelessWidget {
           }
 
           if(!user.emailVerified){
-            return EmailVerification();
+            if(CurrentUser!=null && CurrentUser.isNotGuest){
+              return EmailVerification();
+            }
           }
 
           //Update a users points when they first open the app.
