@@ -819,17 +819,11 @@ class _PostPageState extends State<PostPage> {
                     ),
                     floatingActionButton: FloatingActionButton(
                       heroTag: "qpHero2",
-                      backgroundColor:
-                          (userResponded && !postInfo.multipleResponses) ||
-                                  CurrentUser.userID == questionObj.createdBy
-                              ? Colors.grey
-                              : Colors.teal,
+                      backgroundColor: Colors.teal,
                       child: Icon(Icons.comment),
                       onPressed: () {
                         if (CurrentUser.isNotGuest) {
-                          if (CurrentUser.userID == questionObj.createdBy) {
-                            userCantPostOnTheirQuestionMessage(context);
-                          } else if (!userResponded ||
+                           if (!userResponded ||
                               postInfo.multipleResponses) {
                             setState(() {
                               Navigator.push(context,

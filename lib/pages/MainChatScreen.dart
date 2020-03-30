@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:v0/pages/searchUser.dart';
 import '../utils/commonFunctions.dart';
 import '../Dashboard.dart';
 import '../MoreMenu.dart';
@@ -173,6 +174,14 @@ class MainScreenState extends State<MainScreen> {
           },
           child: Icon(Icons.arrow_back_ios),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              showSearch(context: context, delegate: searchUser());
+            },
+          ),
+        ],
       ),
       body: Stack(
         children: <Widget>[
