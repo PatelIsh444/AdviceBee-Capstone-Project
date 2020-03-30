@@ -1,5 +1,4 @@
 import 'package:intl/intl.dart';
-import 'package:v0/pages/Chat.dart';
 
 import 'QuestionPage.dart';
 import 'User.dart';
@@ -18,6 +17,7 @@ import 'Profile.dart' as cProfile;
 import 'OtherUserPosts.dart';
 import 'OtherUserFollowerPage.dart';
 import './utils/commonFunctions.dart';
+import 'pages/Chat.dart';
 import 'pages/FullPhoto.dart';
 import 'pages/NewChat.dart';
 
@@ -478,8 +478,9 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                 ? getFollowButton()
                 : Container(),
             SizedBox(height: 10.0),
-            CurrentUser.isNotGuest && CurrentUser.userID != widget.userID &&
-          !userInformation.blocked.contains(CurrentUser.userID)
+            CurrentUser.isNotGuest &&
+                    CurrentUser.userID != widget.userID &&
+                    !userInformation.blocked.contains(CurrentUser.userID)
                 ? getChatButton()
                 : Container(),
             SizedBox(height: 30.0),
@@ -637,8 +638,9 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                       radius: 10.0,
                       backgroundImage: AssetImage('assets/onlineGreenDot.jpg'))
                   : CircleAvatar(
-                backgroundColor: Colors.grey,
-                radius: 10.0,),
+                      backgroundColor: Colors.grey,
+                      radius: 10.0,
+                    ),
             ],
           ),
         ),
@@ -783,7 +785,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
   Widget getChatButton() {
     return Center(
       child: InkResponse(
-        onTap: () async{
+        onTap: () async {
           String groupChatId = '';
           String peerIdLocal = userInformation.userID;
           User peerLocal = userInformation;
@@ -794,9 +796,14 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
           } else {
             groupChatId = "$peerIdLocal-$currentUserId";
           }
-          DocumentSnapshot doc= await Firestore.instance.collection('chats').document(groupChatId).get();
-          if(doc==null || !doc.exists){
-            Firestore.instance.collection('chats').document(groupChatId)
+          DocumentSnapshot doc = await Firestore.instance
+              .collection('chats')
+              .document(groupChatId)
+              .get();
+          if (doc == null || !doc.exists) {
+            Firestore.instance
+                .collection('chats')
+                .document(groupChatId)
                 .setData({
               'id': currentUserId,
               'displayName': currentUser.displayName,
@@ -810,20 +817,25 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
             });
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,)),
+              MaterialPageRoute(
+                  builder: (BuildContext context) => NewChatScreen(
+                        currentUserId: CurrentUser.userID,
+                      )),
             );
-          }else{
-            if(doc['approved'] == false){
+          } else {
+            if (doc['approved'] == false) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,)),
+                MaterialPageRoute(
+                    builder: (BuildContext context) => NewChatScreen(
+                          currentUserId: CurrentUser.userID,
+                        )),
               );
-            }else{
+            } else {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          Chat(
+                      builder: (context) => Chat(
                             userId: currentUserId,
                             chatId: groupChatId,
                             peerId: userInformation.userID,
@@ -860,6 +872,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
       ),
     );
   }
+
   Widget getFollowButton() {
     if (isFollowed) {
       buttonText = "Unfollow";

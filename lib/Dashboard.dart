@@ -510,12 +510,14 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
           CurrentUser = UserClass.User.withInfo(isNotGuest: false);
         }
       }
+
       ///this is for users who don't have the teh 'blocked' field on database
       ///all the users created before version 3.5 don't have it
       ///so we check and create the field on the database
       if(CurrentUser.blocked.isEmpty){
         Firestore.instance.collection('users').document(CurrentUser.userID).updateData({'blocked':new List()});
       }
+
       _userCreated = true;
       getTopicsFuture = getTopics();
     }
