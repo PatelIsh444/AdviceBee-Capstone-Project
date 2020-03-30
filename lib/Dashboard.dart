@@ -961,10 +961,6 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
             minWidth: MediaQuery.of(context).size.width / 5,
             onPressed: () {
               onShow(key, context);
-              if (CurrentUser.isNotGuest) {
-              } else {
-                guestUserSignInMessage(context);
-              }
             },
             child: Icon(
               Icons.menu,
