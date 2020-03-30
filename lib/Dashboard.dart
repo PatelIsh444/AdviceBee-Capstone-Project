@@ -75,13 +75,6 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
   List<String> selectedTopics = new List();
   List<String> allTopicsList = new List();
   List<String> allTopicsName = new List();
-  List<SortValues> choices = <SortValues>[
-    SortValues("Sort Posts By:", false),
-    SortValues("Recently Added", true),
-    SortValues("Most Likes", false),
-    SortValues("Most Viewed", false),
-    SortValues("Most Responded", false),
-  ];
   Future<List<String>> getTopicsFuture;
   bool noTopicChange = true;
 

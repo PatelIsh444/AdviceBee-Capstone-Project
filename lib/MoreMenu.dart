@@ -324,6 +324,14 @@ Widget globalNavigationBar(
   );
 }
 
+List<SortValues> choices = <SortValues>[
+  SortValues("Sort Posts By:", false),
+  SortValues("Recently Added", true),
+  SortValues("Most Likes", false),
+  SortValues("Most Viewed", false),
+  SortValues("Most Responded", false),
+];
+
 Widget globalFloatingActionButton(BuildContext context) {
   return FloatingActionButton(
     child: CircleAvatar(
