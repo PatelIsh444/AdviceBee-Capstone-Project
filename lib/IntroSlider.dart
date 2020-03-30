@@ -103,14 +103,14 @@ class IntroSliderState extends State<IntroSlider>with WidgetsBindingObserver {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-           home: IntroductionScreen(
+      home: IntroductionScreen(
             pages: pages,
             onDone: () {
              Navigator.push(
                  context,
                  MaterialPageRoute(
                    builder: (context) => Dashboard(),               )
-            );
+              );
             },
             onSkip: () {
               Navigator.push(

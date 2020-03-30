@@ -4,6 +4,7 @@
 
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
+
 admin.initializeApp()
 
 /*
@@ -277,3 +278,39 @@ exports.sendNewChatMessageNotification = functions.firestore
 	
     return null
   })
+
+exports.incrementNumberOfReportersPerReport = functions.firestore
+  	.document('reports/{reportedPostId}/ReportedUsers/{userIdWhoReportedPost}')
+  	.onCreate(async (snap, context) => {
+		const reportedPostId = context.params.reportedPostId
+		const reportRef = admin.firestore().collection('reports').doc(reportedPostId)
+		const reportedUsersRef = admin.firestore().collection('reports').doc(reportedPostId).collection('ReportedUsers')
+
+		admin.firestore().runTransaction(async transaction => {
+			const reportedUsersRefQuery = await transaction.get(reportedUsersRef);
+			const numberOfReports = reportedUsersRefQuery.size;
+			return transaction.update(reportRef, {
+				numberOfReports: numberOfReports
+			});
+		})
+
+		return null;
+	})
+	  
+exports.decrementNumberOfReportersPerReport = functions.firestore
+  	.document('reports/{reportedPostId}/ReportedUsers/{userIdWhoReportedPost}')
+  	.onDelete(async (snap, context) => {
+		const reportedPostId = context.params.reportedPostId
+		const reportRef = admin.firestore().collection('reports').doc(reportedPostId)
+		const reportedUsersRef = admin.firestore().collection('reports').doc(reportedPostId).collection('ReportedUsers')
+
+		admin.firestore().runTransaction(async transaction => {
+			const reportedUsersRefQuery = await transaction.get(reportedUsersRef);
+			const numberOfReports = reportedUsersRefQuery.size;
+			return transaction.update(reportRef, {
+				numberOfReports: numberOfReports
+			});
+		})
+
+		return null;
+	})

@@ -1,14 +1,9 @@
 import 'dart:async';
-import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-
-import '../SearchBar.dart';
 import '../utils/commonFunctions.dart';
-
 import '../Dashboard.dart';
 import '../MoreMenu.dart';
 import '../QuestionPage.dart';
@@ -22,14 +17,10 @@ import './chat.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
 import 'searchUser.dart';
-
 class NewChatScreen extends StatefulWidget {
   final String currentUserId;
-
   NewChatScreen({Key key, @required this.currentUserId}) : super(key: key);
-
   @override
   State createState() => NewChatScreenState(currentUserId: currentUserId);
 }
@@ -330,7 +321,7 @@ class NewChatScreenState extends State<NewChatScreen> {
       if (document['approved'] == false) {
         waitingToSet.add(Slidable(
             actionPane: SlidableDrawerActionPane(),
-            actionExtentRatio: 0.25,
+            actionExtentRatio: 0.15,
             secondaryActions: <Widget>[
               IconSlideAction(
                   caption: 'Cancel',
@@ -454,7 +445,6 @@ class NewChatScreenState extends State<NewChatScreen> {
 
 class Choice {
   const Choice({this.title, this.icon});
-
   final String title;
   final IconData icon;
 }
