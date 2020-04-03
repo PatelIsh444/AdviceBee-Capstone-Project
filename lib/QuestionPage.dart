@@ -2093,7 +2093,6 @@ class _PostQuestionState extends State<postQuestion> {
 
   //Uploads the question the database for groups only
   Future<void> uploadQuestionToDatabase(bool needAdvisors) async {
-    bool noPoints = false;
     DocumentReference newPost = databaseInstance
         .document(currentGroupID)
         .collection("groupQuestions")
@@ -2119,18 +2118,12 @@ class _PostQuestionState extends State<postQuestion> {
         .document(userInfo.userID)
         .get()
         .then((DocumentSnapshot doc) {
-      int earnedPoints = doc["earnedPoints"];
-      int dailyPoints = doc["dailyPoints"];
-
-      if (dailyPoints >= 10) {
+      int dailyQuestions = doc["dailyQuestions"];
+      //daily question here question
+      if (dailyQuestions > 0) {
         currentUser.updateData({
           'myPosts': FieldValue.arrayUnion([newPost]),
-          'dailyPoints': FieldValue.increment(-10),
-        });
-      } else if (earnedPoints >= 10) {
-        currentUser.updateData({
-          'myPosts': FieldValue.arrayUnion([newPost]),
-          'earnedPoints': FieldValue.increment(-10),
+          'dailyQuestions': FieldValue.increment(-1),
         });
       } else {
         //Set flag for database upload
@@ -2145,10 +2138,6 @@ class _PostQuestionState extends State<postQuestion> {
         )..show(context);
       }
     });
-
-    if (noPoints) {
-      return null;
-    }
 
     //If advisors were requested, send them a notification here
     if (needAdvisors == true) {

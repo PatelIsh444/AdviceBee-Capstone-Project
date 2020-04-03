@@ -17,7 +17,6 @@ class User {
   List<dynamic> myTopics;
   List<dynamic> myResponses;
   List<dynamic>blocked;
-  int dailyPoints;
   int earnedPoints;
   bool isNotGuest=false;
   var lastAccess;
@@ -38,7 +37,6 @@ class User {
     this.likedPosts,
     this.myResponses,
     this.bio,
-    this.dailyPoints,
     this.earnedPoints,
     this.isNotGuest,
     this.myTopics,
@@ -67,7 +65,6 @@ class User {
       this.likedPosts = doc["likedPosts"];
       this.myResponses = doc["myResponses"];
       this.bio = doc["bio"];
-      this.dailyPoints = doc["dailyPoints"];
       this.earnedPoints = doc["earnedPoints"];
       this.isNotGuest = true;
     });
@@ -88,7 +85,6 @@ class User {
       likedPosts: doc["likedPosts"],
       myResponses: doc["myResponses"],
       bio: doc["bio"],
-      dailyPoints: doc["dailyPoints"],
       earnedPoints: doc["earnedPoints"],
       myTopics: doc["myTopics"],
       lastAccess: doc['last access'],

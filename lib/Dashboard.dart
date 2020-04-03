@@ -475,13 +475,13 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
             'following': new List(),
             'likedPosts': new List(),
             'bio': "An interesting description",
-            'dailyPoints': 100,
             'earnedPoints': 0,
             'lastPosted': Timestamp.now(),
-            'lastPointReset': Timestamp.now(),
             'dateCreated': Timestamp.now(),
             'last access': 'online',
             'blocked': new List(),
+            'dailyQuestions':3,
+            'rank': 'Worker Bee',
           });
 
           if (selectedTopics.isEmpty) {

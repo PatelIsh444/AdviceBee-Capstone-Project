@@ -55,7 +55,6 @@ exports.sendNotificationPost = functions.firestore
 					.then(doc => {	
 						//set message for user
 						const likerName= doc.data().displayName;
-						console.log(doc.data().displayName+" liked "+posterName+" post")
 						//create payload for new notification
 						const payload = {
 							notification: {
@@ -111,7 +110,6 @@ exports.sendNotificationGroupJoinRequest = functions.firestore
 		.then(doc => {	
 			//set message for user
 			const userRequestingName= doc.data().displayName;
-			console.log(userRequestingName+" requested to join the group " + groupName)
 			//create payload for new notification
 			const payload = {
 				notification: {
@@ -162,7 +160,6 @@ exports.sendNotificationGroupJoinAccepted = functions.firestore
 			//if it was private send notification
 			if(doc.data().privateGroup===true){
 				const groupName= doc.data().groupName
-				console.log(displayName+" joined the private group "+groupName )
 				const payload = {
 					notification: {
 						title: `AdviceBee`,
@@ -186,11 +183,9 @@ exports.sendNotificationGroupJoinAccepted = functions.firestore
 		})
 	}else if(newFollowers>oldFollowers){
 		const newFollower = newFollowers[newFollowers.length-1]
-		console.log(displayName+" has a new follower")
 		admin.firestore().collection('users').doc(newFollower).get()
 		.then(doc => {
 			const newFollowerName = doc.data().displayName
-			console.log(newFollowerName+" started following "+ displayName)
 			const payload = {
 				notification: {
 					title: `AdviceBee`,
@@ -201,7 +196,6 @@ exports.sendNotificationGroupJoinAccepted = functions.firestore
 			}
 			admin.messaging().sendToDevice(pushToken, payload)
 			.then(response => {
-				console.log('Successfully sent message:', response)
 				return null;
 			}).catch(error => {
 				console.log('Error sending message:', error)
@@ -234,7 +228,6 @@ function notify(payload,userId){
 		.messaging()
         .sendToDevice(doc.data().pushToken, payload)
 		.then(response => {
-			console.log('Successfully sent message:', response)
 			return null;
         })
         .catch(error => {
@@ -260,8 +253,6 @@ exports.sendNewChatMessageNotification = functions.firestore
 	admin.firestore().collection('users').doc(senderId).get()
 	.then(document => {
 		const senderName= document.data().displayName;
-		console.log(senderName)
-		//console.log(document)
 		const payload = {
 			notification: {
 				title: `${senderName}`,
@@ -314,3 +305,26 @@ exports.decrementNumberOfReportersPerReport = functions.firestore
 
 		return null;
 	})
+	
+exports.resetDailyPoints  = functions.pubsub.schedule('0 7 * * *')
+	.timeZone('America/New_York') 
+	.onRun(async (context) => {
+
+		admin.firestore().collection('configuration').doc('config').get().then((doc)=>{	
+			const dict = doc.data().dailyQuestionsLimit
+			admin.firestore().collection('users').get().then(documents => {
+				documents.forEach((doc)=>{
+					const points= dict[doc.data().rank]
+					admin.firestore().runTransaction(async transaction => {
+						return transaction.update(doc.ref, {dailyQuestions : points });
+					});
+				});
+				return null;
+			}).catch(error => {
+				console.log('Error updating points:', error)
+			});
+			return null;
+		}).catch(error =>{console.log(error)});
+	console.log('This will be run every day at 7:00 AM Eastern!');
+	return null;
+});

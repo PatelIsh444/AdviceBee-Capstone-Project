@@ -135,14 +135,8 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
         .get()
         .then((DocumentSnapshot doc) {
       int earnedPoints = doc["earnedPoints"];
-      int dailyPoints = doc["dailyPoints"];
 
-      if (dailyPoints >= 10) {
-        currentUser.updateData({
-          'myPosts': FieldValue.arrayUnion([newPost]),
-          'dailyPoints': FieldValue.increment(-10),
-        });
-      } else if (earnedPoints >= 10) {
+      if (earnedPoints >= 10) {
         currentUser.updateData({
           'myPosts': FieldValue.arrayUnion([newPost]),
           'earnedPoints': FieldValue.increment(-10),
@@ -243,8 +237,7 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
             doc["profilePicURL"] == null ? null : doc["profilePicURL"],
             doc["displayName"] == null ? null : doc["displayName"],
             doc["myTopics"] == null ? null : doc["myTopics"],
-            (doc["dailyPoints"] == null ? 0 : doc["dailyPoints"]) +
-                (doc["earnedPoints"] == null ? 0 : doc["earnedPoints"]),
+            doc["earnedPoints"] == null ? 0 : doc["earnedPoints"],
             doc["rank"] == null ? null : doc["rank"],
             false,
           ));

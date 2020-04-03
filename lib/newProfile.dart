@@ -118,7 +118,6 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
       userInfo.following = doc["following"];
       userInfo.likedPosts = doc["likedPosts"];
       userInfo.bio = doc["bio"];
-      userInfo.dailyPoints = doc["dailyPoints"];
       userInfo.earnedPoints = doc["earnedPoints"];
       if (doc['last access'] != null) {
         if (doc['last access'].toString() == "online") {
@@ -141,7 +140,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
               timeStampSplit.year.toString();
           print(dateJoined);
         }
-        scores = (userInfo.dailyPoints + userInfo.earnedPoints).toString();
+        scores = (userInfo.earnedPoints).toString();
         tempUserID = userInfo.userID;
         if (userInfo.followers != null) {
           numberOfFollowers = userInfo.followers.length;
@@ -691,7 +690,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     return Container(
       padding: EdgeInsets.only(left: 20.0, right: 20.0),
       child: Text(
-        "Total Points ${userInformation.dailyPoints + userInformation.earnedPoints}",
+        "Total Points ${userInformation.earnedPoints}",
         style: TextStyle(
           fontSize: 18.0,
           fontWeight: FontWeight.bold,
