@@ -481,7 +481,7 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
             'last access': 'online',
             'blocked': new List(),
             'dailyQuestions':3,
-            'rank': 'Worker Bee',
+            'rank': 'Larvae',
           });
 
           if (selectedTopics.isEmpty) {
