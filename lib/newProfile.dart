@@ -471,7 +471,6 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
             buildStatContainer(),
             buildDate(context),
             aboutUser(deviceWidth),
-            userOnlineStatus(),
             buildSeparator(deviceWidth),
             SizedBox(height: 10.0),
             CurrentUser.isNotGuest && CurrentUser.userID != widget.userID
@@ -605,47 +604,31 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     );
 
     return Center(
-      child: AutoSizeText(
-        userInformation.displayName,
-        style: nameTextStyle,
-        maxLines: 1,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          userOnlineStatus(),
+          AutoSizeText(
+            userInformation.displayName,
+            style: nameTextStyle,
+            maxLines: 1,
+          ),
+        ],
       ),
     );
   }
 
   Widget userOnlineStatus() {
-    TextStyle bioTextStyle = TextStyle(
-      fontFamily: 'Spectral',
-      fontWeight: FontWeight.bold, //try changing weight to w500 if not thin
-      fontSize: 16.0,
-    );
-    return Center(
-      child: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        padding: EdgeInsets.all(8.0),
-        child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                lastAccess,
-                textAlign: TextAlign.center,
-                style: bioTextStyle,
-              ),
-              lastAccess == "Online"
-                  ? CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      radius: 10.0,
-                      backgroundImage: AssetImage('assets/onlineGreenDot.jpg'))
-                  : CircleAvatar(
-                      backgroundColor: Colors.grey,
-                      radius: 10.0,
-                    ),
-            ],
-          ),
-        ),
-      ),
-    );
+    if (lastAccess == "Online")
+      return CircleAvatar(
+          backgroundColor: Colors.transparent,
+          radius: 10.0,
+          backgroundImage: AssetImage('assets/onlineGreenDot.jpg'));
+    else
+      return CircleAvatar(
+        backgroundColor: Colors.grey,
+        radius: 10.0,
+      );
   }
 
   Widget userImage(double deviceWidth) {
