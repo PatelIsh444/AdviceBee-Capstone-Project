@@ -18,6 +18,7 @@ class User {
   List<dynamic> myResponses;
   List<dynamic>blocked;
   int earnedPoints;
+  int dailyQuestions;
   bool isNotGuest=false;
   var lastAccess;
 
@@ -42,6 +43,7 @@ class User {
     this.myTopics,
     this.blocked,
     this.lastAccess,
+    this.dailyQuestions,
   });
 
   User.searchInfo(
@@ -67,6 +69,7 @@ class User {
       this.bio = doc["bio"];
       this.earnedPoints = doc["earnedPoints"];
       this.isNotGuest = true;
+      this.dailyQuestions=doc["dailyQuestions"];
     });
   }
 
@@ -89,6 +92,7 @@ class User {
       myTopics: doc["myTopics"],
       lastAccess: doc['last access'],
       isNotGuest: true,
+      dailyQuestions: doc["dailyQuestions"],
     );
   }
 

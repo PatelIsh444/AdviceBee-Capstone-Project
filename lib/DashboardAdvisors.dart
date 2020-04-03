@@ -8,6 +8,8 @@ import 'UserInfor.dart';
 import 'QuestionPage.dart';
 import 'package:flushbar/flushbar.dart';
 
+import 'pages/MoreQuestions.dart';
+
 //This class handles uploading dashboard questions.
 class InviteDashboardAdvisors extends StatefulWidget {
   final selectedTopic;
@@ -20,23 +22,30 @@ class InviteDashboardAdvisors extends StatefulWidget {
   final image;
   final multipleResponses;
 
-  InviteDashboardAdvisors(this.selectedTopic,
-      this.postAnonymously, this.questionType,
-      this.multiChoiceList, this.questionText,
-      this.descriptionText, this.responseControllers,
-      this.image, this.multipleResponses);
+  InviteDashboardAdvisors(
+      this.selectedTopic,
+      this.postAnonymously,
+      this.questionType,
+      this.multiChoiceList,
+      this.questionText,
+      this.descriptionText,
+      this.responseControllers,
+      this.image,
+      this.multipleResponses);
 
   @override
-  _InviteDashboardAdvisorsState createState() => _InviteDashboardAdvisorsState();
+  _InviteDashboardAdvisorsState createState() =>
+      _InviteDashboardAdvisorsState();
 }
 
 class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
   List<LeaderboardInformation> topUsers = new List();
   String imageURL;
-  var _firstPress = true ;
+  var _firstPress = true;
 
   GlobalKey key = GlobalKey();
   var userRanks = new List();
+
   @override
   void initState() {
     super.initState();
@@ -56,8 +65,12 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
           .setData({
         "type": "advisorHelp",
         "postID": postID,
-        "profileImg": widget.postAnonymously == true? "https://firebasestorage.googleapis.com/v0/b/advicebee-9f277.appspot.com/o/noPictureThumbnail.png?alt=media&token=b7189670-8770-4f85-a51d-936a39b597a1": CurrentUser.profilePicURL,
-        "requestor": widget.postAnonymously == true? "Anonymous" : CurrentUser.displayName,
+        "profileImg": widget.postAnonymously == true
+            ? "https://firebasestorage.googleapis.com/v0/b/advicebee-9f277.appspot.com/o/noPictureThumbnail.png?alt=media&token=b7189670-8770-4f85-a51d-936a39b597a1"
+            : CurrentUser.profilePicURL,
+        "requestor": widget.postAnonymously == true
+            ? "Anonymous"
+            : CurrentUser.displayName,
         "timestamp": Timestamp.now(),
         "groups_or_topics": "topics",
         "groupOrTopicID": widget.selectedTopic,
@@ -67,32 +80,30 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
   }
 
   //Checks if the image is null or if it exists.
-  bool ImageNullorExist()
-  {
-    if(widget.image == null)
-    {}
-    else{
-      if(widget.image.existsSync())
-      {
+  bool ImageNullorExist() {
+    if (widget.image == null) {
+    } else {
+      if (widget.image.existsSync()) {
         return true;
       }
     }
     return false;
   }
 
-  Future<void> uploadImageToDatabase(String documentID) async{
-    if(ImageNullorExist())
-    {
-      final StorageReference pictureNameInStorage =
-      FirebaseStorage().ref().child("postPictures/"+documentID+"postPicture");
-      final StorageUploadTask uploadTask = pictureNameInStorage.putFile(widget.image);
+  Future<void> uploadImageToDatabase(String documentID) async {
+    if (ImageNullorExist()) {
+      final StorageReference pictureNameInStorage = FirebaseStorage()
+          .ref()
+          .child("postPictures/" + documentID + "postPicture");
+      final StorageUploadTask uploadTask =
+          pictureNameInStorage.putFile(widget.image);
       await uploadTask.onComplete;
 
       imageURL = await pictureNameInStorage.getDownloadURL() as String;
     }
   }
 
-  Future<void> uploadDashboardQuestionToDatabase(
+  Future<bool> uploadDashboardQuestionToDatabase(
       List<String> invitedAdvisors) async {
     bool noPoints = false;
     DocumentReference newPost = Firestore.instance
@@ -117,51 +128,41 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
     }
 
     //If posting anonymously, label postDisplayName as "anonymous"
-    if(widget.postAnonymously)
-    {
+    if (widget.postAnonymously) {
       postDisplayName = "Anonymous";
-    }
-    else{
+    } else {
       //Otherwise, postDisplayName is the user's display name
       postDisplayName = CurrentUser.displayName;
     }
 
     DocumentReference currentUser =
-    Firestore.instance.collection('users').document(CurrentUser.userID);
+        Firestore.instance.collection('users').document(CurrentUser.userID);
 
     await Firestore.instance
         .collection('users')
         .document(CurrentUser.userID)
         .get()
         .then((DocumentSnapshot doc) {
-      int earnedPoints = doc["earnedPoints"];
+      int dailyQuestions = doc["dailyQuestions"];
 
-      if (earnedPoints >= 10) {
+      if (dailyQuestions > 0) {
         currentUser.updateData({
           'myPosts': FieldValue.arrayUnion([newPost]),
-          'earnedPoints': FieldValue.increment(-10),
+          'dailyQuestions': FieldValue.increment(-1),
         });
       } else {
-        Flushbar(
-          title: "No Points!",
-          message:
-          "Sorry you're out of points, please answer more questions or come"
-              "back tomorrow.",
-          duration: Duration(seconds: 5),
-          backgroundColor: Colors.teal,
-        )..show(context);
         noPoints = true;
       }
     });
 
     if (noPoints) {
-      return null;
+      return false;
     }
 
     switch (widget.questionType) {
       case questionTypes.SHORT_ANSWER:
         {
-          return await newPost.setData({
+          await newPost.setData({
             'anonymous': widget.postAnonymously,
             'question': widget.questionText,
             'description': widget.descriptionText,
@@ -178,6 +179,7 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
             'multipleResponses': widget.multipleResponses,
           });
         }
+        break;
       case questionTypes.MULTIPLE_CHOICE:
         {
           List<String> choices = [];
@@ -186,7 +188,7 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
             choices.add(widget.responseControllers[i].text);
           }
 
-          return await newPost.setData({
+           await newPost.setData({
             'anonymous': widget.postAnonymously,
             'question': widget.questionText,
             'description': widget.descriptionText,
@@ -204,9 +206,10 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
             'multipleResponses': widget.multipleResponses,
           });
         }
+        break;
       case questionTypes.NUMBER_VALUE:
         {
-          return await newPost.setData({
+          await newPost.setData({
             'anonymous': widget.postAnonymously,
             'question': widget.questionText,
             'description': widget.descriptionText,
@@ -223,7 +226,9 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
             'multipleResponses': widget.multipleResponses,
           });
         }
+        break;
     }
+    return true;
   }
 
   Future<void> getTopUsers() async {
@@ -232,18 +237,18 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
     await Firestore.instance.collection('users').getDocuments().then(
           (QuerySnapshot data) => data.documents.forEach(
             (doc) {
-          tempTopUsers.add(new LeaderboardInformation(
-            doc.documentID == null ? null : doc.documentID,
-            doc["profilePicURL"] == null ? null : doc["profilePicURL"],
-            doc["displayName"] == null ? null : doc["displayName"],
-            doc["myTopics"] == null ? null : doc["myTopics"],
-            doc["earnedPoints"] == null ? 0 : doc["earnedPoints"],
-            doc["rank"] == null ? null : doc["rank"],
-            false,
-          ));
-        },
-      ),
-    );
+              tempTopUsers.add(new LeaderboardInformation(
+                doc.documentID == null ? null : doc.documentID,
+                doc["profilePicURL"] == null ? null : doc["profilePicURL"],
+                doc["displayName"] == null ? null : doc["displayName"],
+                doc["myTopics"] == null ? null : doc["myTopics"],
+                doc["earnedPoints"] == null ? 0 : doc["earnedPoints"],
+                doc["rank"] == null ? null : doc["rank"],
+                false,
+              ));
+            },
+          ),
+        );
 
     setState(() {
       if (tempTopUsers.length > 0) {
@@ -263,7 +268,7 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
       int maxPoints = 0;
 
       for (int j = 0; j < userList.length; j++) {
-        if (userList[j].id == CurrentUser.userID){
+        if (userList[j].id == CurrentUser.userID) {
           userList.removeAt(j);
           j--;
           continue;
@@ -274,12 +279,13 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
       }
 
       String tempRank;
-      if (userList[maxPoints].totalPoints<500)
-        tempRank="Larvae";
-      else if (userList[maxPoints].totalPoints>=500 && userList[maxPoints].totalPoints<1000)
-        tempRank="Worker Bee";
+      if (userList[maxPoints].totalPoints < 500)
+        tempRank = "Larvae";
+      else if (userList[maxPoints].totalPoints >= 500 &&
+          userList[maxPoints].totalPoints < 1000)
+        tempRank = "Worker Bee";
       else
-        tempRank="Queen Bee";
+        tempRank = "Queen Bee";
 
       userRanks.add(tempRank);
       topFiveUsers.add(new LeaderboardInformation(
@@ -298,12 +304,17 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
   }
 
   _awaitUpload(BuildContext context, List<String> invitedAdvisors) async {
-    await uploadDashboardQuestionToDatabase(invitedAdvisors);
-
-    Navigator.pop(context);
-    Navigator.pop(context);
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (BuildContext context) => Dashboard.selectedTopic(null)));
+    bool res= await uploadDashboardQuestionToDatabase(invitedAdvisors);
+    if(res) {
+      Navigator.pop(context);
+      Navigator.pop(context);
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => Dashboard.selectedTopic(null)));
+    }else{
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => BuyMoreQuestions()),
+      );
+    }
   }
 
   Widget buildTopUserCards(BuildContext context) {
@@ -321,29 +332,34 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
                 child: new InkWell(
                   onTap: () {
                     setState(() {
-                      userObj.isSelected=!userObj.isSelected;
+                      userObj.isSelected = !userObj.isSelected;
                     });
                   },
-                  child:
-                  Stack(
+                  child: Stack(
                     children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.only(left: screenSize.width-50, top:10),
+                        padding: EdgeInsets.only(
+                            left: screenSize.width - 50, top: 10),
                         child: Container(
-                        height: 50,
-                        width:  50,
-                        child:Checkbox(
-                        value: userObj.isSelected == null ? false : userObj.isSelected,
-                        onChanged: (bool value) {
-                          setState(() {
-                            userObj.isSelected=!userObj.isSelected;
-                          });
-                        },
-                      ),),),
+                          height: 50,
+                          width: 50,
+                          child: Checkbox(
+                            value: userObj.isSelected == null
+                                ? false
+                                : userObj.isSelected,
+                            onChanged: (bool value) {
+                              setState(() {
+                                userObj.isSelected = !userObj.isSelected;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
                       Padding(
                           padding: EdgeInsets.only(left: 5, top: 5, bottom: 5),
                           child: CircleAvatar(
-                            backgroundImage: CachedNetworkImageProvider(userObj.photoUrl),
+                            backgroundImage:
+                                CachedNetworkImageProvider(userObj.photoUrl),
                             minRadius: 30,
                             maxRadius: 30,
                           )),
@@ -351,9 +367,12 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
                         padding: EdgeInsets.only(left: 73, top: 5, bottom: 5),
                         child: Stack(
                           children: <Widget>[
-                            Text(userObj.displayName + "\n",
-                              style: TextStyle(fontWeight: FontWeight.bold),),
-                            Text("\n${userObj.totalPoints} Total Points (${userRanks[index]})"),
+                            Text(
+                              userObj.displayName + "\n",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                                "\n${userObj.totalPoints} Total Points (${userRanks[index]})"),
                             pickTopThreeTopics(userObj),
                           ],
                         ),
@@ -368,16 +387,15 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
   }
 
   //Function that goes through topic list of user and picks up to their top three topics
-  Text pickTopThreeTopics(LeaderboardInformation user){
+  Text pickTopThreeTopics(LeaderboardInformation user) {
     String topics = " No Preference";
 
-    if (user.topics != null && user.topics.length>0){
-      int i =0;
-      topics=" ";
-      while (i<3 && i<user.topics.length){
-        topics+=user.topics[i];
-        if (i != 2 && i!= user.topics.length-1)
-          topics+= ", ";
+    if (user.topics != null && user.topics.length > 0) {
+      int i = 0;
+      topics = " ";
+      while (i < 3 && i < user.topics.length) {
+        topics += user.topics[i];
+        if (i != 2 && i != user.topics.length - 1) topics += ", ";
 
         i++;
       }
@@ -411,14 +429,14 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
       bottomNavigationBar: globalNavigationBar(3, context, key, false),
       body: topUsers == null
           ? Center(
-        child: CircularProgressIndicator(),
-      )
+              child: CircularProgressIndicator(),
+            )
           : Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          buildTopUserCards(context),
-        ],
-      ),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                buildTopUserCards(context),
+              ],
+            ),
     );
   }
 }
