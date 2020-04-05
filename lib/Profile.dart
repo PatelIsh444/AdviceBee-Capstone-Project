@@ -213,15 +213,8 @@ class ProfilePageState extends State<ProfilePage> {
           dynamic postCount = ds.data["myPosts"];
           posts = postCount.length.toString();
         }
-        if (ds.data["earnedPoints"] != null || ds.data["dailyPoints"] != null) {
-          if (ds.data["earnedPoints"] == null) {
-            scores = ds.data["dailyPoints"].toString();
-          } else if (ds.data["dailyPoints"] == null) {
+        if (ds.data["earnedPoints"] != null ){
             scores = ds.data["earnedPoints"].toString();
-          } else {
-            scores =
-                (ds.data["earnedPoints"] + ds.data["dailyPoints"]).toString();
-          }
         }
         if (ds.data["profilePicURL"] != null) {
           imageLink = ds.data["profilePicURL"];

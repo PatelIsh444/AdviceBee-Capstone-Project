@@ -28,7 +28,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
   Future<void> getTopUsers() async {
     List<LeaderboardInformation> tempTopUsers = new List();
-
     await Firestore.instance.collection('users').getDocuments().then(
           (QuerySnapshot data) => data.documents.forEach(
             (doc) {
@@ -37,8 +36,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                 doc["profilePicURL"] == null ? null : doc["profilePicURL"],
                 doc["displayName"] == null ? null : doc["displayName"],
                 doc["myTopics"] == null ? null : doc["myTopics"],
-                (doc["dailyPoints"] == null ? 0 : doc["dailyPoints"]) +
-                    (doc["earnedPoints"] == null ? 0 : doc["earnedPoints"]),
+                doc["earnedPoints"] == null ? 0 : doc["earnedPoints"],
                 doc["rank"] == null ? null : doc["rank"],
                 false,
               ));

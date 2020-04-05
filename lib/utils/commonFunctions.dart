@@ -93,32 +93,6 @@ Future<bool> isAnonymousUser() async{
   return user.isAnonymous;
 }
 
-//Function will check a user's daily points. Will reset every 24 hours.
-Future<void> checkDailyPoints() async {
-  await FirebaseAuth.instance.currentUser().then((curUser) {
-    if(!curUser.isAnonymous)
-    {
-      DocumentReference curUserDocRef = Firestore.instance.collection('users').document(curUser.uid);
-
-      curUserDocRef.get().then((DocumentSnapshot doc) {
-        Timestamp lastPointReset = doc["lastPointReset"];
-        int lastPointResetEpoch = lastPointReset.millisecondsSinceEpoch;
-        int currentTime = Timestamp.now().millisecondsSinceEpoch;
-        int dailyPoints = doc["dailyPoints"];
-        curUserDocRef.updateData({
-          'last access': 'online',
-        });
-        if (((currentTime - lastPointResetEpoch) >= 86400000) &&
-            (dailyPoints < 100)) {
-          curUserDocRef.updateData({
-            'lastPointReset': Timestamp.now(),
-            'dailyPoints': 100,
-          });
-        }
-      });
-    }
-  });
-}
 
 //Widget that prints pops up an alert with a failed to update message
 Widget imageFailedToUpdateMessage(BuildContext context){

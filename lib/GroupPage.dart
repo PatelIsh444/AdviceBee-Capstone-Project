@@ -958,7 +958,7 @@ class _addGroupPageState extends State<addGroupPage> {
         List<dynamic> moderators = [CurrentUser.userID];
         List<dynamic> groupID = [newGroup.documentID];
         //If a user is a "queen bee" then they can create a group
-        if (CurrentUser.earnedPoints + CurrentUser.dailyPoints > 999) {
+        if (CurrentUser.earnedPoints > 999) {
           await newGroup.setData({
             'moderators': FieldValue.arrayUnion(moderators),
             'createdBy': CurrentUser.userID,

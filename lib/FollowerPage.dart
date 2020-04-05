@@ -233,6 +233,12 @@ class _FollowersViewState extends State<FollowersView> {
                   lastAccess = 1;
                 }
               }
+              final onlineIcon= (userObj.lastAccess != null && userObj.lastAccess.toString() == "online") ? CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  radius: 10.0,
+                  backgroundImage: AssetImage('assets/onlineGreenDot.jpg')) : CircleAvatar(
+                backgroundColor: Colors.grey,
+                radius: 10.0,);
               return Card(
                 key: Key(userObj.userID),
                 elevation: 5,
@@ -246,14 +252,9 @@ class _FollowersViewState extends State<FollowersView> {
                   //We are checking the user's offline and online check. According to the result we show corresponding circle indicator.
                   child:ListTile(
                     leading: CircleAvatar(backgroundImage: CachedNetworkImageProvider(userObj.profilePicURL),),
-                    title: Text(userObj.displayName),
-                    subtitle: Text(userObj.bio),
-                    trailing: (userObj.lastAccess != null && userObj.lastAccess.toString() == "online") ? CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        radius: 10.0,
-                        backgroundImage: AssetImage('assets/onlineGreenDot.jpg')) : CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        radius: 10.0,),),
+                    title: Row(children:<Widget>[onlineIcon,Text("  "+userObj.displayName),],),
+                    subtitle: Text("        "+userObj.bio),
+                  ),
                 ),
               );
             }),

@@ -468,13 +468,13 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
             'following': new List(),
             'likedPosts': new List(),
             'bio': "An interesting description",
-            'dailyPoints': 100,
             'earnedPoints': 0,
             'lastPosted': Timestamp.now(),
-            'lastPointReset': Timestamp.now(),
             'dateCreated': Timestamp.now(),
             'last access': 'online',
             'blocked': new List(),
+            'dailyQuestions':3,
+            'rank': 'Larvae',
           });
 
           if (selectedTopics.isEmpty) {
@@ -498,19 +498,10 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
             ));
       }
       //if guest then set isGuest as false
-      else {
-        if (user.isAnonymous) {
+      else if (user.isAnonymous) {
           CurrentUser = UserClass.User.withInfo(isNotGuest: false);
-        }
-      }
 
-      ///this is for users who don't have the teh 'blocked' field on database
-      ///all the users created before version 3.5 don't have it
-      ///so we check and create the field on the database
-      if(CurrentUser.blocked.isEmpty){
-        Firestore.instance.collection('users').document(CurrentUser.userID).updateData({'blocked':new List()});
       }
-
       _userCreated = true;
       getTopicsFuture = getTopics();
     }
@@ -963,10 +954,6 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
             minWidth: MediaQuery.of(context).size.width / 5,
             onPressed: () {
               onShow(key, context);
-              if (CurrentUser.isNotGuest) {
-              } else {
-                guestUserSignInMessage(context);
-              }
             },
             child: Icon(
               Icons.menu,
