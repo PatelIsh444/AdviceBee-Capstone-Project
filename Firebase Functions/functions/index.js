@@ -277,18 +277,17 @@ exports.incrementNumberOfReportersPerReport = functions.firestore
 		const reportRef = admin.firestore().collection('reports').doc(reportedPostId)
 		const reportedUsersRef = admin.firestore().collection('reports').doc(reportedPostId).collection('ReportedUsers')
 
-		admin.firestore().runTransaction(async transaction => {
+		return admin.firestore().runTransaction(async transaction => {
 			const reportedUsersRefQuery = await transaction.get(reportedUsersRef);
+			const userWhoReportedRefQuery = await transaction.get(reportedUsersRef.doc(context.params.userIdWhoReportedPost));
 			const numberOfReports = reportedUsersRefQuery.size;
-			const dateReported = snap.get("dateReported");
+			const dateReported = userWhoReportedRefQuery.get('dateReported');
 
 			return transaction.update(reportRef, {
 				numberOfReports: numberOfReports,
 				lastReported: dateReported
 			});
 		})
-
-		return null;
 	})
 	  
 exports.decrementNumberOfReportersPerReport = functions.firestore
@@ -302,7 +301,7 @@ exports.decrementNumberOfReportersPerReport = functions.firestore
 			const reportedUsersRefQuery = await transaction.get(reportedUsersRef);
 			const numberOfReports = reportedUsersRefQuery.size;
 
-			if (numberOfReports == 0) {
+			if (numberOfReports === 0) {
 				return transaction.delete(reportRef);
 			}
 			else {
