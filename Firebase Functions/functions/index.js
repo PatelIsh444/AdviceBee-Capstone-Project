@@ -297,25 +297,22 @@ exports.decrementNumberOfReportersPerReport = functions.firestore
 		const reportRef = admin.firestore().collection('reports').doc(reportedPostId)
 		const reportedUsersRef = admin.firestore().collection('reports').doc(reportedPostId).collection('ReportedUsers')
 
-		admin.firestore().runTransaction(async transaction => {
+		return admin.firestore().runTransaction(async transaction => {
 			const reportedUsersRefQuery = await transaction.get(reportedUsersRef);
-			const numberOfReports = reportedUsersRefQuery.size;
-
-			if (numberOfReports === 0) {
+			
+			if (reportedUsersRefQuery.empty) {
 				return transaction.delete(reportRef);
 			}
-			else {
-				const reportedUsersQueryByDateCreated = await reportedUsersRef.orderBy('dateCreated', "desc").limit(1).get();
-				const dateReported = reportedUsersQueryByDateCreated.docs[0].data["dateCreated"];
 
-				return transaction.update(reportRef, {
-					numberOfReports: numberOfReports,
-					lastReported: dateReported
-				});	
-			}
+			const reportedUsersQueryByDateCreated = await transaction.get(reportedUsersRef.orderBy('dateReported', 'desc').limit(1));
+			const dateReported = reportedUsersQueryByDateCreated.docs[0].data().dateReported;
+			const numberOfReports = reportedUsersRefQuery.size;
+
+			return transaction.update(reportRef, {
+				numberOfReports: numberOfReports,
+				lastReported: dateReported
+			});	
 		})
-
-		return null;
 	})
 	
 exports.resetDailyPoints  = functions.pubsub.schedule('0 7 * * *')
