@@ -280,8 +280,11 @@ exports.incrementNumberOfReportersPerReport = functions.firestore
 		admin.firestore().runTransaction(async transaction => {
 			const reportedUsersRefQuery = await transaction.get(reportedUsersRef);
 			const numberOfReports = reportedUsersRefQuery.size;
+			const dateReported = snap.get("dateReported");
+
 			return transaction.update(reportRef, {
-				numberOfReports: numberOfReports
+				numberOfReports: numberOfReports,
+				lastReported: dateReported
 			});
 		})
 
