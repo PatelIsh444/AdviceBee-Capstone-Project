@@ -270,40 +270,49 @@ exports.sendNewChatMessageNotification = functions.firestore
     return null
   })
 
-exports.incrementNumberOfReportersPerReport = functions.firestore
+exports.handleCreatingReport = functions.firestore
   	.document('reports/{reportedPostId}/ReportedUsers/{userIdWhoReportedPost}')
   	.onCreate(async (snap, context) => {
 		const reportedPostId = context.params.reportedPostId
 		const reportRef = admin.firestore().collection('reports').doc(reportedPostId)
 		const reportedUsersRef = admin.firestore().collection('reports').doc(reportedPostId).collection('ReportedUsers')
 
-		admin.firestore().runTransaction(async transaction => {
+		return admin.firestore().runTransaction(async transaction => {
 			const reportedUsersRefQuery = await transaction.get(reportedUsersRef);
+			const userWhoReportedRefQuery = await transaction.get(reportedUsersRef.doc(context.params.userIdWhoReportedPost));
 			const numberOfReports = reportedUsersRefQuery.size;
+			const dateReported = userWhoReportedRefQuery.get('dateReported');
+
 			return transaction.update(reportRef, {
-				numberOfReports: numberOfReports
+				numberOfReports: numberOfReports,
+				lastReported: dateReported
 			});
 		})
-
-		return null;
 	})
 	  
-exports.decrementNumberOfReportersPerReport = functions.firestore
+exports.handleDeletingReport = functions.firestore
   	.document('reports/{reportedPostId}/ReportedUsers/{userIdWhoReportedPost}')
   	.onDelete(async (snap, context) => {
 		const reportedPostId = context.params.reportedPostId
 		const reportRef = admin.firestore().collection('reports').doc(reportedPostId)
 		const reportedUsersRef = admin.firestore().collection('reports').doc(reportedPostId).collection('ReportedUsers')
 
-		admin.firestore().runTransaction(async transaction => {
+		return admin.firestore().runTransaction(async transaction => {
 			const reportedUsersRefQuery = await transaction.get(reportedUsersRef);
-			const numberOfReports = reportedUsersRefQuery.size;
-			return transaction.update(reportRef, {
-				numberOfReports: numberOfReports
-			});
-		})
+			
+			if (reportedUsersRefQuery.empty) {
+				return transaction.delete(reportRef);
+			}
 
-		return null;
+			const reportedUsersQueryByDateCreated = await transaction.get(reportedUsersRef.orderBy('dateReported', 'desc').limit(1));
+			const dateReported = reportedUsersQueryByDateCreated.docs[0].data().dateReported;
+			const numberOfReports = reportedUsersRefQuery.size;
+
+			return transaction.update(reportRef, {
+				numberOfReports: numberOfReports,
+				lastReported: dateReported
+			});	
+		})
 	})
 	
 exports.resetDailyPoints  = functions.pubsub.schedule('0 7 * * *')
