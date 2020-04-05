@@ -19,10 +19,6 @@ class SearchList {
 }
 
 class TestSearch extends SearchDelegate<String> {
-  var groupList = new List();
-  var userList = new List();
-  var dashList = new List();
-
   List<SearchList> databaseSearchQuery = new List();
   TestSearch(this.databaseSearchQuery);
 
@@ -118,22 +114,15 @@ class TestSearch extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     /*Results from clicking search after typing in your search parameters*/
+    final suggestionList = databaseSearchQuery
+        .where((object) => object.name.toLowerCase().contains(query.toLowerCase()))
+        .toList();
 
-    var suggestionList= List();
-    try {
-      suggestionList = databaseSearchQuery
-          .where((object) =>
-          object.name.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    }catch(e) {
-      print("error1: "+e);
-    }
-
-    for (int index = 0; index < suggestionList.length; index++) {
-      groupList.add(new ListTile(
+    return ListView.builder(
+      itemBuilder: (context, index) => ListTile(
         onTap: () {
           //Calls the "buildResults" Function
-          showResults(context);
+          //showResults(context);
           if (suggestionList[index].type == "group") {
             Navigator.push(
                 context,
@@ -163,41 +152,24 @@ class TestSearch extends SearchDelegate<String> {
         title: RichText(
           text: boldSearchText(suggestionList[index].name, query),
         ),
-      ),);
-    }
-    return ListView(
-      children: <Widget>[
-        ListView.builder(
-          itemBuilder: (context, index) => groupList[index],
-          itemCount: suggestionList.length,
-        ),
-        ListView.builder(
-          itemBuilder: (context, index) => groupList[index],
-          itemCount: suggestionList.length,
-        ),
-        
-      ],
+      ),
+      itemCount: suggestionList.length,
     );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     //List of items that is shown before user clicks the search button
-var suggestionList = List();
-    try {
-      suggestionList = databaseSearchQuery
-      .where((object) =>
-      object.name.toLowerCase()
-          .contains(query.toLowerCase())).toList();
-}catch(e) {
-  print("error2: ");
-  print(e);
-  }
+
+    final suggestionList = databaseSearchQuery
+        .where((object) => object.name.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
         onTap: () {
           //Calls the "buildResults" Function
-          showResults(context);
+          //showResults(context);
           if (suggestionList[index].type == "group") {
             Navigator.push(
                 context,
@@ -215,12 +187,12 @@ var suggestionList = List();
           } else if (suggestionList[index].type == "dashboard") {
             questions selectedPost=getQuestion(suggestionList[index].firstDocumentID, suggestionList[index].secondDocumentID);
             Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    PostPage(selectedPost, suggestionList[index].firstDocumentID,
-                    suggestionList[index].secondDocumentID, "topics"),
-              ));
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      PostPage(selectedPost, suggestionList[index].firstDocumentID,
+                          suggestionList[index].secondDocumentID, "topics"),
+                ));
           }
         },
         leading: returnIcon(suggestionList[index].type),
