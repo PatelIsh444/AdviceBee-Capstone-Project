@@ -14,6 +14,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'User.dart';
 import 'pages/FullPhoto.dart';
+import 'pages/MoreQuestions.dart';
 import 'responsePage.dart';
 import 'MoreMenu.dart';
 import 'newProfile.dart' as profile;
@@ -2092,8 +2093,7 @@ class _PostQuestionState extends State<postQuestion> {
   }
 
   //Uploads the question the database for groups only
-  Future<void> uploadQuestionToDatabase(bool needAdvisors) async {
-    bool noPoints = false;
+  Future<bool> uploadQuestionToDatabase(bool needAdvisors) async {
     DocumentReference newPost = databaseInstance
         .document(currentGroupID)
         .collection("groupQuestions")
@@ -2119,36 +2119,24 @@ class _PostQuestionState extends State<postQuestion> {
         .document(userInfo.userID)
         .get()
         .then((DocumentSnapshot doc) {
-      int earnedPoints = doc["earnedPoints"];
-      int dailyPoints = doc["dailyPoints"];
-
-      if (dailyPoints >= 10) {
+      int dailyQuestions = doc["dailyQuestions"];
+      //daily question here question
+      if (dailyQuestions > 0) {
         currentUser.updateData({
           'myPosts': FieldValue.arrayUnion([newPost]),
-          'dailyPoints': FieldValue.increment(-10),
-        });
-      } else if (earnedPoints >= 10) {
-        currentUser.updateData({
-          'myPosts': FieldValue.arrayUnion([newPost]),
-          'earnedPoints': FieldValue.increment(-10),
+          'dailyQuestions': FieldValue.increment(-1),
         });
       } else {
         //Set flag for database upload
         outOfPoints = true;
-        Flushbar(
-          title: "No Points!",
-          message:
-              "Sorry you're out of points, please answer more questions or come"
-              "back tomorrow.",
-          duration: Duration(seconds: 5),
-          backgroundColor: Colors.teal,
-        )..show(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => BuyMoreQuestions()),
+        );
+
       }
     });
-
-    if (noPoints) {
-      return null;
-    }
 
     //If advisors were requested, send them a notification here
     if (needAdvisors == true) {
@@ -2163,7 +2151,7 @@ class _PostQuestionState extends State<postQuestion> {
       switch (questionType) {
         case questionTypes.SHORT_ANSWER:
           {
-            return newPost.setData({
+            await newPost.setData({
               'question': questionController.text.toString(),
               'description': questionDescriptionController.text.toString(),
               'createdBy': userInfo.userID.toString(),
@@ -2179,6 +2167,7 @@ class _PostQuestionState extends State<postQuestion> {
               'anonymous': postAnonymously,
             });
           }
+          break;
         case questionTypes.MULTIPLE_CHOICE:
           {
             List<String> choices = [];
@@ -2187,7 +2176,7 @@ class _PostQuestionState extends State<postQuestion> {
               choices.add(responseControllers[i].text);
             }
 
-            return newPost.setData({
+            await newPost.setData({
               'question': questionController.text.toString(),
               'description': questionDescriptionController.text,
               'choices': choices,
@@ -2204,9 +2193,10 @@ class _PostQuestionState extends State<postQuestion> {
               'anonymous': postAnonymously,
             });
           }
+          break;
         case questionTypes.NUMBER_VALUE:
           {
-            return newPost.setData({
+            await newPost.setData({
               'question': questionController.text.toString(),
               'description': questionDescriptionController.text.toString(),
               'createdBy': userInfo.userID.toString(),
@@ -2222,6 +2212,7 @@ class _PostQuestionState extends State<postQuestion> {
               'anonymous': postAnonymously,
             });
           }
+          break;
       }
       Navigator.pop(context);
     }

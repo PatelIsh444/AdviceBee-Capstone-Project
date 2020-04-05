@@ -118,7 +118,6 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
       userInfo.following = doc["following"];
       userInfo.likedPosts = doc["likedPosts"];
       userInfo.bio = doc["bio"];
-      userInfo.dailyPoints = doc["dailyPoints"];
       userInfo.earnedPoints = doc["earnedPoints"];
       if (doc['last access'] != null) {
         if (doc['last access'].toString() == "online") {
@@ -141,7 +140,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
               timeStampSplit.year.toString();
           print(dateJoined);
         }
-        scores = (userInfo.dailyPoints + userInfo.earnedPoints).toString();
+        scores = (userInfo.earnedPoints).toString();
         tempUserID = userInfo.userID;
         if (userInfo.followers != null) {
           numberOfFollowers = userInfo.followers.length;
@@ -471,7 +470,6 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
             buildStatContainer(),
             buildDate(context),
             aboutUser(deviceWidth),
-            userOnlineStatus(),
             buildSeparator(deviceWidth),
             SizedBox(height: 10.0),
             CurrentUser.isNotGuest && CurrentUser.userID != widget.userID
@@ -605,47 +603,31 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     );
 
     return Center(
-      child: AutoSizeText(
-        userInformation.displayName,
-        style: nameTextStyle,
-        maxLines: 1,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          userOnlineStatus(),
+          AutoSizeText(
+            userInformation.displayName,
+            style: nameTextStyle,
+            maxLines: 1,
+          ),
+        ],
       ),
     );
   }
 
   Widget userOnlineStatus() {
-    TextStyle bioTextStyle = TextStyle(
-      fontFamily: 'Spectral',
-      fontWeight: FontWeight.bold, //try changing weight to w500 if not thin
-      fontSize: 16.0,
-    );
-    return Center(
-      child: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        padding: EdgeInsets.all(8.0),
-        child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                lastAccess,
-                textAlign: TextAlign.center,
-                style: bioTextStyle,
-              ),
-              lastAccess == "Online"
-                  ? CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      radius: 10.0,
-                      backgroundImage: AssetImage('assets/onlineGreenDot.jpg'))
-                  : CircleAvatar(
-                      backgroundColor: Colors.grey,
-                      radius: 10.0,
-                    ),
-            ],
-          ),
-        ),
-      ),
-    );
+    if (lastAccess == "Online")
+      return CircleAvatar(
+          backgroundColor: Colors.transparent,
+          radius: 10.0,
+          backgroundImage: AssetImage('assets/onlineGreenDot.jpg'));
+    else
+      return CircleAvatar(
+        backgroundColor: Colors.grey,
+        radius: 10.0,
+      );
   }
 
   Widget userImage(double deviceWidth) {
@@ -708,7 +690,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     return Container(
       padding: EdgeInsets.only(left: 20.0, right: 20.0),
       child: Text(
-        "Total Points ${userInformation.dailyPoints + userInformation.earnedPoints}",
+        "Total Points ${userInformation.earnedPoints}",
         style: TextStyle(
           fontSize: 18.0,
           fontWeight: FontWeight.bold,
