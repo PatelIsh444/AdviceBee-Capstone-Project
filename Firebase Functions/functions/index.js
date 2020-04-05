@@ -270,7 +270,7 @@ exports.sendNewChatMessageNotification = functions.firestore
     return null
   })
 
-exports.incrementNumberOfReportersPerReport = functions.firestore
+exports.handleCreatingReport = functions.firestore
   	.document('reports/{reportedPostId}/ReportedUsers/{userIdWhoReportedPost}')
   	.onCreate(async (snap, context) => {
 		const reportedPostId = context.params.reportedPostId
@@ -290,7 +290,7 @@ exports.incrementNumberOfReportersPerReport = functions.firestore
 		})
 	})
 	  
-exports.decrementNumberOfReportersPerReport = functions.firestore
+exports.handleDeletingReport = functions.firestore
   	.document('reports/{reportedPostId}/ReportedUsers/{userIdWhoReportedPost}')
   	.onDelete(async (snap, context) => {
 		const reportedPostId = context.params.reportedPostId
