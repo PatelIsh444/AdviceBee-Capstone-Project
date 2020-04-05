@@ -1,15 +1,14 @@
-import 'dart:convert';
 
+import 'package:credit_card/credit_card_form.dart';
+import 'package:credit_card/credit_card_model.dart';
+import 'package:credit_card/credit_card_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:stripe_payment/stripe_payment.dart';
-import 'dart:io';
 
 import 'package:v0/services/PaymentService.dart';
 import 'package:v0/utils/commonFunctions.dart';
 
 import '../Dashboard.dart';
-import '../MoreMenu.dart';
 
 class BuyMoreQuestions extends StatefulWidget {
   @override
@@ -20,19 +19,19 @@ class _BuyMoreQuestionsState extends State<BuyMoreQuestions> {
   Token _paymentToken;
   PaymentMethod _paymentMethod;
   String _error = 'Pending...';
-  final String _currentSecret = null; //set this yourself, e.g using curl
-  PaymentIntentResult _paymentIntent;
   Source _source;
 
   var paymentService = new PaymentService();
 
   ScrollController _controller = ScrollController();
 
-  CreditCard testCard = CreditCard(
-    number: '4000002760003184',
-    expMonth: 12,
-    expYear: 21,
-  );
+  String cardNumber = '';
+  String expiryDate = '';
+  String cardHolderName = '';
+  String cvvCode = '';
+  bool isCvvFocused = false;
+  int cardMonth = 12;
+  int cardYear = 21;
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
@@ -95,34 +94,70 @@ class _BuyMoreQuestionsState extends State<BuyMoreQuestions> {
           ),
         ),
       ),
-      body: Center(
-          child: Column(
-        mainAxisSize: MainAxisSize.min,
+      body: ListView(
         children: <Widget>[
-          RaisedButton(
-            color: Colors.green,
-            child: Text(
-              "Add Card",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 25,
+          Expanded(
+            child: CreditCardWidget(
+              cardNumber: cardNumber,
+              expiryDate: expiryDate,
+              cardHolderName: cardHolderName,
+              cvvCode: cvvCode,
+              showBackView: isCvvFocused, //true when you want to show cvv(back) view
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: CreditCardForm(
+                onCreditCardModelChange: onCreditCardModelChange,
               ),
             ),
-            onPressed: () {
-              StripePayment.paymentRequestWithCardForm(CardFormPaymentRequest())
-                  .then((paymentMethod) {
-                _scaffoldKey.currentState.showSnackBar(
-                    SnackBar(content: Text('Received ${paymentMethod.id}')));
-                setState(() {
-                  CreditCardForm();
-                  _paymentMethod = paymentMethod;
-                  paymentService.addUserCard(_paymentMethod);
-                });
-              }).catchError(setError);
-            },
+          ),
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                RaisedButton(
+                  color: Colors.green,
+                  child: Text(
+                    "Buy More Questions",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25,
+                    ),
+                  ),
+                  onPressed: () {
+                    cardMonth = int.parse(expiryDate.split('/')[0]);
+                    cardYear = int.parse(expiryDate.split('/')[1]);
+                    final CreditCard paymentCard = CreditCard(
+                      number: cardNumber,
+                      expMonth: cardMonth,
+                      expYear: cardYear,
+                    );
+                    StripePayment.createTokenWithCard(
+                      paymentCard,
+                    ).then((token) {
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Received ${token.tokenId}')));
+                      setState(() {
+                        _paymentToken = token;
+                      });
+                    }).catchError(setError);
+                  },
+                ),
+              ],
+            ),
           ),
         ],
-      )),
+      ),
     );
+  }
+
+  void onCreditCardModelChange(CreditCardModel creditCardModel) {
+    setState(() {
+      cardNumber = creditCardModel.cardNumber;
+      expiryDate = creditCardModel.expiryDate;
+      cardHolderName = creditCardModel.cardHolderName;
+      cvvCode = creditCardModel.cvvCode;
+      isCvvFocused = creditCardModel.isCvvFocused;
+    });
   }
 }

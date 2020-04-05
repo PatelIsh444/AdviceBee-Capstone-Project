@@ -19,6 +19,10 @@ class SearchList {
 }
 
 class TestSearch extends SearchDelegate<String> {
+  var groupList = new List();
+  var userList = new List();
+  var dashList = new List();
+
   List<SearchList> databaseSearchQuery = new List();
   TestSearch(this.databaseSearchQuery);
 
@@ -118,8 +122,8 @@ class TestSearch extends SearchDelegate<String> {
         .where((object) => object.name.toLowerCase().contains(query.toLowerCase()))
         .toList();
 
-    return ListView.builder(
-      itemBuilder: (context, index) => ListTile(
+    for (int index = 0; index < suggestionList.length; index++) {
+      groupList.add(new ListTile(
         onTap: () {
           //Calls the "buildResults" Function
           //showResults(context);
@@ -152,8 +156,20 @@ class TestSearch extends SearchDelegate<String> {
         title: RichText(
           text: boldSearchText(suggestionList[index].name, query),
         ),
-      ),
-      itemCount: suggestionList.length,
+      ),);
+    }
+    return ListView(
+      children: <Widget>[
+        ListView.builder(
+          itemBuilder: (context, index) => groupList[index],
+          itemCount: suggestionList.length,
+        ),
+        ListView.builder(
+          itemBuilder: (context, index) => groupList[index],
+          itemCount: suggestionList.length,
+        ),
+        
+      ],
     );
   }
 
