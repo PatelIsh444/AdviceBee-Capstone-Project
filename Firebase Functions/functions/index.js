@@ -298,9 +298,15 @@ exports.decrementNumberOfReportersPerReport = functions.firestore
 		admin.firestore().runTransaction(async transaction => {
 			const reportedUsersRefQuery = await transaction.get(reportedUsersRef);
 			const numberOfReports = reportedUsersRefQuery.size;
-			return transaction.update(reportRef, {
-				numberOfReports: numberOfReports
-			});
+
+			if (numberOfReports == 0) {
+				return transaction.delete(reportRef);
+			}
+			else {
+				return transaction.update(reportRef, {
+					numberOfReports: numberOfReports
+				});	
+			}
 		})
 
 		return null;
