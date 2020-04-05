@@ -306,8 +306,12 @@ exports.decrementNumberOfReportersPerReport = functions.firestore
 				return transaction.delete(reportRef);
 			}
 			else {
+				const reportedUsersQueryByDateCreated = await reportedUsersRef.orderBy('dateCreated', "desc").limit(1).get();
+				const dateReported = reportedUsersQueryByDateCreated.docs[0].data["dateCreated"];
+
 				return transaction.update(reportRef, {
-					numberOfReports: numberOfReports
+					numberOfReports: numberOfReports,
+					lastReported: dateReported
 				});	
 			}
 		})
