@@ -46,9 +46,9 @@ class PaymentService{
   increaseQuestions() async {
     print("\nIncreased daily questions for " + CurrentUser.userID);
     String userRank = "Larvae";
-    if(CurrentUser.earnedPoints < 50){
+    if(CurrentUser.earnedPoints < 500){
       userRank = "Larvae";
-    }else if(CurrentUser.earnedPoints < 100){
+    }else if(CurrentUser.earnedPoints < 1000){
       userRank = "Worker Bee";
     }else{
       userRank = "Queen Bee";
