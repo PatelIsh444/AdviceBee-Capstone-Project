@@ -58,8 +58,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     List<LeaderboardInformation> topFiveUsers = new List();
     int i = 0;
 
-    while (i < 5 && i < userList.length) {
+    while (i < 10 && i < userList.length) {
       int maxPoints = 0;
+
 
       for (int j = 0; j < userList.length; j++) {
         if (userList[maxPoints].totalPoints < userList[j].totalPoints) {
