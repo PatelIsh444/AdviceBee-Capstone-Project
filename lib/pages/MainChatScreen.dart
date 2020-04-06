@@ -172,7 +172,7 @@ class MainScreenState extends State<MainScreen> {
           onTap: () {
             Navigator.pop(context);
           },
-          child: Icon(Icons.arrow_back_ios),
+          child: Icon(Icons.arrow_back),
         ),
         actions: <Widget>[
           IconButton(

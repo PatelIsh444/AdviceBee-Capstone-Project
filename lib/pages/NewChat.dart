@@ -74,7 +74,7 @@ class NewChatScreenState extends State<NewChatScreen> {
                           currentUserId: CurrentUser.userID,
                         )));
           },
-          child: Icon(Icons.add_comment),
+          child: Icon(Icons.add_com),
         ),
         actions: <Widget>[
           IconButton(
