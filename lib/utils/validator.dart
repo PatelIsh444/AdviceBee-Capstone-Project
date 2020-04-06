@@ -40,11 +40,12 @@ class Validator {
       return null;
   }
 
+//Check if user's response is empty, AdviceBee 2020
 //Validate if the user's response is null
     static String responseValidator(String value) {
       Pattern pattern = r'^(?=\s*\S).*$';
       RegExp regex = new RegExp(pattern);
-      if (!regex.hasMatch(value))
+      if (!regex.hasMatch(value) || value.length < 1)
         return 'Please enter a response.';
       else
         return null;
