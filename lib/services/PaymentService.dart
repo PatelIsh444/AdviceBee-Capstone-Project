@@ -7,16 +7,24 @@ class PaymentService{
   //This will be a dynamic modifiable variable
   int purchaseIncreaseAmount = 50;
 
+  //Payment History and Add Credit card
   addUserCard(PaymentMethod payMethod) async {
     String lastFour = payMethod.card.last4;
     String cardType = payMethod.card.brand;
     print("\nAdding card to " + CurrentUser.userID);
-    await Firestore.instance.collection('cards').document(CurrentUser.userID).collection('tokens').add({
+    await Firestore.instance.collection('cards').document(CurrentUser.userID).collection('purchaseHistory').add({
+      'itemPurchased': 'AdviceBee More Questions',
+      'itemCost': '7.99',
+      'lastFour': lastFour,
+      'cardType': cardType,
+    });
+    await Firestore.instance.collection('cards').document(CurrentUser.userID).collection('tokens').document(payMethod.card.token).updateData({
       'cardToken': payMethod.card.token,
       'lastFour': lastFour,
       'cardType': cardType,
     });
     print("\nAdded card to " + CurrentUser.userID);
+    print("\nAdded purchase history to " + CurrentUser.userID);
     chargeUser();
   }
 
