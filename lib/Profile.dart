@@ -405,7 +405,7 @@ class ProfilePageState extends State<ProfilePage> {
   Widget appInfo() {
     return Padding(
         padding: EdgeInsets.only(left: 10, bottom: 10),
-        child: Text("AdviceBee $appVersion"));
+        child: Text("Version: $appVersion"));
   }
 
   Widget buildSignOutButton() {
