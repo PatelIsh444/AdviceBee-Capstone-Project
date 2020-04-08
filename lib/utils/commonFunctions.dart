@@ -86,6 +86,19 @@ Future<User> getUserInformation(String passedUserID) async {
   });
   return userInfo;
 }
+int numNotification = 0;
+
+getNumNotification()async{
+  await Firestore.instance
+      .collection('Notification')
+      .document(CurrentUser.userID)
+      .collection('NotificationItems')
+      .getDocuments()
+      .then((doc) {
+    numNotification = doc.documents.length;
+  });
+}
+
 
 //Check if a user is marked as anonymous in Firebase
 Future<bool> isAnonymousUser() async{

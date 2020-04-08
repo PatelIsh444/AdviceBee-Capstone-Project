@@ -9,6 +9,8 @@ import 'package:popup_menu/popup_menu.dart';
 import 'package:v0/pages/NewChat.dart';
 import 'package:v0/services/AuthProvider.dart';
 
+import 'package:badges/badges.dart';
+
 import 'AboutUs.dart';
 import 'ContactUs.dart';
 import 'EditProfile.dart';
@@ -21,24 +23,9 @@ import 'Profile.dart';
 import 'GroupPage.dart';
 import 'Dashboard.dart';
 import './utils/commonFunctions.dart';
-import 'FollowerPage.dart';
 import 'Leaderboard.dart';
-import 'landing.dart';
 
-Future<void> _SignOut(BuildContext context) async {
-  try {
-    final auth = AuthProvider.of(context);
-    await auth.SignOut();
-    setUserLastAccess();
 
-    //Destroy all navigation stacks
-    Navigator.of(context)
-        .pushNamedAndRemoveUntil(MyApp.id, (Route<dynamic> route) => false);
-  } catch (e) {
-    print(e.toString());
-  }
-  CurrentUser = null;
-}
 
 void onShow(GlobalKey btnKey, BuildContext context) {
   PopupMenu.context = context;
@@ -171,7 +158,8 @@ Future onSelectNotification(String payload) async {
   }
 }
 
-Widget globalNavigationBar(
+
+Widget globalNavigationBar (
     int currentTab, BuildContext context, GlobalKey key, bool isFirstPage) {
   Size screenSize = MediaQuery.of(context).size;
   registerNotification();
@@ -281,10 +269,18 @@ Widget globalNavigationBar(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Icon(
+                  numNotification==0?Icon(
                     Icons.notifications,
                     color: currentTab == 3 ? Colors.redAccent : Colors.black,
                     size: 30,
+                  ):
+                  Badge(
+                    badgeContent: Text(numNotification.toString()),
+                    child: Icon(
+                      Icons.notifications,
+                      color: currentTab == 3 ? Colors.redAccent : Colors.black,
+                      size: 30,
+                    ),
                   ),
                 ],
               ),

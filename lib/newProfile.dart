@@ -606,7 +606,10 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          userOnlineStatus(),
+          Padding(
+            padding: EdgeInsets.only(right: 10.0),
+            child:userOnlineStatus(),
+          ),
           AutoSizeText(
             userInformation.displayName,
             style: nameTextStyle,
