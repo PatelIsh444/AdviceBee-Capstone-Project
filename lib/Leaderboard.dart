@@ -174,7 +174,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Leaderboard"),
+        title: Text("Top Bees"),
         centerTitle: true,
       ),
       floatingActionButton:
