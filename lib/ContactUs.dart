@@ -162,7 +162,7 @@ class _MyReviewPageState extends State<ContactUsPage>
                                         child: Icon(Icons.person,
                                             color: Color(0xff224597)),
                                       ),
-                                      hintText: 'Your name',
+                                      hintText: CurrentUser.displayName,
                                       fillColor: Colors.white,
                                       filled: true,
                                       contentPadding: EdgeInsets.fromLTRB(
