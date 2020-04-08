@@ -28,9 +28,11 @@ import 'QuestionPage.dart';
 import './utils/commonFunctions.dart';
 import 'package:image/image.dart' as im;
 
+import 'landing.dart';
 import 'pages/MainChatScreen.dart';
 import 'pages/MoreQuestions.dart';
 import 'pages/NewChat.dart';
+import 'services/AuthProvider.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -374,6 +376,56 @@ class ProfilePageState extends State<ProfilePage> {
             ),
           ),
         ])));
+  }
+
+  Future<void> _SignOut(BuildContext context) async {
+    try {
+      final auth = AuthProvider.of(context);
+      await auth.SignOut();
+      setUserLastAccess();
+      //Destroy all navigation stacks
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(MyApp.id, (Route<dynamic> route) => false);
+    } catch (e) {
+      print(e.toString());
+    }
+    setState(() {
+      CurrentUser = null;
+    });
+
+  }
+
+  Widget buildSignOutButton() {
+    return Padding(
+      //padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+      padding: EdgeInsets.only(left: 10, top: 8, bottom: 30),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: GestureDetector(
+              onTap: () => _SignOut(context),
+              child: Container(
+                height: 40.0,
+                decoration: BoxDecoration(
+                  borderRadius: new BorderRadius.all(new Radius.circular(20.0)),
+                  color: Colors.teal[300],
+                ),
+                child: Center(
+                  child: Text(
+                    "SIGN OUT",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 10.0),
+        ],
+      ),
+    );
   }
 
   Widget buildRank(BuildContext context) {
@@ -962,6 +1014,7 @@ class ProfilePageState extends State<ProfilePage> {
                     buildSeparator(screenSize),
                     SizedBox(height: 10.0),
                     buildButtonList,
+                    buildSignOutButton()
                     //buildAppButtonsList,
                   ],
                 ),
