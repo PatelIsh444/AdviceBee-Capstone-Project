@@ -1,11 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 import 'package:v0/Dashboard.dart';
 
 class PaymentService{
   //This will be a dynamic modifiable variable
   int purchaseIncreaseAmount = 50;
+  Map<String, dynamic> payQuestionsLimitMap = {'Larvae':3, 'Queen Bee':3, 'Worker Bee':3};
+
+  //Pull Dynamic Config from Firestore
+  generateConfigurationDetails() async {
+    await Firestore.instance.collection("configuration").document("payConfig").get().then((DocumentSnapshot snapshot){
+      payQuestionsLimitMap = snapshot.data["dailyQuestionsLimit"];
+    });
+  }
 
   //Payment History and Add Credit card
   addUserCard(PaymentMethod payMethod) async {
@@ -36,8 +45,16 @@ class PaymentService{
 
   increaseQuestions() async {
     print("\nIncreased daily questions for " + CurrentUser.userID);
+    String userRank = "Larvae";
+    if(CurrentUser.earnedPoints < 500){
+      userRank = "Larvae";
+    }else if(CurrentUser.earnedPoints < 1000){
+      userRank = "Worker Bee";
+    }else{
+      userRank = "Queen Bee";
+    }
     await Firestore.instance.collection('users').document(CurrentUser.userID).updateData({
-      'earnedPoints': FieldValue.increment(purchaseIncreaseAmount),
+      'earnedPoints': FieldValue.increment(payQuestionsLimitMap[userRank]),
     });
     print("\nDaily questions increased for " + CurrentUser.userID);
   }
