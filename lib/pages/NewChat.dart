@@ -66,15 +66,9 @@ class NewChatScreenState extends State<NewChatScreen> {
         ),
         leading: GestureDetector(
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        MainScreen(
-                          currentUserId: CurrentUser.userID,
-                        )));
+            Navigator.pop(context);
           },
-          child: Icon(Icons.add_comment),
+          child: Icon(Icons.arrow_back),
         ),
         actions: <Widget>[
           IconButton(

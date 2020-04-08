@@ -106,7 +106,7 @@ class Chat extends StatelessWidget {
             Navigator.pop(context);
             Firestore.instance.collection('users').document(CurrentUser.userID).updateData({'chattingWith': null});
           },
-          child: Icon(Icons.arrow_back_ios),
+          child: Icon(Icons.arrow_back),
         ),
       ),
       body: new ChatScreen(
