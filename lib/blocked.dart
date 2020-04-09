@@ -137,7 +137,7 @@ class _BlockedViewState extends State<BlockedView> {
           child: Image.asset(
             'images/addPostIcon4.png',
           ),
-          maxRadius: 18,
+          maxRadius: 12,
         ),
       ),
       floatingActionButtonLocation:
