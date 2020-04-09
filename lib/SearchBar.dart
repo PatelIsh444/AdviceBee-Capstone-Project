@@ -11,15 +11,18 @@ class SearchList {
   String firstDocumentID; //This can be a groupID, topic name, or userID
   String secondDocumentID; //This can be a postID
   GroupInformation groupInfo;
+
   /*Clarification for first and second document IDs
   * Firebase Structure
   * Collection->firstDocumentID->Collection->secondDocumentID*/
 
-  SearchList(this.name, this.type, this.firstDocumentID, this.secondDocumentID, this.groupInfo);
+  SearchList(this.name, this.type, this.firstDocumentID, this.secondDocumentID,
+      this.groupInfo);
 }
 
 class TestSearch extends SearchDelegate<String> {
   List<SearchList> databaseSearchQuery = new List();
+
   TestSearch(this.databaseSearchQuery);
 
   final recentSearches = [];
@@ -114,94 +117,156 @@ class TestSearch extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     /*Results from clicking search after typing in your search parameters*/
-    final suggestionList = databaseSearchQuery
-        .where((object) => object.name.toLowerCase().contains(query.toLowerCase()))
-        .toList();
-
-    return ListView.builder(
-      itemBuilder: (context, index) => ListTile(
-        onTap: () {
-          //Calls the "buildResults" Function
-          //showResults(context);
-          if (suggestionList[index].type == "group") {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => GroupProfile(
-                      suggestionList[index].groupInfo),
-                ));
-          } else if (suggestionList[index].type == "user") {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      UserDetailsPage(suggestionList[index].firstDocumentID),
-                ));
-          } else if (suggestionList[index].type == "dashboard") {
-            questions selectedPost=getQuestion(suggestionList[index].firstDocumentID, suggestionList[index].secondDocumentID);
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      PostPage(selectedPost, suggestionList[index].firstDocumentID,
-                          suggestionList[index].secondDocumentID, "topics"),
-                ));
-          }
-        },
-        leading: returnIcon(suggestionList[index].type),
-        title: RichText(
-          text: boldSearchText(suggestionList[index].name, query),
-        ),
-      ),
-      itemCount: suggestionList.length,
-    );
+    return resultList();
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     //List of items that is shown before user clicks the search button
+    return resultList();
+  }
 
+  Widget resultList() {
     final suggestionList = databaseSearchQuery
-        .where((object) => object.name.toLowerCase().contains(query.toLowerCase()))
+        .where(
+            (object) => object.name.toLowerCase().contains(query.toLowerCase()))
         .toList();
-
-    return ListView.builder(
-      itemBuilder: (context, index) => ListTile(
-        onTap: () {
-          //Calls the "buildResults" Function
-          //showResults(context);
-          if (suggestionList[index].type == "group") {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => GroupProfile(
-                      suggestionList[index].groupInfo),
-                ));
-          } else if (suggestionList[index].type == "user") {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      UserDetailsPage(suggestionList[index].firstDocumentID),
-                ));
-          } else if (suggestionList[index].type == "dashboard") {
-            questions selectedPost=getQuestion(suggestionList[index].firstDocumentID, suggestionList[index].secondDocumentID);
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      PostPage(selectedPost, suggestionList[index].firstDocumentID,
-                          suggestionList[index].secondDocumentID, "topics"),
-                ));
-          }
-        },
-        leading: returnIcon(suggestionList[index].type),
-        title: RichText(
-          text: boldSearchText(suggestionList[index].name, query),
-        ),
+    final suggUsers = searchResults("user");
+    final suggDash = searchResults("dashboard");
+    final suggGroup = searchResults("group");
+    return DefaultTabController(
+      length: 3,
+      child: Column(
+        children: <Widget>[
+          Container(
+            constraints: BoxConstraints.expand(height: 50),
+            child: TabBar(tabs: [
+              Tab(child: Text("Users", style: TextStyle(color: Colors.teal),),),
+              Tab(child: Text("Posts", style: TextStyle(color: Colors.teal),),),
+              Tab(child: Text("Groups", style: TextStyle(color: Colors.teal),),),
+            ]),
+          ),
+          Expanded(
+            child: Container(
+              child: TabBarView(children: [
+                Container(
+                  child: ListView.builder(
+                    itemBuilder: (context, index) => ListTile(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserDetailsPage(
+                                    suggUsers[index].firstDocumentID)));
+                      },
+                      leading: returnIcon(suggUsers[index].type),
+                      title: RichText(
+                        text: boldSearchText(suggUsers[index].name, query),
+                      ),
+                    ),
+                    itemCount: suggUsers.length,
+                  ),
+                ),
+                Container(
+                  child: ListView.builder(
+                    itemBuilder: (context, index) => ListTile(
+                      onTap: () {
+                        questions selectedPost = getQuestion(
+                            suggDash[index].firstDocumentID,
+                            suggDash[index].secondDocumentID);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PostPage(
+                                  selectedPost,
+                                  suggDash[index].firstDocumentID,
+                                  suggDash[index].secondDocumentID,
+                                  "topics"),
+                            ));
+                      },
+                      leading: returnIcon(suggDash[index].type),
+                      title: RichText(
+                        text: boldSearchText(suggDash[index].name, query),
+                      ),
+                    ),
+                    itemCount: suggDash.length,
+                  ),
+                ),
+                Container(
+                  child: ListView.builder(
+                    itemBuilder: (context, index) => ListTile(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  GroupProfile(suggGroup[index].groupInfo),
+                            ));
+                      },
+                      leading: returnIcon(suggGroup[index].type),
+                      title: RichText(
+                        text: boldSearchText(suggGroup[index].name, query),
+                      ),
+                    ),
+                    itemCount: suggGroup.length,
+                  ),
+                ),
+              ]),
+            ),
+          )
+        ],
       ),
-      itemCount: suggestionList.length,
     );
+//          ListView.builder(
+//            itemBuilder: (context, index) => ListTile(
+//              onTap: () {
+//                //Calls the "buildResults" Function
+//                //showResults(context);
+//                if (suggestionList[index].type == "group") {
+//                  Navigator.push(
+//                      context,
+//                      MaterialPageRoute(
+//                        builder: (context) =>
+//                            GroupProfile(suggestionList[index].groupInfo),
+//                      ));
+//                } else if (suggestionList[index].type == "user") {
+//                  Navigator.push(
+//                      context,
+//                      MaterialPageRoute(
+//                        builder: (context) => UserDetailsPage(
+//                            suggestionList[index].firstDocumentID),
+//                      ));
+//                } else if (suggestionList[index].type == "dashboard") {
+//                  questions selectedPost = getQuestion(
+//                      suggestionList[index].firstDocumentID,
+//                      suggestionList[index].secondDocumentID);
+//                  Navigator.push(
+//                      context,
+//                      MaterialPageRoute(
+//                        builder: (context) => PostPage(
+//                            selectedPost,
+//                            suggestionList[index].firstDocumentID,
+//                            suggestionList[index].secondDocumentID,
+//                            "topics"),
+//                      ));
+//                }
+//              },
+//              leading: returnIcon(suggestionList[index].type),
+//              title: RichText(
+//                text: boldSearchText(suggestionList[index].name, query),
+//              ),
+//            ),
+//            itemCount: suggestionList.length,
+//          ),
+  }
+
+  searchResults(String type) {
+    final suggestionList = databaseSearchQuery
+        .where((object) =>
+            object.name.toLowerCase().contains(query.toLowerCase()) &&
+            object.type.toLowerCase() == type.toLowerCase())
+        .toList();
+    return suggestionList;
   }
 
   questions getQuestion(String firstId, String secondId) {
@@ -230,10 +295,11 @@ class TestSearch extends SearchDelegate<String> {
               doc["likes"],
               doc["views"],
               doc["reports"],
-              doc["anonymous"]== null ? false : doc["anonymous"],
-              doc["multipleResponses"] == null ? false : doc["multipleResponses"],
+              doc["anonymous"] == null ? false : doc["anonymous"],
+              doc["multipleResponses"] == null
+                  ? false
+                  : doc["multipleResponses"],
               doc["imageURL"] == null ? null : doc["imageURL"],
-
             );
             break;
           }
@@ -254,7 +320,9 @@ class TestSearch extends SearchDelegate<String> {
               doc["views"],
               doc["reports"],
               doc["anonymous"] == null ? false : doc["anonymous"],
-              doc["multipleResponses"] == null ? false : doc["multipleResponses"],
+              doc["multipleResponses"] == null
+                  ? false
+                  : doc["multipleResponses"],
               doc["imageURL"] == null ? null : doc["imageURL"],
             );
             break;
@@ -275,7 +343,9 @@ class TestSearch extends SearchDelegate<String> {
               doc["views"],
               doc["reports"],
               doc["anonymous"] == null ? false : doc["anonymous"],
-              doc["multipleResponses"] == null ? false : doc["multipleResponses"],
+              doc["multipleResponses"] == null
+                  ? false
+                  : doc["multipleResponses"],
               doc["imageURL"] == null ? null : doc["imageURL"],
             );
             break;

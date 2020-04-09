@@ -314,16 +314,6 @@ class _MyReviewPageState extends State<ContactUsPage>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    "How was your experience with us?",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline,
-                  ),
-                ),
-              ),
               CustomPaint(
                 size: Size(MediaQuery.of(context).size.width,
                     (MediaQuery.of(context).size.height / 2) - 60),

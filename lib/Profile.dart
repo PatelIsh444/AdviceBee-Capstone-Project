@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:v0/blocked.dart';
 
+import 'package:get_version/get_version.dart';
+
 import 'AboutUs.dart';
 import 'ContactUs.dart';
 import 'Favorite.dart';
@@ -41,6 +43,7 @@ class ProfilePage extends StatefulWidget {
 
 class ProfilePageState extends State<ProfilePage> {
   File _image;
+  String appVersion;
   String fullName = "";
   String bio = "An Interesting Description";
   String followers = "0";
@@ -188,6 +191,11 @@ class ProfilePageState extends State<ProfilePage> {
 
   //Get data from firebase
   Future<void> getData() async {
+    try {
+      appVersion = await GetVersion.projectVersion;
+    } catch (e) {
+      appVersion = "N/A";
+    }
     Firestore.instance
         .collection('users')
         .document(CurrentUser.userID)
@@ -215,8 +223,8 @@ class ProfilePageState extends State<ProfilePage> {
           dynamic postCount = ds.data["myPosts"];
           posts = postCount.length.toString();
         }
-        if (ds.data["earnedPoints"] != null ){
-            scores = ds.data["earnedPoints"].toString();
+        if (ds.data["earnedPoints"] != null) {
+          scores = ds.data["earnedPoints"].toString();
         }
         if (ds.data["profilePicURL"] != null) {
           imageLink = ds.data["profilePicURL"];
@@ -392,13 +400,18 @@ class ProfilePageState extends State<ProfilePage> {
     setState(() {
       CurrentUser = null;
     });
+  }
 
+  Widget appInfo() {
+    return Padding(
+        padding: EdgeInsets.only(left: 10, bottom: 10),
+        child: Text("Version: $appVersion"));
   }
 
   Widget buildSignOutButton() {
     return Padding(
       //padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
-      padding: EdgeInsets.only(left: 10, top: 8, bottom: 30),
+      padding: EdgeInsets.only(left: 10, top: 8, bottom: 20),
       child: Row(
         children: <Widget>[
           Expanded(
@@ -881,12 +894,10 @@ class ProfilePageState extends State<ProfilePage> {
     );
   }
 
-
-
   Widget _buildIconTile(IconData icon, Color color, String title, String link) {
     //These selection for responding to onTap on each menu
     MaterialPageRoute route;
-     if (link == "mypost") {
+    if (link == "mypost") {
       route =
           MaterialPageRoute(builder: (BuildContext context) => MyPostPage());
     } else if (link == "favorite") {
@@ -899,17 +910,18 @@ class ProfilePageState extends State<ProfilePage> {
     } else if (link == "follower") {
       route = MaterialPageRoute(
           builder: (BuildContext context) => FollowingFollowersPage(0));
-    }
-    else if (link == "buyquestions") {
+    } else if (link == "buyquestions") {
       route = MaterialPageRoute(
           builder: (BuildContext context) => BuyMoreQuestions());
+    } else if (link == "chat") {
+      route = MaterialPageRoute(
+          builder: (BuildContext context) => NewChatScreen(
+                currentUserId: CurrentUser.userID,
+              ));
+    } else if (link == "blocked") {
+      route =
+          MaterialPageRoute(builder: (BuildContext context) => BlockedView());
     }
-    else if (link == "chat") {
-      route = MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,));
-    }
-    else if (link == "blocked") {
-       route = MaterialPageRoute(builder: (BuildContext context) => BlockedView());
-     }
 
     //Building menu card container
     return GestureDetector(
@@ -967,15 +979,19 @@ class ProfilePageState extends State<ProfilePage> {
           ),
           child: Column(
             children: <Widget>[
-              _buildIconTile(LineIcons.star, Colors.green, 'Favorite Posts', 'favorite'),
+              _buildIconTile(
+                  LineIcons.star, Colors.green, 'Favorite Posts', 'favorite'),
               hr,
               _buildIconTile(LineIcons.tags, Colors.green, 'Topics', 'topic'),
               hr,
-              _buildIconTile(LineIcons.shopping_cart, Colors.green, 'Buy More Questions', 'buyquestions'),
+              _buildIconTile(LineIcons.shopping_cart, Colors.green,
+                  'Buy More Questions', 'buyquestions'),
               hr,
-              _buildIconTile(LineIcons.wechat, Colors.green, 'Private Chat', 'chat'),
+              _buildIconTile(
+                  LineIcons.wechat, Colors.green, 'Private Chat', 'chat'),
               hr,
-              _buildIconTile(LineIcons.lock, Colors.green,'Block List', 'blocked'),
+              _buildIconTile(
+                  LineIcons.lock, Colors.green, 'Block List', 'blocked'),
               hr,
             ],
           ),
@@ -1014,10 +1030,12 @@ class ProfilePageState extends State<ProfilePage> {
                     buildSeparator(screenSize),
                     SizedBox(height: 10.0),
                     buildButtonList,
-                    buildSignOutButton()
+                    buildSignOutButton(),
+
                     //buildAppButtonsList,
                   ],
                 ),
+                appInfo(),
               ],
             ),
           ),

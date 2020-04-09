@@ -69,7 +69,6 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
   var _userCreated = false;
   List<questions> postList = [];
   Map likes;
-  int NumNotification = 90;
   List<Topic> topics = new List();
   String highlightTopic = "All";
   List<String> selectedTopics = new List();
@@ -84,13 +83,6 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
   final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       new FlutterLocalNotificationsPlugin();
-
-  BottomNavigationBadge badger = new BottomNavigationBadge(
-      backgroundColor: Colors.red,
-      badgeShape: BottomNavigationBadgeShape.circle,
-      textColor: Colors.white,
-      position: BottomNavigationBadgePosition.topRight,
-      textSize: 8);
 
   @override
   void initState() {
@@ -396,27 +388,6 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
     return tempAllTopicsList;
   }
 
-/*
-  This function establish user to Firebase after the first login
-
-  SetData to Firebase and then create a new instance of User class
-  This function only execute once when the app open
-  Pull all user information and store locally
-   */
-  Future<void> _SignOut(BuildContext context) async {
-    try {
-      final auth = AuthProvider.of(context);
-      await auth.SignOut();
-      setUserLastAccess();
-      //Destroy all navigation stacks
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil(MyApp.id, (Route<dynamic> route) => false);
-    } catch (e) {
-      print(e.toString());
-    }
-    CurrentUser = null;
-  }
-
   Future<bool> createUser() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
     String qualityPhotoThumbnail =
@@ -506,6 +477,11 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
       getTopicsFuture = getTopics();
     }
 
+    if(CurrentUser!=null){
+      if(CurrentUser.isNotGuest){
+        getNumNotification();
+      }
+    }
     return _userCreated;
   }
 

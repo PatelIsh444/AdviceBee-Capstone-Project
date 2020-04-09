@@ -67,6 +67,7 @@ class _NotificationFeedState extends State<NotificationFeed> {
                     GestureDetector(
                       child: Text("Yes"),
                       onTap: () {
+                        getNumNotification();
                         for (NotificationItems notification
                         in notificationItemList) {
                           Firestore.instance
@@ -175,6 +176,7 @@ class _NotificationFeedState extends State<NotificationFeed> {
                               color: Colors.red,
                               icon: Icons.delete,
                               onTap: () {
+                                getNumNotification();
                                 notificationItemList[index].removeNotification();
                                 notificationItemList.removeAt(index);
                               }),

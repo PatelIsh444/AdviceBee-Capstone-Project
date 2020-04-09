@@ -51,6 +51,9 @@ dependencies:
   bottom_navigation_badge: ^1.0.3
   getflutter: ^1.0.11
 
+  badges: ^1.1.1
+  get_version: ^0.2.2
+
   #Charts
   charts_flutter: ^0.8.1
 
