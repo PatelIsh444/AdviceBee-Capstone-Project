@@ -93,7 +93,7 @@ class _OtherUserFollowingFollowersPageState extends State<OtherUserFollowingFoll
           child: Image.asset(
             'images/addPostIcon4.png',
           ),
-          maxRadius: 18,
+          maxRadius: 12,
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
