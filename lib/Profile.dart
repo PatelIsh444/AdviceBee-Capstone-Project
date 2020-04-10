@@ -730,7 +730,7 @@ class ProfilePageState extends State<ProfilePage> {
     TextStyle nameTextStyle = TextStyle(
       fontFamily: 'Roboto',
       color: Colors.black,
-      fontSize: 28.0,
+      fontSize: 22.0,
       fontWeight: FontWeight.w700,
     );
 

@@ -95,7 +95,7 @@ class _FollowingFollowersPageState extends State<FollowingFollowersPage>
           child: Image.asset(
             'images/addPostIcon4.png',
           ),
-          maxRadius: 18,
+          maxRadius: 12,
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -148,7 +148,7 @@ class _FollowersViewState extends State<FollowersView> {
     }
     return followerUsers;
   }
-  
+
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +175,7 @@ class _FollowersViewState extends State<FollowersView> {
                 if(CurrentUser.followers.isNotEmpty)
                   {
                     userFollower = snapshot.data;
-                    return Scaffold( 
+                    return Scaffold(
                       body: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -251,9 +251,21 @@ class _FollowersViewState extends State<FollowersView> {
                   },
                   //We are checking the user's offline and online check. According to the result we show corresponding circle indicator.
                   child:ListTile(
-                    leading: CircleAvatar(backgroundImage: CachedNetworkImageProvider(userObj.profilePicURL),),
-                    title: Row(children:<Widget>[onlineIcon,Text("  "+userObj.displayName),],),
-                    subtitle: Text("        "+userObj.bio),
+                    title: Row(
+                      children: <Widget>[
+                        onlineIcon,
+                        Padding(
+                          padding: EdgeInsets.all(5.0),
+                        ),
+                        CircleAvatar(
+                          backgroundImage:
+                          CachedNetworkImageProvider(userObj.profilePicURL),
+                        ),
+                        Text("  " + userObj.displayName),
+                      ],
+                    ),
+                    subtitle:
+                    Text("" + userObj.bio),
                   ),
                 ),
               );
@@ -366,6 +378,7 @@ class _FollowingViewState extends State<FollowingView>{
 
   //Generate the cards that a user sees when navigating to the page
   Widget generateUserCards() {
+    int lastAccess;
     return Expanded(
       child: SizedBox(
         height: 200.0,
@@ -373,6 +386,19 @@ class _FollowingViewState extends State<FollowingView>{
             itemCount: userFollowing.length,
             itemBuilder: (context, index) {
               var userObj = userFollowing[index];
+              if (userObj.lastAccess != null) {
+                if (userObj.lastAccess.toString() == "online") {
+                  lastAccess = 0;
+                } else {
+                  lastAccess = 1;
+                }
+              }
+              final onlineIcon= (userObj.lastAccess != null && userObj.lastAccess.toString() == "online") ? CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  radius: 10.0,
+                  backgroundImage: AssetImage('assets/onlineGreenDot.jpg')) : CircleAvatar(
+                backgroundColor: Colors.grey,
+                radius: 10.0,);
               return Card(
                 key: Key(userObj.userID),
                 elevation: 5,
@@ -384,10 +410,22 @@ class _FollowingViewState extends State<FollowingView>{
                     ));
                   },
                   child:ListTile(
-                    leading: CircleAvatar(backgroundImage: CachedNetworkImageProvider(userObj.profilePicURL),),
-                    title: Text(userObj.displayName),
-                    subtitle: Text(userObj.bio),
-                  ),
+                    title: Row(
+                      children: <Widget>[
+                        onlineIcon,
+                        Padding(
+                          padding: EdgeInsets.all(5.0),
+                        ),
+                        CircleAvatar(
+                        backgroundImage:
+                        CachedNetworkImageProvider(userObj.profilePicURL),
+                        ),
+                        Text("  " + userObj.displayName),
+                      ],
+                    ),
+                    subtitle:
+                          Text("" + userObj.bio),
+              ),
                 ),
               );
             }),

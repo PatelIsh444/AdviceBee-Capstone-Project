@@ -37,7 +37,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
   //Variables
   Future<User> userInformationFuture;
   User userInformation;
-
+  String fullName;
   String title = "";
   bool isFollowed = false;
   String scores = "100";
@@ -107,6 +107,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
         .document(passedUserID)
         .get()
         .then((DocumentSnapshot doc) {
+      fullName = doc["displayName"];
       userInfo.displayName = doc["displayName"];
       userInfo.email = doc["email"];
       userInfo.userID = doc.documentID;
@@ -427,7 +428,19 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
               ],
             )));
   }
-
+  Widget buildFullName() {
+    TextStyle nameTextStyle = TextStyle(
+      fontFamily: 'Roboto',
+      color: Colors.black,
+      fontSize: 28.0,
+      fontWeight: FontWeight.w700,
+    );
+    return AutoSizeText(
+      fullName,
+      style: nameTextStyle,
+      maxLines: 1,
+    );
+  }
   Widget buildUserProfile() {
     final deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -598,8 +611,8 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     TextStyle nameTextStyle = TextStyle(
       fontFamily: 'Roboto',
       color: Colors.black,
-      fontSize: 28.0,
-      fontWeight: FontWeight.w700,
+      fontSize: 22.0,
+      fontWeight: FontWeight.w500,
     );
 
     return Center(
@@ -613,7 +626,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
           AutoSizeText(
             userInformation.displayName,
             style: nameTextStyle,
-            maxLines: 1,
+            maxLines: 2,
           ),
         ],
       ),

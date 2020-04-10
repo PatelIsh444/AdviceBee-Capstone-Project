@@ -354,7 +354,7 @@ class _MyReviewPageState extends State<ContactUsPage>
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(
-          Icons.mail,
+          Icons.check,
           size: 25.0,
         ),
         heroTag: "contactUsHero",
