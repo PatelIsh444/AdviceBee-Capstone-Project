@@ -60,7 +60,6 @@ class Dashboard extends StatefulWidget {
   @override
   DashboardState createState() => DashboardState();
 }
-
 class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
   int currentTab = 0; // to keep track of active tab index
   GlobalKey key = GlobalKey();
@@ -101,14 +100,12 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
       highlightTopic = widget.selectedTopic;
       getPosts(widget.selectedTopic);
     }
-
     topics.add(new Topic(
       "All",
       "https://firebasestorage.googleapis.com/v0/b/advicebee-9f277.appspot.com"
           "/o/advicebee.png?alt=media&token=f7523657-2d0b-49a6-86d5-6bab8a823526",
     ));
   }
-
   void registerNotification() {
     firebaseMessaging.requestNotificationPermissions();
     firebaseMessaging.configure(onMessage: (Map<String, dynamic> message) {
@@ -132,7 +129,6 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
       Fluttertoast.showToast(msg: err.message.toString());
     });
   }
-
   void iOS_Permission() {
     firebaseMessaging.requestNotificationPermissions(
         IosNotificationSettings(sound: true, badge: true, alert: true));
@@ -141,7 +137,6 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
       print("Settings registered: $settings");
     });
   }
-
   void configLocalNotification() {
     var initializationSettingsAndroid =
         new AndroidInitializationSettings('icon.png');
@@ -150,7 +145,6 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
         initializationSettingsAndroid, initializationSettingsIOS);
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
-
   void showNotification(message) async {
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         new FlutterLocalNotificationsPlugin();
@@ -390,8 +384,7 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
 
   Future<bool> createUser() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
-    String qualityPhotoThumbnail =
-        "https://firebasestorage.googleapis.com/v0/b/advicebee-9f277.appspot.com/o/noPictureThumbnail.png?alt=media&token=b7189670-8770-4f85-a51d-936a39b597a1";
+    String qualityPhotoThumbnail = "https://firebasestorage.googleapis.com/v0/b/advicebee-9f277.appspot.com/o/noPictureThumbnail.png?alt=media&token=b7189670-8770-4f85-a51d-936a39b597a1";
     if (!_userCreated) {
       // 1) check if user exists in users collection in database (according to their id)
       if (!user.isAnonymous && CurrentUser == null) {
@@ -414,12 +407,9 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
             }
           } else {
             //Default profile photo
-            qualityPhoto =
-                "https://firebasestorage.googleapis.com/v0/b/advicebee-9f277.appspot.com/o/noPicture.png?alt=media&token=111de0ef-ae68-422c-850d-8272b48904ab";
-            qualityPhotoThumbnail =
-               "https://firebasestorage.googleapis.com/v0/b/advicebee-9f277.appspot.com/o/noPictureThumbnail.png?alt=media&token=b7189670-8770-4f85-a51d-936a39b597a1";
+            qualityPhoto = "https://firebasestorage.googleapis.com/v0/b/advicebee-9f277.appspot.com/o/noPicture.png?alt=media&token=111de0ef-ae68-422c-850d-8272b48904ab";
+            qualityPhotoThumbnail = "https://firebasestorage.googleapis.com/v0/b/advicebee-9f277.appspot.com/o/noPictureThumbnail.png?alt=media&token=b7189670-8770-4f85-a51d-936a39b597a1";
           }
-
           //This method is to retrieve name for user that signed up with email
           //user.displayName is null
           SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -703,7 +693,7 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
           if (questionObj.anonymous == false) {
             questionObj.thumbnailURL = ds['profilePicURL'];
           } else {
-            questionObj.thumbnailURL = ds['thumbnailPicURL'] ;
+            questionObj.thumbnailURL = ds['thumbnailPicURL'];
           }
         });
       });
