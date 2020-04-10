@@ -4,19 +4,19 @@ import 'package:credit_card/credit_card_model.dart';
 import 'package:credit_card/credit_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:stripe_payment/stripe_payment.dart';
-import 'package:v0/pages/PaymentConfirm.dart';
 
 import 'package:v0/services/PaymentService.dart';
 import 'package:v0/utils/commonFunctions.dart';
 
 import '../Dashboard.dart';
+import 'PaymentHistory.dart';
 
-class BuyMoreQuestions extends StatefulWidget {
+class PaymentConfirm extends StatefulWidget {
   @override
-  _BuyMoreQuestionsState createState() => new _BuyMoreQuestionsState();
+  _PaymentConfirmState createState() => new _PaymentConfirmState();
 }
 
-class _BuyMoreQuestionsState extends State<BuyMoreQuestions> {
+class _PaymentConfirmState extends State<PaymentConfirm> {
   Token _paymentToken;
   PaymentMethod _paymentMethod;
   String _error = 'Pending...';
@@ -74,7 +74,7 @@ class _BuyMoreQuestionsState extends State<BuyMoreQuestions> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: Text('Online Store'),
+        title: Text('Payment Confirmation'),
         leading: MaterialButton(
           minWidth: MediaQuery.of(context).size.width / 5,
           onPressed: () {
@@ -97,22 +97,6 @@ class _BuyMoreQuestionsState extends State<BuyMoreQuestions> {
       ),
       body: ListView(
         children: <Widget>[
-          Expanded(
-            child: CreditCardWidget(
-              cardNumber: cardNumber,
-              expiryDate: expiryDate,
-              cardHolderName: cardHolderName,
-              cvvCode: cvvCode,
-              showBackView: isCvvFocused, //true when you want to show cvv(back) view
-            ),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: CreditCardForm(
-                onCreditCardModelChange: onCreditCardModelChange,
-              ),
-            ),
-          ),
           Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -120,34 +104,18 @@ class _BuyMoreQuestionsState extends State<BuyMoreQuestions> {
                 RaisedButton(
                   color: Colors.green,
                   child: Text(
-                    "Buy More Questions",
+                    "Payment History",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 25,
                     ),
                   ),
                   onPressed: () {
-                    cardMonth = int.parse(expiryDate.split('/')[0]);
-                    cardYear = int.parse(expiryDate.split('/')[1]);
-                    final CreditCard paymentCard = CreditCard(
-                      number: cardNumber,
-                      expMonth: cardMonth,
-                      expYear: cardYear,
-                    );
-                    StripePayment.createTokenWithCard(
-                      paymentCard,
-                    ).then((token) {
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Received ${token.tokenId}')));
-                      setState(() {
-                        _paymentToken = token;
-                      });
-                      paymentService.addUserCard(token);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PaymentConfirm(),
-                          ));
-                    }).catchError(setError);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PaymentHistory(),
+                        ));
                   },
                 ),
               ],

@@ -17,7 +17,7 @@ class PaymentService{
   }
 
   //Payment History and Add Credit card
-  addUserCard(PaymentMethod payMethod) async {
+  addUserCard(Token payMethod) async {
     String lastFour = payMethod.card.last4;
     String cardType = payMethod.card.brand;
     print("\nAdding card to " + CurrentUser.userID);
