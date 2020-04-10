@@ -51,7 +51,6 @@ const primaryGradient = const LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
 );
-
 class Dashboard extends StatefulWidget {
   static String id = 'dashboard';
   String selectedTopic;
@@ -929,15 +928,21 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
           ),
           actions: <Widget>[
             PopupMenuButton<String>(
+
               icon: Icon(Icons.sort, size: 30,),
               onSelected: selectSortType,
+
               itemBuilder: (BuildContext context) {
+
                 return choices.map((SortValues choice) {
+
                   return PopupMenuItem<String>(
-                    value: choice.choice,
+                       value: choice.choice,
+                    height: 35,
                     child: Text(
                       choice.choice,
                       style: TextStyle(
+                          fontWeight: FontWeight.w500,
                           color: choice.isSelected == true
                               ? Colors.teal
                               : Colors.black),
@@ -945,6 +950,7 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                   );
                 }).toList();
               },
+              offset: Offset(0,40),
             ),
             IconButton(
               icon: Icon(Icons.search,size: 30,),
@@ -1055,7 +1061,6 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
       ),
     );
   }
-
   _processOntapTopic(String name) async {
     FirebaseUser user = await _firebaseAuth.currentUser();
 
