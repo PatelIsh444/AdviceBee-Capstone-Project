@@ -2041,6 +2041,16 @@ class _PostQuestionState extends State<postQuestion> {
     }
   }
 
+  String capitalize(String string) {
+    if (string == null) {
+      return null;
+    }
+    if (string.isEmpty) {
+      return string;
+    }
+    return string[0].toUpperCase() + string.substring(1);
+  }
+
   Widget showNewImage(String image) {
     if (image == null) {
       return Container();
@@ -2152,8 +2162,8 @@ class _PostQuestionState extends State<postQuestion> {
         case questionTypes.SHORT_ANSWER:
           {
             await newPost.setData({
-              'question': questionController.text.toString(),
-              'description': questionDescriptionController.text.toString(),
+              'question': capitalize(questionController.text.toString()),
+              'description': capitalize(questionDescriptionController.text.toString()),
               'createdBy': userInfo.userID.toString(),
               'userDisplayName': postDisplayName,
               'dateCreated': Timestamp.now(),
@@ -2177,8 +2187,8 @@ class _PostQuestionState extends State<postQuestion> {
             }
 
             await newPost.setData({
-              'question': questionController.text.toString(),
-              'description': questionDescriptionController.text,
+              'question': capitalize(questionController.text.toString()),
+              'description': capitalize(questionDescriptionController.text),
               'choices': choices,
               'createdBy': userInfo.userID.toString(),
               'userDisplayName': postDisplayName,
@@ -2197,8 +2207,8 @@ class _PostQuestionState extends State<postQuestion> {
         case questionTypes.NUMBER_VALUE:
           {
             await newPost.setData({
-              'question': questionController.text.toString(),
-              'description': questionDescriptionController.text.toString(),
+              'question': capitalize(questionController.text.toString()),
+              'description': capitalize(questionDescriptionController.text.toString()),
               'createdBy': userInfo.userID.toString(),
               'userDisplayName': postDisplayName,
               'dateCreated': Timestamp.now(),
