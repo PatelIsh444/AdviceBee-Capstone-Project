@@ -1,26 +1,25 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:credit_card/credit_card_form.dart';
 import 'package:credit_card/credit_card_model.dart';
 import 'package:credit_card/credit_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:stripe_payment/stripe_payment.dart';
-import 'package:v0/pages/PaymentConfirm.dart';
 
 import 'package:v0/services/PaymentService.dart';
 import 'package:v0/utils/commonFunctions.dart';
 
 import '../Dashboard.dart';
 
-class BuyMoreQuestions extends StatefulWidget {
+class PaymentHistory extends StatefulWidget {
   @override
-  _BuyMoreQuestionsState createState() => new _BuyMoreQuestionsState();
+  _PaymentHistoryState createState() => new _PaymentHistoryState();
 }
 
-class _BuyMoreQuestionsState extends State<BuyMoreQuestions> {
+class _PaymentHistoryState extends State<PaymentHistory> {
   Token _paymentToken;
   PaymentMethod _paymentMethod;
   String _error = 'Pending...';
-  Source _source;
 
   var paymentService = new PaymentService();
 
@@ -45,18 +44,6 @@ class _BuyMoreQuestionsState extends State<BuyMoreQuestions> {
         publishableKey: "pk_test_9GSIOVrscIpH7WlH9p5donv100k7On42UV",
         merchantId: "AdviceBee",
         androidPayMode: 'test'));
-    StripePayment.createSourceWithParams(SourceParams(
-      type: 'AdviceBeePro',
-      amount: 0099,
-      currency: 'usd',
-      returnURL: 'example://stripe-redirect',
-    )).then((source) {
-      _scaffoldKey.currentState.showSnackBar(
-          SnackBar(content: Text('Received ${_source.sourceId}')));
-      setState(() {
-        _source = source;
-      });
-    }).catchError(setError);
   }
 
   void setError(dynamic error) {
@@ -74,7 +61,7 @@ class _BuyMoreQuestionsState extends State<BuyMoreQuestions> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: Text('Online Store'),
+        title: Text('Payment History'),
         leading: MaterialButton(
           minWidth: MediaQuery.of(context).size.width / 5,
           onPressed: () {
@@ -97,59 +84,11 @@ class _BuyMoreQuestionsState extends State<BuyMoreQuestions> {
       ),
       body: ListView(
         children: <Widget>[
-          Expanded(
-            child: CreditCardWidget(
-              cardNumber: cardNumber,
-              expiryDate: expiryDate,
-              cardHolderName: cardHolderName,
-              cvvCode: cvvCode,
-              showBackView: isCvvFocused, //true when you want to show cvv(back) view
-            ),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: CreditCardForm(
-                onCreditCardModelChange: onCreditCardModelChange,
-              ),
-            ),
-          ),
           Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                RaisedButton(
-                  color: Colors.green,
-                  child: Text(
-                    "Buy More Questions",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 25,
-                    ),
-                  ),
-                  onPressed: () {
-                    cardMonth = int.parse(expiryDate.split('/')[0]);
-                    cardYear = int.parse(expiryDate.split('/')[1]);
-                    final CreditCard paymentCard = CreditCard(
-                      number: cardNumber,
-                      expMonth: cardMonth,
-                      expYear: cardYear,
-                    );
-                    StripePayment.createTokenWithCard(
-                      paymentCard,
-                    ).then((token) {
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Received ${token.tokenId}')));
-                      setState(() {
-                        _paymentToken = token;
-                      });
-                      paymentService.addUserCard(token);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PaymentConfirm(),
-                          ));
-                    }).catchError(setError);
-                  },
-                ),
+                _generateReportsCategoryReason(),
               ],
             ),
           ),
@@ -157,6 +96,63 @@ class _BuyMoreQuestionsState extends State<BuyMoreQuestions> {
       ),
     );
   }
+
+  Widget _generateReportsCategoryReason() {
+    List<TableRow> history = List();
+    String reasons = "";
+    String priceCard = "";
+    String lastFourCard = "";
+    return StreamBuilder(
+        stream: Firestore.instance.collection('cards').document(CurrentUser.userID).collection('purchaseHistory').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasData) {
+            snapshot.data.documents.forEach((e) {
+              reasons = (e.data["itemPurchased"]);
+              priceCard = (e.data["itemCost"]);
+              lastFourCard = (e.data["lastFour"]);
+              history.add(TableRow(children: [
+                Text(
+                  reasons,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Colors.black
+                  ),
+                ),
+                Text(
+                  priceCard,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Colors.black
+                  ),
+                ),
+                Text(
+                  lastFourCard,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Colors.black
+                  ),
+                ),
+              ]));
+            });
+            return Container(
+              color: Colors.white,
+              padding: EdgeInsets.all(20.0),
+              child: Table(
+                border: TableBorder.all(color: Colors.black),
+                children: history,
+              ),
+            );
+          }
+          else {
+            return Text("Loading report category...");
+          }
+        }
+    );
+  }
+
 
   void onCreditCardModelChange(CreditCardModel creditCardModel) {
     setState(() {
