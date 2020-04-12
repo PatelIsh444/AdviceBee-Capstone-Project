@@ -315,6 +315,56 @@ exports.handleDeletingReport = functions.firestore
 		})
 	})
 	
+exports.handleCreatingRating = functions.firestore
+  	.document('feedback/{userId}/review/{ratingId}')
+  	.onCreate(async (snap, context) => {
+		const userId = context.params.userId
+		const ratingId = context.params.ratingId
+
+		const userRatingDocRef = admin.firestore().collection('feedback').doc(userId)
+		const reviewSubCollectionRef = admin.firestore().collection('feedback').doc(userId).collection('review')
+
+		return admin.firestore().runTransaction(async transaction => {
+			const reviewSubCollectionRefQuery = await transaction.get(reviewSubCollectionRef);
+			const ratingDocRef = await transaction.get(reviewSubCollectionRef.doc(ratingId));
+
+			const numberOfRatings = reviewSubCollectionRefQuery.size;
+			const dateRated = ratingDocRef.get('dateRated');
+
+			return transaction.update(userRatingDocRef, {
+				numberOfRatings: numberOfRatings,
+				lastRated: dateRated
+			});
+		})
+	})
+	  
+exports.handleDeletingRating = functions.firestore
+  	.document('feedback/{userId}/review/{ratingId}')
+  	.onDelete(async (snap, context) => {
+		const userId = context.params.userId
+		const ratingId = context.params.ratingId
+
+		const userRatingDocRef = admin.firestore().collection('feedback').doc(userId)
+		const reviewSubCollectionRef = admin.firestore().collection('feedback').doc(userId).collection('review')
+
+		return admin.firestore().runTransaction(async transaction => {
+			const reviewSubCollectionRefQuery = await transaction.get(reviewSubCollectionRef);
+			
+			if (reviewSubCollectionRefQuery.empty) {
+				return transaction.delete(userRatingDocRef);
+			}
+
+			const ratingsQueryByDateCreated = await transaction.get(reviewSubCollectionRef.orderBy('dateRated', 'desc').limit(1));
+			const dateRated = ratingsQueryByDateCreated.docs[0].data().dateRated;
+			const numberOfRatings = reviewSubCollectionRefQuery.size;
+
+			return transaction.update(userRatingDocRef, {
+				numberOfRatings: numberOfRatings,
+				lastRated: dateRated
+			});	
+		})
+	})
+
 exports.resetDailyPoints  = functions.pubsub.schedule('0 7 * * *')
 	.timeZone('America/New_York') 
 	.onRun(async (context) => {

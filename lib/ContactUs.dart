@@ -1,3 +1,5 @@
+import 'package:v0/services/FeedbackService.dart';
+
 import 'Dashboard.dart';
 import './utils/commonFunctions.dart';
 import './utils/validator.dart';
@@ -19,7 +21,6 @@ class _MyReviewPageState extends State<ContactUsPage>
   int currentTab = 3;
   GlobalKey key = GlobalKey();
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _name = new TextEditingController();
   final TextEditingController _message = new TextEditingController();
 
   bool _autoValidate = false;
@@ -101,7 +102,6 @@ class _MyReviewPageState extends State<ContactUsPage>
           }
         });
       });
-
     animation.animateTo(slideValue.toDouble());
   }
 
@@ -141,7 +141,6 @@ class _MyReviewPageState extends State<ContactUsPage>
                   Padding(
                     padding: EdgeInsets.only(left: 10.0, right: 10.0),
                     child: Container(
-                      height: 200.0,
                       child: SingleChildScrollView(
                         child: Form(
                           key: _formKey,
@@ -149,32 +148,6 @@ class _MyReviewPageState extends State<ContactUsPage>
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                              Material(
-                                elevation: 8.0,
-                                shadowColor: Colors.grey,
-                                borderRadius: BorderRadius.circular(4),
-                                child: TextFormField(
-                                  controller: _name,
-                                  validator: Validator.validateName,
-                                  decoration: InputDecoration(
-                                      icon: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Icon(Icons.person,
-                                            color: Color(0xff224597)),
-                                      ),
-                                      hintText: CurrentUser.displayName,
-                                      fillColor: Colors.white,
-                                      filled: true,
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          10.0, 10.0, 20.0, 10.0),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5.0),
-                                          borderSide: BorderSide(
-                                              color: Colors.white,
-                                              width: 0.0))),
-                                ),
-                              ),
                               SizedBox(height: 5),
                               Material(
                                 elevation: 8.0,
@@ -208,7 +181,7 @@ class _MyReviewPageState extends State<ContactUsPage>
                   ),
                   InkWell(
                     onTap: () {
-                      _mailOut(_name.text, _message.text);
+                      _mailOut(_message.text);
                     },
                     child: Container(
                       padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
@@ -241,39 +214,32 @@ class _MyReviewPageState extends State<ContactUsPage>
       duration: Duration(seconds: 8),
       backgroundColor: Colors.teal,
     )..show(context);
+
   }
 
   _checkCurrentSelected(int value) {
     if (value <= 100) {
       _showSubmitForm();
     } else if (value <= 200) {
-      _showPositive();
+      _showSubmitForm();
     } else if (value <= 300) {
-      _showPositive();
+      _showSubmitForm();
     } else if (value <= 400) {
       _showSubmitForm();
     }
   }
 
-  _mailOut(String email, String message) async {
+  _mailOut(String message) async {
+    FeedbackService feedbackService = new FeedbackService();
     if (_formKey.currentState.validate()) {
-      final MailOptions mailOptions = MailOptions(
-        body: message == null
-            ? 'a long body for the email <br> with a subset of HTML'
-            : message,
-        subject: 'Feedback from customer',
-        recipients: ['wsuadvicebee@gmail.com'],
-        isHTML: true,
-      );
-
-      await FlutterMailer.send(mailOptions);
+      Navigator.pop(context);
       Flushbar(
         title: "Thanks for letting us know.",
         message: "Your feedback improves the quality of the app.",
         duration: Duration(seconds: 8),
         backgroundColor: Colors.teal,
-      )..show(context);
-      Navigator.pop(context);
+      ).show(context);
+      await feedbackService.submitFeedback(message);
     } else {
       setState(() => _autoValidate = true);
     }
