@@ -257,10 +257,10 @@ class _MyReviewPageState extends State<ContactUsPage>
     }
   }
 
-  _mailOut(String email, String message) async {
+  _mailOut(String name, String message) async {
     FeedbackService feedbackService = new FeedbackService();
     if (_formKey.currentState.validate()) {
-      feedbackService.submitFeedback(email, message);
+      await feedbackService.submitFeedback(message);
       Flushbar(
         title: "Thanks for letting us know.",
         message: "Your feedback improves the quality of the app.",
