@@ -23,7 +23,7 @@ class PaymentService{
     print("\nAdding card to " + CurrentUser.userID);
     await Firestore.instance.collection('cards').document(CurrentUser.userID).collection('purchaseHistory').add({
       'itemPurchased': 'AdviceBee More Questions',
-      'itemCost': '7.99',
+      'itemCost': '0.99',
       'lastFour': lastFour,
       'cardType': cardType,
     });

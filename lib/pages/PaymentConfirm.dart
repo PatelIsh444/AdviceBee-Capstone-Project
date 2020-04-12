@@ -69,6 +69,7 @@ class _PaymentConfirmState extends State<PaymentConfirm> {
 
   @override
   Widget build(BuildContext context) {
+
     return new Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -98,11 +99,34 @@ class _PaymentConfirmState extends State<PaymentConfirm> {
       body: ListView(
         children: <Widget>[
           Center(
+
             child: Column(
               mainAxisSize: MainAxisSize.min,
+
               children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(30.0),
+                ),
+                Text("Your Payment has been processed successfull!",
+                    textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 40,
+                  foreground: Paint()
+                    ..shader = LinearGradient(
+                      colors: <Color>[
+                        Colors.green,
+                        Colors.redAccent,
+                      ],
+                    ). createShader(Rect.fromLTWH(0.0, 0.0, 300.0, 100.0))
+              )
+                ),
+                 Padding(
+                   padding: EdgeInsets.all(75.0),
+                ),
                 RaisedButton(
+                  padding: EdgeInsets.all(20.0),
                   color: Colors.green,
+
                   child: Text(
                     "Payment History",
                     style: TextStyle(
