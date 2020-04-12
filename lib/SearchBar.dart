@@ -127,10 +127,6 @@ class TestSearch extends SearchDelegate<String> {
   }
 
   Widget resultList() {
-    final suggestionList = databaseSearchQuery
-        .where(
-            (object) => object.name.toLowerCase().contains(query.toLowerCase()))
-        .toList();
     final suggUsers = searchResults("user");
     final suggDash = searchResults("dashboard");
     final suggGroup = searchResults("group");
@@ -217,47 +213,6 @@ class TestSearch extends SearchDelegate<String> {
         ],
       ),
     );
-//          ListView.builder(
-//            itemBuilder: (context, index) => ListTile(
-//              onTap: () {
-//                //Calls the "buildResults" Function
-//                //showResults(context);
-//                if (suggestionList[index].type == "group") {
-//                  Navigator.push(
-//                      context,
-//                      MaterialPageRoute(
-//                        builder: (context) =>
-//                            GroupProfile(suggestionList[index].groupInfo),
-//                      ));
-//                } else if (suggestionList[index].type == "user") {
-//                  Navigator.push(
-//                      context,
-//                      MaterialPageRoute(
-//                        builder: (context) => UserDetailsPage(
-//                            suggestionList[index].firstDocumentID),
-//                      ));
-//                } else if (suggestionList[index].type == "dashboard") {
-//                  questions selectedPost = getQuestion(
-//                      suggestionList[index].firstDocumentID,
-//                      suggestionList[index].secondDocumentID);
-//                  Navigator.push(
-//                      context,
-//                      MaterialPageRoute(
-//                        builder: (context) => PostPage(
-//                            selectedPost,
-//                            suggestionList[index].firstDocumentID,
-//                            suggestionList[index].secondDocumentID,
-//                            "topics"),
-//                      ));
-//                }
-//              },
-//              leading: returnIcon(suggestionList[index].type),
-//              title: RichText(
-//                text: boldSearchText(suggestionList[index].name, query),
-//              ),
-//            ),
-//            itemCount: suggestionList.length,
-//          ),
   }
 
   searchResults(String type) {
