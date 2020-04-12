@@ -38,11 +38,27 @@ class IntroSliderState extends State<IntroSlider> with WidgetsBindingObserver {
 
   final pages = [
     PageViewModel(
-
       //bubble: Image.asset('assets/newlogo.png'),
       body: 'ADVICEBEE CAN help you to find out experts in all type fields.',
       title: 'WelCome To AdviceBee',
-
+      decoration: const PageDecoration(
+        titleTextStyle: TextStyle(
+          fontSize: 50.0,
+          fontStyle: FontStyle.italic,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+        bodyTextStyle: TextStyle(
+          fontSize: 20.0,
+          fontStyle: FontStyle.italic,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+        pageColor: const Color(0xff9fa8da),
+      ),
+      image: Center(child: Image.asset("images/logoTeal.png", height: 270.0)),
+    ),
+    PageViewModel(
       body: 'Welcome to AdviceBee,\n'
           ' A leading Advice getting Softwere.'
           'AdviceBee is designed for the students of Wayne State University'
@@ -91,7 +107,8 @@ class IntroSliderState extends State<IntroSlider> with WidgetsBindingObserver {
     ),
     PageViewModel(
       title: "Posting Questions",
-      body: "Based on your status you will be given a certaing amount of questions daily."
+      body:
+          "Based on your status you will be given a certaing amount of questions daily."
           " If you run out, you can either wait for the next day or buy more!!",
       decoration: const PageDecoration(
         titleTextStyle: TextStyle(
