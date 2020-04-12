@@ -102,6 +102,15 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
       imageURL = await pictureNameInStorage.getDownloadURL() as String;
     }
   }
+  String capitalize(String string) {
+    if (string == null) {
+      return null;
+    }
+    if (string.isEmpty) {
+      return string;
+    }
+    return string[0].toUpperCase() + string.substring(1);
+  }
 
   Future<bool> uploadDashboardQuestionToDatabase(
       List<String> invitedAdvisors) async {
@@ -164,8 +173,8 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
         {
           await newPost.setData({
             'anonymous': widget.postAnonymously,
-            'question': widget.questionText,
-            'description': widget.descriptionText,
+            'question': capitalize(widget.questionText),
+            'description': capitalize(widget.descriptionText),
             'createdBy': CurrentUser.userID.toString(),
             'userDisplayName': postDisplayName,
             'dateCreated': Timestamp.now(),
@@ -190,8 +199,8 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
 
            await newPost.setData({
             'anonymous': widget.postAnonymously,
-            'question': widget.questionText,
-            'description': widget.descriptionText,
+            'question': capitalize(widget.questionText),
+            'description': capitalize(widget.descriptionText),
             'choices': choices,
             'createdBy': CurrentUser.userID.toString(),
             'userDisplayName': postDisplayName,
@@ -211,8 +220,8 @@ class _InviteDashboardAdvisorsState extends State<InviteDashboardAdvisors> {
         {
           await newPost.setData({
             'anonymous': widget.postAnonymously,
-            'question': widget.questionText,
-            'description': widget.descriptionText,
+            'question': capitalize(widget.questionText),
+            'description': capitalize(widget.descriptionText),
             'createdBy': CurrentUser.userID.toString(),
             'userDisplayName': postDisplayName,
             'dateCreated': Timestamp.now(),

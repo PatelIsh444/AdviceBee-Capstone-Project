@@ -692,7 +692,9 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
           if (questionObj.anonymous == false) {
             questionObj.thumbnailURL = ds['profilePicURL'];
           } else {
-            questionObj.thumbnailURL = ds['thumbnailPicURL'];
+            questionObj.thumbnailURL = "https://firebasestorage.googleapis.com/v0/b/advicebee"
+                "-9f277.appspot.com/o/noPictureThumbnail.png?alt=media&token=b7189670-"
+                "8770-4f85-a51d-936a39b597a1";
           }
         });
       });
