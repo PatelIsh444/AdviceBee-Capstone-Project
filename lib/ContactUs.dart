@@ -21,7 +21,6 @@ class _MyReviewPageState extends State<ContactUsPage>
   int currentTab = 3;
   GlobalKey key = GlobalKey();
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _name = new TextEditingController();
   final TextEditingController _message = new TextEditingController();
 
   bool _autoValidate = false;
@@ -142,7 +141,6 @@ class _MyReviewPageState extends State<ContactUsPage>
                   Padding(
                     padding: EdgeInsets.only(left: 10.0, right: 10.0),
                     child: Container(
-                      height: 200.0,
                       child: SingleChildScrollView(
                         child: Form(
                           key: _formKey,
@@ -150,32 +148,6 @@ class _MyReviewPageState extends State<ContactUsPage>
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                              Material(
-                                elevation: 8.0,
-                                shadowColor: Colors.grey,
-                                borderRadius: BorderRadius.circular(4),
-                                child: TextFormField(
-                                  controller: _name,
-                                  validator: Validator.validateName,
-                                  decoration: InputDecoration(
-                                      icon: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Icon(Icons.person,
-                                            color: Color(0xff224597)),
-                                      ),
-                                      hintText: CurrentUser.displayName,
-                                      fillColor: Colors.white,
-                                      filled: true,
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          10.0, 10.0, 20.0, 10.0),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5.0),
-                                          borderSide: BorderSide(
-                                              color: Colors.white,
-                                              width: 0.0))),
-                                ),
-                              ),
                               SizedBox(height: 5),
                               Material(
                                 elevation: 8.0,
@@ -209,7 +181,7 @@ class _MyReviewPageState extends State<ContactUsPage>
                   ),
                   InkWell(
                     onTap: () {
-                      _mailOut(_name.text, _message.text);
+                      _mailOut(_message.text);
                     },
                     child: Container(
                       padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
@@ -257,7 +229,7 @@ class _MyReviewPageState extends State<ContactUsPage>
     }
   }
 
-  _mailOut(String name, String message) async {
+  _mailOut(String message) async {
     FeedbackService feedbackService = new FeedbackService();
     if (_formKey.currentState.validate()) {
       Navigator.pop(context);
