@@ -824,8 +824,7 @@ class _PostPageState extends State<PostPage> {
                       child: Icon(Icons.comment),
                       onPressed: () {
                         if (CurrentUser.isNotGuest) {
-                           if (!userResponded ||
-                              postInfo.multipleResponses) {
+                          if (!userResponded || postInfo.multipleResponses) {
                             setState(() {
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (context) {
@@ -1501,34 +1500,34 @@ class _PostQuestionState extends State<postQuestion> {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-        Icon(Icons.list),
-      Center(
-      child: DropdownButton<questionTypes>(
-        hint: new Text("Select a question type"),
-        value: questionType,
-        onChanged: (questionTypes newType) {
-          setState(() {
-            questionType = newType;
-          });
-        },
-        items: [
-          DropdownMenuItem<questionTypes>(
-            value: questionTypes.SHORT_ANSWER,
-            child: Text("Short Answer"),
+          Icon(Icons.list),
+          Center(
+            child: DropdownButton<questionTypes>(
+              hint: Text("Select a question type",
+                  style: TextStyle(color: Colors.black)),
+              value: questionType,
+              items: [
+                DropdownMenuItem<questionTypes>(
+                  value: questionTypes.SHORT_ANSWER,
+                  child: Text("Short Answer"),
+                ),
+                DropdownMenuItem<questionTypes>(
+                  value: questionTypes.MULTIPLE_CHOICE,
+                  child: Text("Multiple Choice"),
+                ),
+                DropdownMenuItem<questionTypes>(
+                  value: questionTypes.NUMBER_VALUE,
+                  child: Text("Number"),
+                ),
+              ],
+              onChanged: (questionTypes newType) {
+                setState(() {
+                  questionType = newType;
+                });
+              },
+            ),
           ),
-          DropdownMenuItem<questionTypes>(
-            value: questionTypes.MULTIPLE_CHOICE,
-            child: Text("Multiple Choice"),
-          ),
-          DropdownMenuItem<questionTypes>(
-            value: questionTypes.NUMBER_VALUE,
-            child: Text("Number"),
-          ),
-        ],
-      ),
-    ),
-    ]
-    );
+        ]);
   }
 
   Future selectTopicValidation() async {
@@ -2144,7 +2143,6 @@ class _PostQuestionState extends State<postQuestion> {
           MaterialPageRoute(
               builder: (BuildContext context) => BuyMoreQuestions()),
         );
-
       }
     });
 
@@ -2163,7 +2161,8 @@ class _PostQuestionState extends State<postQuestion> {
           {
             await newPost.setData({
               'question': capitalize(questionController.text.toString()),
-              'description': capitalize(questionDescriptionController.text.toString()),
+              'description':
+                  capitalize(questionDescriptionController.text.toString()),
               'createdBy': userInfo.userID.toString(),
               'userDisplayName': postDisplayName,
               'dateCreated': Timestamp.now(),
@@ -2208,7 +2207,8 @@ class _PostQuestionState extends State<postQuestion> {
           {
             await newPost.setData({
               'question': capitalize(questionController.text.toString()),
-              'description': capitalize(questionDescriptionController.text.toString()),
+              'description':
+                  capitalize(questionDescriptionController.text.toString()),
               'createdBy': userInfo.userID.toString(),
               'userDisplayName': postDisplayName,
               'dateCreated': Timestamp.now(),
