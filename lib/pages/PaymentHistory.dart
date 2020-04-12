@@ -10,6 +10,7 @@ import 'package:v0/services/PaymentService.dart';
 import 'package:v0/utils/commonFunctions.dart';
 
 import '../Dashboard.dart';
+import '../Profile.dart';
 
 class PaymentHistory extends StatefulWidget {
   @override
@@ -19,7 +20,7 @@ class PaymentHistory extends StatefulWidget {
 class _PaymentHistoryState extends State<PaymentHistory> {
   Token _paymentToken;
   PaymentMethod _paymentMethod;
-  String _error = 'Pending...';
+  String _error = 'Pending.';
 
   var paymentService = new PaymentService();
 
@@ -68,7 +69,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Dashboard(),
+                  builder: (context) => ProfilePage(),
                 ));
             if (CurrentUser.isNotGuest) {
             } else {
