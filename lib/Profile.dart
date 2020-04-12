@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:v0/blocked.dart';
 
 import 'package:get_version/get_version.dart';
+import 'package:v0/pages/PaymentHistory.dart';
 
 import 'AboutUs.dart';
 import 'ContactUs.dart';
@@ -922,6 +923,10 @@ class ProfilePageState extends State<ProfilePage> {
       route =
           MaterialPageRoute(builder: (BuildContext context) => BlockedView());
     }
+    else if (link == "Payment_History") {
+      route =
+          MaterialPageRoute(builder: (BuildContext context) => PaymentHistory());
+    }
 
     //Building menu card container
     return GestureDetector(
@@ -972,7 +977,7 @@ class ProfilePageState extends State<ProfilePage> {
         borderRadius: BorderRadius.circular(8.0),
         shadowColor: Colors.white,
         child: Container(
-          height: 360.0,
+          height: 432.0,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.0),
@@ -992,6 +997,9 @@ class ProfilePageState extends State<ProfilePage> {
               hr,
               _buildIconTile(
                   LineIcons.lock, Colors.green, 'Block List', 'blocked'),
+              hr,
+              _buildIconTile(
+                  LineIcons.dollar, Colors.green, 'Payment History', 'Payment_History'),
               hr,
             ],
           ),
