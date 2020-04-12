@@ -260,14 +260,14 @@ class _MyReviewPageState extends State<ContactUsPage>
   _mailOut(String name, String message) async {
     FeedbackService feedbackService = new FeedbackService();
     if (_formKey.currentState.validate()) {
-      await feedbackService.submitFeedback(message);
+      Navigator.pop(context);
       Flushbar(
         title: "Thanks for letting us know.",
         message: "Your feedback improves the quality of the app.",
         duration: Duration(seconds: 8),
         backgroundColor: Colors.teal,
-      )..show(context);
-      Navigator.pop(context);
+      ).show(context);
+      await feedbackService.submitFeedback(message);
     } else {
       setState(() => _autoValidate = true);
     }
