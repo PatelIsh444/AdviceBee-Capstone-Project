@@ -1,3 +1,5 @@
+import 'package:v0/services/FeedbackService.dart';
+
 import 'Dashboard.dart';
 import './utils/commonFunctions.dart';
 import './utils/validator.dart';
@@ -101,7 +103,6 @@ class _MyReviewPageState extends State<ContactUsPage>
           }
         });
       });
-
     animation.animateTo(slideValue.toDouble());
   }
 
@@ -241,32 +242,25 @@ class _MyReviewPageState extends State<ContactUsPage>
       duration: Duration(seconds: 8),
       backgroundColor: Colors.teal,
     )..show(context);
+
   }
 
   _checkCurrentSelected(int value) {
     if (value <= 100) {
       _showSubmitForm();
     } else if (value <= 200) {
-      _showPositive();
+      _showSubmitForm();
     } else if (value <= 300) {
-      _showPositive();
+      _showSubmitForm();
     } else if (value <= 400) {
       _showSubmitForm();
     }
   }
 
   _mailOut(String email, String message) async {
+    FeedbackService feedbackService = new FeedbackService();
     if (_formKey.currentState.validate()) {
-      final MailOptions mailOptions = MailOptions(
-        body: message == null
-            ? 'a long body for the email <br> with a subset of HTML'
-            : message,
-        subject: 'Feedback from customer',
-        recipients: ['wsuadvicebee@gmail.com'],
-        isHTML: true,
-      );
-
-      await FlutterMailer.send(mailOptions);
+      feedbackService.submitFeedback(email, message);
       Flushbar(
         title: "Thanks for letting us know.",
         message: "Your feedback improves the quality of the app.",
