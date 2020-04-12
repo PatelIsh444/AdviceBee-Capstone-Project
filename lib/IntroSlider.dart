@@ -34,10 +34,8 @@ class IntroSliderState extends State<IntroSlider>with WidgetsBindingObserver {
   final pages = [
     PageViewModel(
       //bubble: Image.asset('assets/newlogo.png'),
-      body: 'Dr. Seyed Ziae Mousavi Mojab,\n'
-            'Is a Co-founder of this software, he has a great vision to help students in solving their problems in all type of field by connecting them to best experts in all field through a software.\n'
-            'ADVICEBEE CAN DO THIS!',
-      title: 'WelCome',
+      body: 'ADVICEBEE CAN help you to find out experts in all type fields.',
+      title: 'WelCome To AdviceBee',
       decoration: const PageDecoration(
         titleTextStyle: TextStyle(fontSize: 50.0,
           fontStyle: FontStyle.italic,
