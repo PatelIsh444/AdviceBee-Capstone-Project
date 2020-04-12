@@ -1,7 +1,7 @@
-
 import 'package:credit_card/credit_card_form.dart';
 import 'package:credit_card/credit_card_model.dart';
 import 'package:credit_card/credit_card_widget.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 import 'package:v0/pages/PaymentConfirm.dart';
@@ -10,6 +10,8 @@ import 'package:v0/services/PaymentService.dart';
 import 'package:v0/utils/commonFunctions.dart';
 
 import '../Dashboard.dart';
+import '../MoreMenu.dart';
+import '../QuestionPage.dart';
 
 class BuyMoreQuestions extends StatefulWidget {
   @override
@@ -35,8 +37,7 @@ class _BuyMoreQuestionsState extends State<BuyMoreQuestions> {
   int cardYear = 21;
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-
-  get currentTab => null;
+  GlobalKey key = GlobalKey();
 
   @override
   initState() {
@@ -60,8 +61,14 @@ class _BuyMoreQuestionsState extends State<BuyMoreQuestions> {
   }
 
   void setError(dynamic error) {
-    _scaffoldKey.currentState
-        .showSnackBar(SnackBar(content: Text(_error.toString())));
+    Flushbar(
+      title: _error.toString(),
+      message: " ",
+      duration: Duration(seconds: 5),
+      backgroundColor: Colors.teal,
+    ).show(context);
+//    _scaffoldKey.currentState
+//        .showSnackBar(SnackBar(content: Text(_error.toString())));
     setState(() {
       _error = error.toString();
     });
@@ -78,11 +85,7 @@ class _BuyMoreQuestionsState extends State<BuyMoreQuestions> {
         leading: MaterialButton(
           minWidth: MediaQuery.of(context).size.width / 5,
           onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Dashboard(),
-                ));
+            Navigator.pop(context);
             if (CurrentUser.isNotGuest) {
             } else {
               guestUserSignInMessage(context);
@@ -103,7 +106,8 @@ class _BuyMoreQuestionsState extends State<BuyMoreQuestions> {
               expiryDate: expiryDate,
               cardHolderName: cardHolderName,
               cvvCode: cvvCode,
-              showBackView: isCvvFocused, //true when you want to show cvv(back) view
+              showBackView:
+                  isCvvFocused, //true when you want to show cvv(back) view
             ),
           ),
           Expanded(
@@ -137,7 +141,8 @@ class _BuyMoreQuestionsState extends State<BuyMoreQuestions> {
                     StripePayment.createTokenWithCard(
                       paymentCard,
                     ).then((token) {
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Received ${token.tokenId}')));
+                      _scaffoldKey.currentState.showSnackBar(
+                          SnackBar(content: Text('Received ${token.tokenId}')));
                       setState(() {
                         _paymentToken = token;
                       });
@@ -155,6 +160,29 @@ class _BuyMoreQuestionsState extends State<BuyMoreQuestions> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          if (CurrentUser.isNotGuest) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => postQuestion(null, null) //AddPost(),
+                    ));
+          } else {
+            guestUserSignInMessage(context);
+          }
+        },
+        heroTag: "my2PostsHero",
+        tooltip: 'Increment',
+        child: CircleAvatar(
+          child: Image.asset(
+            'images/addPostIcon4.png',
+          ),
+          maxRadius: 12,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: globalNavigationBar(2, context, key, false),
     );
   }
 
