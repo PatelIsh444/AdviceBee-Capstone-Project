@@ -218,7 +218,6 @@ class _MyReviewPageState extends State<ContactUsPage>
   }
 
   _checkCurrentSelected(int value) {
-    print('value: $value');
     if (value <= 0) {
       _showSubmitForm("bad");
     } else if (value <= 100) {
