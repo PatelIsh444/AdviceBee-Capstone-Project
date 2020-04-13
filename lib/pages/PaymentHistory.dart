@@ -104,45 +104,47 @@ class _PaymentHistoryState extends State<PaymentHistory> {
     String priceCard = "";
     String lastFourCard = "";
     return StreamBuilder(
-        stream: Firestore.instance.collection('cards').document(CurrentUser.userID).collection('purchaseHistory').snapshots(),
+        stream: Firestore.instance.collection('cards').document(CurrentUser.userID).collection('purchaseHistory').orderBy('date').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
             snapshot.data.documents.forEach((e) {
               reasons = (e.data["itemPurchased"]);
               priceCard = (e.data["itemCost"]);
               lastFourCard = (e.data["lastFour"]);
-              history.add(TableRow(children: [
-                Text(
-                  reasons,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                      color: Colors.black
-                  ),
-                ),
-                Text(
-                  priceCard,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                      color: Colors.black
-                  ),
-                ),
-                Text(
-                  lastFourCard,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                      color: Colors.black
-                  ),
-                ),
+              history.add(TableRow(
+                  children: [
+                    Text(
+                      reasons,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: Colors.black
+                      ),
+                    ),
+                    Text(
+                      priceCard,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: Colors.black
+                      ),
+                    ),
+                    Text(
+                      lastFourCard,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: Colors.black
+                      ),
+                    ),
               ]));
             });
             return Container(
-              color: Colors.white,
-              padding: EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(5),
               child: Table(
-                border: TableBorder.all(color: Colors.black),
+                defaultColumnWidth: FlexColumnWidth(1.0),
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                border: TableBorder.all(color: Colors.black12),
                 children: history,
               ),
             );

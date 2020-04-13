@@ -4,6 +4,7 @@ import 'package:credit_card/credit_card_model.dart';
 import 'package:credit_card/credit_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:stripe_payment/stripe_payment.dart';
+import 'package:v0/Profile.dart';
 
 import 'package:v0/services/PaymentService.dart';
 import 'package:v0/utils/commonFunctions.dart';
@@ -82,7 +83,7 @@ class _PaymentConfirmState extends State<PaymentConfirm> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Dashboard(),
+                  builder: (context) => ProfilePage(),
                 ));
             if (CurrentUser.isNotGuest) {
             } else {

@@ -7,22 +7,30 @@ import 'package:v0/Dashboard.dart';
 class PaymentService{
   //This will be a dynamic modifiable variable
   int purchaseIncreaseAmount = 50;
-  Map<String, int> payQuestionsLimitMap = {'Larvae':3, 'Queen Bee':15, 'Worker Bee':7};
-
-  //Pull Dynamic Config from Firestore
-  generateConfigurationDetails() async {
-    await Firestore.instance.collection("configuration").document("config").get().then((DocumentSnapshot snapshot){
-      payQuestionsLimitMap = snapshot.data["awardedNumberOfQuestionsAfterPurchase"];
-    });
-  }
+  Map<String, dynamic> payQuestionsLimitMap = {'Queen Bee':15, 'Worker Bee':5, 'Larvae':3};
 
   //Payment History and Add Credit card
   addUserCard(Token payMethod) async {
     String lastFour = payMethod.card.last4;
     String cardType = payMethod.card.brand;
     print("\nAdding card to " + CurrentUser.userID);
+    String userRank = "Larvae";
+    await Firestore.instance.collection("configuration").document("config").get().then((DocumentSnapshot snapshot){
+      print("\nPurchase Questions:\n");
+      print(snapshot.data["awardedNumberOfQuestionsAfterPurchase"]);
+      payQuestionsLimitMap = snapshot.data["awardedNumberOfQuestionsAfterPurchase"];
+    });
+    if(CurrentUser.earnedPoints < 500){
+      userRank = "Larvae";
+    }else if(CurrentUser.earnedPoints < 1000){
+      userRank = "Worker Bee";
+    }else{
+      userRank = "Queen Bee";
+    }
+    String itemName = "AdviceBee " + payQuestionsLimitMap[userRank].toString() + " more questions";
     await Firestore.instance.collection('cards').document(CurrentUser.userID).collection('purchaseHistory').add({
-      'itemPurchased': 'AdviceBee More Questions',
+      'itemPurchased': itemName,
+      'date': DateTime.now(),
       'itemCost': '0.99',
       'lastFour': lastFour,
       'cardType': cardType,
@@ -40,7 +48,6 @@ class PaymentService{
   chargeUser(){
     print("\nCharged todo");
     //Then user is given question amount
-    generateConfigurationDetails();
     increaseQuestions();
   }
 
