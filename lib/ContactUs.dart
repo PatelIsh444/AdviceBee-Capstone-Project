@@ -105,7 +105,7 @@ class _MyReviewPageState extends State<ContactUsPage>
     animation.animateTo(slideValue.toDouble());
   }
 
-  _showSubmitForm() {
+  _showSubmitForm(String feedbackType) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -181,7 +181,7 @@ class _MyReviewPageState extends State<ContactUsPage>
                   ),
                   InkWell(
                     onTap: () {
-                      _mailOut(_message.text);
+                      _mailOut(_message.text, feedbackType);
                     },
                     child: Container(
                       padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
@@ -218,18 +218,18 @@ class _MyReviewPageState extends State<ContactUsPage>
   }
 
   _checkCurrentSelected(int value) {
-    if (value <= 100) {
-      _showSubmitForm();
+    if (value <= 0) {
+      _showSubmitForm("bad");
+    } else if (value <= 100) {
+      _showSubmitForm("ugh");
     } else if (value <= 200) {
-      _showSubmitForm();
+      _showSubmitForm("ok");
     } else if (value <= 300) {
-      _showSubmitForm();
-    } else if (value <= 400) {
-      _showSubmitForm();
+      _showSubmitForm("good");
     }
   }
 
-  _mailOut(String message) async {
+  _mailOut(String message, String feedbackType) async {
     FeedbackService feedbackService = new FeedbackService();
     if (_formKey.currentState.validate()) {
       Navigator.pop(context);
@@ -239,7 +239,7 @@ class _MyReviewPageState extends State<ContactUsPage>
         duration: Duration(seconds: 8),
         backgroundColor: Colors.teal,
       ).show(context);
-      await feedbackService.submitFeedback(message);
+      await feedbackService.submitFeedback(message, feedbackType);
     } else {
       setState(() => _autoValidate = true);
     }
