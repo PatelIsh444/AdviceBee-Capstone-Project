@@ -31,7 +31,7 @@ This application uses Flutter, in order to install and run this program you must
 4. Install [XCode] (https://apps.apple.com/us/app/xcode/id497799835)
 5. Install [Visual Studio Code](https://code.visualstudio.com/download).
 6. Install the [Flutter Plugin](https://flutter.dev/docs/development/tools/vs-code) on Visual Studio Code.
-7. Install [Firebase CLI](https://firebase.google.com/docs/cli#install-cli-windows)
+7. Install [Firebase CLI](https://firebase.google.com/docs/cli#install-cli-mac-linux)
 8. User Terminal to `cd` into the `AdviceBee`  directory of the local cloned repo.
 9. Run `flutter pub get`
 10. Run `flutter run` to test the application in Debug mode
@@ -65,6 +65,24 @@ Once you've made the changes, tested the changes, and are ready to build the app
 1. Run `flutter build ios --debug` to build the iOS application in Debug mode
 ##### Building a Release app
 1. Run `flutter build ios --release` to build the iOS application in Release mode
+
+## Firebase Functions
+Firebase CLI functions control some aspects of the application like daily updates and the notification service and the communication from the Firestore to the Firebase Cloud Messaging
+
+### Using Terminal
+#### Modifications
+1. Open the project using Visual Studio Code.
+2. Use Terminal to `cd` into the `AdviceBee/Firebase Functions/functions`  directory of the local cloned repo.
+3. Modify the `index.js` file and include any new Firebase Functions.
+#### Login to Firebase Server
+1. Open the project using Visual Studio Code.
+2. Use Terminal to `cd` into the `AdviceBee/Firebase Functions/functions`  directory of the local cloned repo.
+3. Run `firebase login` to login to the AdviceBee Firebase
+#### Deploy Firebase Functions
+1. Open the project using Visual Studio Code.
+2. Use Terminal to `cd` into the `AdviceBee/Firebase Functions/functions`  directory of the local cloned repo.
+3. Login to firebase using the above section
+4. Run `firebase deploy` to deploy the updated functions file to Firebase
 
 ## Using
 Upon successful installation and running of the application on Chome, the first screen you will see is a Login Page.
