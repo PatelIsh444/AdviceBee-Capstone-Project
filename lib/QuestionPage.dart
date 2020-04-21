@@ -1472,7 +1472,7 @@ class _PostQuestionState extends State<postQuestion> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        Icon(Icons.list),
+        Icon(Icons.library_books),
         Center(
           child: DropdownButton<String>(
             hint: new Text("Select a topic               ",
@@ -1500,7 +1500,7 @@ class _PostQuestionState extends State<postQuestion> {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          Icon(Icons.list),
+          Icon(Icons.help),
           Center(
             child: DropdownButton<questionTypes>(
               hint: Text("Select a question type",

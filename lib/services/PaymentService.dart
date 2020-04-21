@@ -27,7 +27,7 @@ class PaymentService{
     }else{
       userRank = "Queen Bee";
     }
-    String itemName = "AdviceBee " + payQuestionsLimitMap[userRank].toString() + " more questions";
+    String itemName = "AdviceBee " + payQuestionsLimitMap[userRank].toString() + " question pack";
     await Firestore.instance.collection('cards').document(CurrentUser.userID).collection('purchaseHistory').add({
       'itemPurchased': itemName,
       'date': DateTime.now(),

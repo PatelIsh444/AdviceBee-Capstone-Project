@@ -99,7 +99,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
   }
 
   Widget _generateReportsCategoryReason() {
-    List<TableRow> history = List();
+    List<DataRow> history = List();
     String reasons = "";
     String priceCard = "";
     String lastFourCard = "";
@@ -111,41 +111,33 @@ class _PaymentHistoryState extends State<PaymentHistory> {
               reasons = (e.data["itemPurchased"]);
               priceCard = (e.data["itemCost"]);
               lastFourCard = (e.data["lastFour"]);
-              history.add(TableRow(
-                  children: [
-                    Text(
-                      reasons,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                          color: Colors.black
+              history.add(DataRow(
+                  cells: [
+                    DataCell(
+                      Text(
+                        reasons,
                       ),
                     ),
-                    Text(
-                      priceCard,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                          color: Colors.black
+                    DataCell(
+                      Text(
+                        priceCard,
                       ),
                     ),
-                    Text(
+                    DataCell(
+                      Text(
                       lastFourCard,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                          color: Colors.black
-                      ),
+                    ),
                     ),
               ]));
             });
             return Container(
-              padding: EdgeInsets.all(5),
-              child: Table(
-                defaultColumnWidth: FlexColumnWidth(1.0),
-                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                border: TableBorder.all(color: Colors.black12),
-                children: history,
+              child: DataTable(
+                columns: [
+                  DataColumn(label: Text('Purchase Detail')),
+                  DataColumn(label: Text('Cost')),
+                  DataColumn(label: Text('Payment Method')),
+                ],
+                rows: history,
               ),
             );
           }
