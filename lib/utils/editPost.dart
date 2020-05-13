@@ -39,7 +39,7 @@ class _editPost extends State<editPost> {
   List<dynamic> answers;
   List<MultipleChoiceEntry> choices = [];
   String
-      groupsOrTopics; //it stores the value "topic" or "groups" depending on the collection
+  groupsOrTopics; //it stores the value "topic" or "groups" depending on the collection
   questions questionObject;
   GlobalKey key = GlobalKey();
   File image;
@@ -97,44 +97,44 @@ class _editPost extends State<editPost> {
     }
     return Card(
         child: Column(
-      children: <Widget>[
-        Row(
           children: <Widget>[
-            Flexible(
-              child: ListTile(
-                title: Text(
-                  questionObject.question,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0,
+            Row(
+              children: <Widget>[
+                Flexible(
+                  child: ListTile(
+                    title: Text(
+                      questionObject.question,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
+                      ),
+                    ),
+                    subtitle: Text(
+                      questionDescription,
+                      style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16.0),
+                    ),
                   ),
                 ),
-                subtitle: Text(
-                  questionDescription,
-                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16.0),
-                ),
-              ),
+                addImage(questionObject.imageURL),
+              ],
             ),
-            addImage(questionObject.imageURL),
+            Container(
+                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 17),
+                width: screenSize.width,
+                child: InkWell(
+                  child: AutoSizeText(
+                    "Posted " + timeago.format(questionObject.datePosted.toDate()),
+                    textAlign: TextAlign.left,
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14.0,
+                      color: Colors.grey,
+                    ),
+                  ),
+                )),
           ],
-        ),
-        Container(
-            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 17),
-            width: screenSize.width,
-            child: InkWell(
-              child: AutoSizeText(
-                "Posted " + timeago.format(questionObject.datePosted.toDate()),
-                textAlign: TextAlign.left,
-                maxLines: 1,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14.0,
-                  color: Colors.grey,
-                ),
-              ),
-            )),
-      ],
-    ));
+        ));
   }
 
   ///
@@ -158,12 +158,12 @@ class _editPost extends State<editPost> {
           tag: "image",
           child: Container(
               child: Padding(
-            padding: EdgeInsets.only(top: 10, right: 15),
-            child: CircleAvatar(
-              backgroundImage: CachedNetworkImageProvider(imageURL),
-              radius: 50,
-            ),
-          )),
+                padding: EdgeInsets.only(top: 10, right: 15),
+                child: CircleAvatar(
+                  backgroundImage: CachedNetworkImageProvider(imageURL),
+                  radius: 50,
+                ),
+              )),
         ),
       );
     }
@@ -184,7 +184,7 @@ class _editPost extends State<editPost> {
             description("New Title"),
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+              const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
               child: TextFormField(
                 controller: newTitleController,
                 autovalidate: false,
@@ -196,7 +196,7 @@ class _editPost extends State<editPost> {
             description("New Dscription"),
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+              const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
               child: TextFormField(
                 controller: newDescriptionController,
                 autovalidate: false,
@@ -336,7 +336,7 @@ class _editPost extends State<editPost> {
             .ref()
             .child("postPictures/" + documentID + "postPicture");
         final StorageUploadTask uploadTask =
-            pictureNameInStorage.putFile(image);
+        pictureNameInStorage.putFile(image);
         await uploadTask.onComplete;
         imageURL = await pictureNameInStorage.getDownloadURL() as String;
       }
@@ -388,20 +388,20 @@ class _editPost extends State<editPost> {
               title: Text("Snap or Choose a Photo?"),
               content: SingleChildScrollView(
                   child: ListBody(children: <Widget>[
-                GestureDetector(
-                  child: Text("Camera"),
-                  onTap: () {
-                    getCameraImage();
-                  },
-                ),
-                Padding(padding: EdgeInsets.all(7)),
-                GestureDetector(
-                  child: Text("Gallery"),
-                  onTap: () {
-                    getGalleryImage();
-                  },
-                ),
-              ])));
+                    GestureDetector(
+                      child: Text("Camera"),
+                      onTap: () {
+                        getCameraImage();
+                      },
+                    ),
+                    Padding(padding: EdgeInsets.all(7)),
+                    GestureDetector(
+                      child: Text("Gallery"),
+                      onTap: () {
+                        getGalleryImage();
+                      },
+                    ),
+                  ])));
         });
   }
 
@@ -518,7 +518,7 @@ class _editPost extends State<editPost> {
       bottomNavigationBar: globalNavigationBar(2, context, key, false),
       body: Padding(
         padding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: ListView(shrinkWrap: true, children: <Widget>[
           Column(
             children: <Widget>[
@@ -526,7 +526,7 @@ class _editPost extends State<editPost> {
               Form(
                 key: _formKey,
                 child:
-                    buildQuestionSpecific(), //Builds body of post response page, determines appropriate body type
+                buildQuestionSpecific(), //Builds body of post response page, determines appropriate body type
               ),
             ],
           ),

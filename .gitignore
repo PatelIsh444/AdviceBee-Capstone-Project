@@ -524,7 +524,7 @@ doc/api/
 **/ios/Flutter/flutter_assets/
 **/ios/Flutter/flutter_export_enviroment.sh
 **/ios/ServiceDefinitions.json
-**/ios/Runner/GeneratedPluginRegistrant.*
+**/ios/Runner/GeneratedPluginRegistrant.m
 
 # Exceptions to above rules.
 !**/ios/**/default.mode1v3

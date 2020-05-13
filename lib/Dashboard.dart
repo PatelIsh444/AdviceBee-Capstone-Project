@@ -75,13 +75,6 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
   List<String> selectedTopics = new List();
   List<String> allTopicsList = new List();
   List<String> allTopicsName = new List();
-  List<SortValues> choices = <SortValues>[
-    SortValues("Sort Posts By:", false),
-    SortValues("Recently Added", true),
-    SortValues("Most Likes", false),
-    SortValues("Most Viewed", false),
-    SortValues("Most Responded", false),
-  ];
   Future<List<String>> getTopicsFuture;
   bool noTopicChange = true;
 
@@ -405,6 +398,7 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
 
 /*
   This function establish user to Firebase after the first login
+
   SetData to Firebase and then create a new instance of User class
   This function only execute once when the app open
   Pull all user information and store locally
@@ -474,13 +468,13 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
             'following': new List(),
             'likedPosts': new List(),
             'bio': "An interesting description",
-            'dailyPoints': 100,
             'earnedPoints': 0,
             'lastPosted': Timestamp.now(),
-            'lastPointReset': Timestamp.now(),
             'dateCreated': Timestamp.now(),
             'last access': 'online',
             'blocked': new List(),
+            'dailyQuestions':3,
+            'rank': 'Larvae',
           });
 
           if (selectedTopics.isEmpty) {
@@ -504,16 +498,9 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
             ));
       }
       //if guest then set isGuest as false
-      else {
-        if (user.isAnonymous) {
+      else if (user.isAnonymous) {
           CurrentUser = UserClass.User.withInfo(isNotGuest: false);
-          ///this is for users who don't have the teh 'blocked' field on database
-          ///all the users created before version 3.5 don't have it
-          ///so we check and create the field on the database
-          if(CurrentUser.blocked.isEmpty){
-            Firestore.instance.collection('users').document(CurrentUser.userID).setData({'blocked':new List()});
-          }
-        }
+
       }
       _userCreated = true;
       getTopicsFuture = getTopics();
@@ -967,10 +954,6 @@ class DashboardState extends State<Dashboard> with WidgetsBindingObserver {
             minWidth: MediaQuery.of(context).size.width / 5,
             onPressed: () {
               onShow(key, context);
-              if (CurrentUser.isNotGuest) {
-              } else {
-                guestUserSignInMessage(context);
-              }
             },
             child: Icon(
               Icons.menu,

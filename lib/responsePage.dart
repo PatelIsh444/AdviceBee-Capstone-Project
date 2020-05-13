@@ -200,9 +200,10 @@ class _PostResponseState extends State<postResponse> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 20.0, vertical: 0.0),
                         child: new TextFormField(
+                          maxLines: 2,
                           controller: responseController,
                           decoration:
-                              new InputDecoration(labelText: 'Enter Response!'),
+                          new InputDecoration(labelText: 'Enter Response!'),
                           autovalidate: false,
                           onSaved: (value) => responseController.text = value,
                           maxLength: 60,
@@ -296,11 +297,9 @@ class _PostResponseState extends State<postResponse> {
           setState(() async {
             //First, check if the question type is multiple choice
             if (widget.questionType != questionTypes.MULTIPLE_CHOICE) {
-              //If it isn't, validate the response then upload.
-              if (_formKey.currentState.validate()) {
                 await uploadResponseToDatabase();
                 Navigator.pop(context);
-              }
+
             } else {
               //Otherwise, just upload the response
               await uploadResponseToDatabase();

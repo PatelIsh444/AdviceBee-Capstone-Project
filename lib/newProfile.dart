@@ -17,6 +17,7 @@ import 'Profile.dart' as cProfile;
 import 'OtherUserPosts.dart';
 import 'OtherUserFollowerPage.dart';
 import './utils/commonFunctions.dart';
+import 'pages/Chat.dart';
 import 'pages/FullPhoto.dart';
 import 'pages/NewChat.dart';
 
@@ -117,7 +118,6 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
       userInfo.following = doc["following"];
       userInfo.likedPosts = doc["likedPosts"];
       userInfo.bio = doc["bio"];
-      userInfo.dailyPoints = doc["dailyPoints"];
       userInfo.earnedPoints = doc["earnedPoints"];
       if (doc['last access'] != null) {
         if (doc['last access'].toString() == "online") {
@@ -140,7 +140,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
               timeStampSplit.year.toString();
           print(dateJoined);
         }
-        scores = (userInfo.dailyPoints + userInfo.earnedPoints).toString();
+        scores = (userInfo.earnedPoints).toString();
         tempUserID = userInfo.userID;
         if (userInfo.followers != null) {
           numberOfFollowers = userInfo.followers.length;
@@ -470,15 +470,15 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
             buildStatContainer(),
             buildDate(context),
             aboutUser(deviceWidth),
-            userOnlineStatus(),
             buildSeparator(deviceWidth),
             SizedBox(height: 10.0),
             CurrentUser.isNotGuest && CurrentUser.userID != widget.userID
                 ? getFollowButton()
                 : Container(),
             SizedBox(height: 10.0),
-            CurrentUser.isNotGuest && CurrentUser.userID != widget.userID &&
-          !userInformation.blocked.contains(CurrentUser.userID)
+            CurrentUser.isNotGuest &&
+                    CurrentUser.userID != widget.userID &&
+                    !userInformation.blocked.contains(CurrentUser.userID)
                 ? getChatButton()
                 : Container(),
             SizedBox(height: 30.0),
@@ -603,46 +603,31 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     );
 
     return Center(
-      child: AutoSizeText(
-        userInformation.displayName,
-        style: nameTextStyle,
-        maxLines: 1,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          userOnlineStatus(),
+          AutoSizeText(
+            userInformation.displayName,
+            style: nameTextStyle,
+            maxLines: 1,
+          ),
+        ],
       ),
     );
   }
 
   Widget userOnlineStatus() {
-    TextStyle bioTextStyle = TextStyle(
-      fontFamily: 'Spectral',
-      fontWeight: FontWeight.bold, //try changing weight to w500 if not thin
-      fontSize: 16.0,
-    );
-    return Center(
-      child: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        padding: EdgeInsets.all(8.0),
-        child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                lastAccess,
-                textAlign: TextAlign.center,
-                style: bioTextStyle,
-              ),
-              lastAccess == "Online"
-                  ? CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      radius: 10.0,
-                      backgroundImage: AssetImage('assets/onlineGreenDot.jpg'))
-                  : CircleAvatar(
-                backgroundColor: Colors.grey,
-                radius: 10.0,),
-            ],
-          ),
-        ),
-      ),
-    );
+    if (lastAccess == "Online")
+      return CircleAvatar(
+          backgroundColor: Colors.transparent,
+          radius: 10.0,
+          backgroundImage: AssetImage('assets/onlineGreenDot.jpg'));
+    else
+      return CircleAvatar(
+        backgroundColor: Colors.grey,
+        radius: 10.0,
+      );
   }
 
   Widget userImage(double deviceWidth) {
@@ -705,7 +690,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     return Container(
       padding: EdgeInsets.only(left: 20.0, right: 20.0),
       child: Text(
-        "Total Points ${userInformation.dailyPoints + userInformation.earnedPoints}",
+        "Total Points ${userInformation.earnedPoints}",
         style: TextStyle(
           fontSize: 18.0,
           fontWeight: FontWeight.bold,
@@ -782,7 +767,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
   Widget getChatButton() {
     return Center(
       child: InkResponse(
-        onTap: () {
+        onTap: () async {
           String groupChatId = '';
           String peerIdLocal = userInformation.userID;
           User peerLocal = userInformation;
@@ -793,22 +778,54 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
           } else {
             groupChatId = "$peerIdLocal-$currentUserId";
           }
-          Firestore.instance.collection('chats').document(groupChatId)
-              .setData({
-            'id': currentUserId,
-            'displayName': currentUser.displayName,
-            'profilePicURL': currentUser.profilePicURL,
-            'bio': currentUser.bio,
-            'peerBio': peerLocal.bio,
-            'peerNickname': peerLocal.displayName,
-            'peerPhotoUrl': peerLocal.profilePicURL,
-            'peerId': peerLocal.userID,
-            'approved': false,
-          });
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (BuildContext context) => NewChatScreen(currentUserId: CurrentUser.userID,)),
-          );
+          DocumentSnapshot doc = await Firestore.instance
+              .collection('chats')
+              .document(groupChatId)
+              .get();
+          if (doc == null || !doc.exists) {
+            Firestore.instance
+                .collection('chats')
+                .document(groupChatId)
+                .setData({
+              'id': currentUserId,
+              'displayName': currentUser.displayName,
+              'profilePicURL': currentUser.profilePicURL,
+              'bio': currentUser.bio,
+              'peerBio': peerLocal.bio,
+              'peerNickname': peerLocal.displayName,
+              'peerPhotoUrl': peerLocal.profilePicURL,
+              'peerId': peerLocal.userID,
+              'approved': false,
+            });
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => NewChatScreen(
+                        currentUserId: CurrentUser.userID,
+                      )),
+            );
+          } else {
+            if (doc['approved'] == false) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => NewChatScreen(
+                          currentUserId: CurrentUser.userID,
+                        )),
+              );
+            } else {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Chat(
+                            userId: currentUserId,
+                            chatId: groupChatId,
+                            peerId: userInformation.userID,
+                            peerAvatar: userInformation.profilePicURL,
+                            peerName: userInformation.displayName,
+                          )));
+            }
+          }
         },
         child: Padding(
           padding: EdgeInsets.only(left: 30, right: 30),
@@ -837,6 +854,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
       ),
     );
   }
+
   Widget getFollowButton() {
     if (isFollowed) {
       buttonText = "Unfollow";

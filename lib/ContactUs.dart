@@ -24,7 +24,6 @@ class _MyReviewPageState extends State<ContactUsPage>
 
   bool _autoValidate = false;
 
-
   final PageController pageControl = new PageController(
     initialPage: 2,
     keepPage: false,
@@ -163,7 +162,7 @@ class _MyReviewPageState extends State<ContactUsPage>
                                         child: Icon(Icons.person,
                                             color: Color(0xff224597)),
                                       ),
-                                      hintText: 'Your name',
+                                      hintText: CurrentUser.displayName,
                                       fillColor: Colors.white,
                                       filled: true,
                                       contentPadding: EdgeInsets.fromLTRB(
@@ -210,7 +209,6 @@ class _MyReviewPageState extends State<ContactUsPage>
                   InkWell(
                     onTap: () {
                       _mailOut(_name.text, _message.text);
-
                     },
                     child: Container(
                       padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
@@ -260,7 +258,9 @@ class _MyReviewPageState extends State<ContactUsPage>
   _mailOut(String email, String message) async {
     if (_formKey.currentState.validate()) {
       final MailOptions mailOptions = MailOptions(
-        body: message == null? 'a long body for the email <br> with a subset of HTML': message,
+        body: message == null
+            ? 'a long body for the email <br> with a subset of HTML'
+            : message,
         subject: 'Feedback from customer',
         recipients: ['wsuadvicebee@gmail.com'],
         isHTML: true,
@@ -269,14 +269,12 @@ class _MyReviewPageState extends State<ContactUsPage>
       await FlutterMailer.send(mailOptions);
       Flushbar(
         title: "Thanks for letting us know.",
-        message:
-        "Your feedback improves the quality of the app.",
+        message: "Your feedback improves the quality of the app.",
         duration: Duration(seconds: 8),
         backgroundColor: Colors.teal,
       )..show(context);
       Navigator.pop(context);
-    }
-    else {
+    } else {
       setState(() => _autoValidate = true);
     }
   }
@@ -284,6 +282,32 @@ class _MyReviewPageState extends State<ContactUsPage>
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: Text('Rate Us'),
+        leading: MaterialButton(
+          key: key,
+          minWidth: MediaQuery.of(context).size.width / 5,
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Dashboard(),
+                )
+            );
+            if (CurrentUser.isNotGuest) {
+            } else {
+              guestUserSignInMessage(context);
+            }
+          },
+          child: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+            size: 30,
+          ),
+        ),
+      ),
       body: Container(
         margin: MediaQuery.of(context).padding,
         child: SingleChildScrollView(
@@ -302,7 +326,7 @@ class _MyReviewPageState extends State<ContactUsPage>
               ),
               CustomPaint(
                 size: Size(MediaQuery.of(context).size.width,
-                    (MediaQuery.of(context).size.height / 2)-60),
+                    (MediaQuery.of(context).size.height / 2) - 60),
                 painter: SmilePainter(slideValue),
               ),
               Stack(
@@ -345,11 +369,10 @@ class _MyReviewPageState extends State<ContactUsPage>
         ),
         heroTag: "contactUsHero",
         onPressed: () {
-          if(CurrentUser.isNotGuest)
+          if (CurrentUser.isNotGuest)
             _checkCurrentSelected(animation.value.toInt());
           else
             guestUserSignInMessage(context);
-
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

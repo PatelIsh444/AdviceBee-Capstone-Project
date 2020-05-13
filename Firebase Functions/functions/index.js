@@ -4,6 +4,7 @@
 
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
+
 admin.initializeApp()
 
 /*
@@ -54,7 +55,6 @@ exports.sendNotificationPost = functions.firestore
 					.then(doc => {	
 						//set message for user
 						const likerName= doc.data().displayName;
-						console.log(doc.data().displayName+" liked "+posterName+" post")
 						//create payload for new notification
 						const payload = {
 							notification: {
@@ -110,7 +110,6 @@ exports.sendNotificationGroupJoinRequest = functions.firestore
 		.then(doc => {	
 			//set message for user
 			const userRequestingName= doc.data().displayName;
-			console.log(userRequestingName+" requested to join the group " + groupName)
 			//create payload for new notification
 			const payload = {
 				notification: {
@@ -161,7 +160,6 @@ exports.sendNotificationGroupJoinAccepted = functions.firestore
 			//if it was private send notification
 			if(doc.data().privateGroup===true){
 				const groupName= doc.data().groupName
-				console.log(displayName+" joined the private group "+groupName )
 				const payload = {
 					notification: {
 						title: `AdviceBee`,
@@ -185,11 +183,9 @@ exports.sendNotificationGroupJoinAccepted = functions.firestore
 		})
 	}else if(newFollowers>oldFollowers){
 		const newFollower = newFollowers[newFollowers.length-1]
-		console.log(displayName+" has a new follower")
 		admin.firestore().collection('users').doc(newFollower).get()
 		.then(doc => {
 			const newFollowerName = doc.data().displayName
-			console.log(newFollowerName+" started following "+ displayName)
 			const payload = {
 				notification: {
 					title: `AdviceBee`,
@@ -200,7 +196,6 @@ exports.sendNotificationGroupJoinAccepted = functions.firestore
 			}
 			admin.messaging().sendToDevice(pushToken, payload)
 			.then(response => {
-				console.log('Successfully sent message:', response)
 				return null;
 			}).catch(error => {
 				console.log('Error sending message:', error)
@@ -233,7 +228,6 @@ function notify(payload,userId){
 		.messaging()
         .sendToDevice(doc.data().pushToken, payload)
 		.then(response => {
-			console.log('Successfully sent message:', response)
 			return null;
         })
         .catch(error => {
@@ -259,8 +253,6 @@ exports.sendNewChatMessageNotification = functions.firestore
 	admin.firestore().collection('users').doc(senderId).get()
 	.then(document => {
 		const senderName= document.data().displayName;
-		console.log(senderName)
-		//console.log(document)
 		const payload = {
 			notification: {
 				title: `${senderName}`,
@@ -277,3 +269,71 @@ exports.sendNewChatMessageNotification = functions.firestore
 	
     return null
   })
+
+exports.handleCreatingReport = functions.firestore
+  	.document('reports/{reportedPostId}/ReportedUsers/{userIdWhoReportedPost}')
+  	.onCreate(async (snap, context) => {
+		const reportedPostId = context.params.reportedPostId
+		const reportRef = admin.firestore().collection('reports').doc(reportedPostId)
+		const reportedUsersRef = admin.firestore().collection('reports').doc(reportedPostId).collection('ReportedUsers')
+
+		return admin.firestore().runTransaction(async transaction => {
+			const reportedUsersRefQuery = await transaction.get(reportedUsersRef);
+			const userWhoReportedRefQuery = await transaction.get(reportedUsersRef.doc(context.params.userIdWhoReportedPost));
+			const numberOfReports = reportedUsersRefQuery.size;
+			const dateReported = userWhoReportedRefQuery.get('dateReported');
+
+			return transaction.update(reportRef, {
+				numberOfReports: numberOfReports,
+				lastReported: dateReported
+			});
+		})
+	})
+	  
+exports.handleDeletingReport = functions.firestore
+  	.document('reports/{reportedPostId}/ReportedUsers/{userIdWhoReportedPost}')
+  	.onDelete(async (snap, context) => {
+		const reportedPostId = context.params.reportedPostId
+		const reportRef = admin.firestore().collection('reports').doc(reportedPostId)
+		const reportedUsersRef = admin.firestore().collection('reports').doc(reportedPostId).collection('ReportedUsers')
+
+		return admin.firestore().runTransaction(async transaction => {
+			const reportedUsersRefQuery = await transaction.get(reportedUsersRef);
+			
+			if (reportedUsersRefQuery.empty) {
+				return transaction.delete(reportRef);
+			}
+
+			const reportedUsersQueryByDateCreated = await transaction.get(reportedUsersRef.orderBy('dateReported', 'desc').limit(1));
+			const dateReported = reportedUsersQueryByDateCreated.docs[0].data().dateReported;
+			const numberOfReports = reportedUsersRefQuery.size;
+
+			return transaction.update(reportRef, {
+				numberOfReports: numberOfReports,
+				lastReported: dateReported
+			});	
+		})
+	})
+	
+exports.resetDailyPoints  = functions.pubsub.schedule('0 7 * * *')
+	.timeZone('America/New_York') 
+	.onRun(async (context) => {
+
+		admin.firestore().collection('configuration').doc('config').get().then((doc)=>{	
+			const dict = doc.data().dailyQuestionsLimit
+			admin.firestore().collection('users').get().then(documents => {
+				documents.forEach((doc)=>{
+					const points= dict[doc.data().rank]
+					admin.firestore().runTransaction(async transaction => {
+						return transaction.update(doc.ref, {dailyQuestions : points });
+					});
+				});
+				return null;
+			}).catch(error => {
+				console.log('Error updating points:', error)
+			});
+			return null;
+		}).catch(error =>{console.log(error)});
+	console.log('This will be run every day at 7:00 AM Eastern!');
+	return null;
+});
